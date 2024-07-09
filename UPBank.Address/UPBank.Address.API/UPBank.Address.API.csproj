@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>1191a730-23f9-4a8c-8bdd-8310b773f06c</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UPBank.Address.Application\UPBank.Address.Application.csproj" />
+    <ProjectReference Include="..\UPBank.Address.Domain\UPBank.Address.Domain.csproj" />
+    <ProjectReference Include="..\UPBank.Address.Infra\UPBank.Address.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

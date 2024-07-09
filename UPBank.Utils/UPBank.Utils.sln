@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Utils.Address", "UPBank.Utils.Address\UPBank.Utils.Address.csproj", "{C25FF3C2-B68D-4811-B684-86A94761FB63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4722CE6C-336D-4805-9363-08A5CBCB5B47}
+	EndGlobalSection
+EndGlobal

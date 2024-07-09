@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>329cb335-82f0-4093-8bc9-05689f30f2ba</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UPBank.Customer.Application\UPBank.Customer.Application.csproj" />
+    <ProjectReference Include="..\UPBank.Customer.Domain\UPBank.Customer.Domain.csproj" />
+    <ProjectReference Include="..\UPBank.Customer.Infra\UPBank.Customer.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

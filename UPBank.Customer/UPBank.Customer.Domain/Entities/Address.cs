@@ -20,10 +20,5 @@ namespace UPBank.Address.Domain.Entities
 
         [JsonProperty("bairro")]
         public string Neighborhood { get; set; }
-
-        public void FormatZipCode()
-        {
-            ZipCode = ZipCode.Replace("-", "");
-        }
     }
 }

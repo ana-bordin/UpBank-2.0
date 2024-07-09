@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using UPBank.Address.Domain.Entities;
 using UPBank.Address.Infra.Context;
 
 namespace UPBank.Address.Infra.Repositories
@@ -30,7 +31,7 @@ namespace UPBank.Address.Infra.Repositories
             }
         }
 
-        public async Task<Guid> CreateCompleteAddress(Domain.Entities.CompleteAddress addressInputModel)
+        public async Task<Guid> CreateCompleteAddress(CompleteAddress addressInputModel)
         {
 
             using (var db = _context.Connection)
@@ -47,11 +48,11 @@ namespace UPBank.Address.Infra.Repositories
             }
         }
 
-        public async Task<Domain.Entities.CompleteAddress> GetCompleteAddressById(Guid id)
+        public async Task<CompleteAddress> GetCompleteAddressById(Guid id)
         {
             using (var db = _context.Connection)
             {
-                return await db.QueryFirstOrDefaultAsync<Domain.Entities.CompleteAddress>("SELECT * FROM dbo.CompleteAddress AS ca INNER JOIN dbo.Address AS a ON ca.ZipCode = a.ZipCode WHERE ca.Id = @Id ", new { Id = id });
+                return await db.QueryFirstOrDefaultAsync<CompleteAddress>("SELECT * FROM dbo.CompleteAddress AS ca INNER JOIN dbo.Address AS a ON ca.ZipCode = a.ZipCode WHERE ca.Id = @Id ", new { Id = id });
             }
         }
         public async Task<Domain.Entities.Address> GetAddressByZipCode(string zipCode)
@@ -68,7 +69,7 @@ namespace UPBank.Address.Infra.Repositories
             }
         }
 
-        public async Task<Domain.Entities.CompleteAddress> UpdateAddress(Guid id, Domain.Entities.CompleteAddress addressInputModel)
+        public async Task<CompleteAddress> UpdateAddress(Guid id, CompleteAddress addressInputModel)
         {
             using (var db = _context.Connection)
             {
