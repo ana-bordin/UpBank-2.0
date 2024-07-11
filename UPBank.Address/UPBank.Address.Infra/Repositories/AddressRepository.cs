@@ -27,13 +27,11 @@ namespace UPBank.Address.Infra.Repositories
 
                 else
                     return false;
-                //return Task.FromResult(address).Result;
             }
         }
 
         public async Task<Guid> CreateCompleteAddress(CompleteAddress addressInputModel)
         {
-
             using (var db = _context.Connection)
             {
                 Guid id = Guid.NewGuid();
@@ -55,6 +53,7 @@ namespace UPBank.Address.Infra.Repositories
                 return await db.QueryFirstOrDefaultAsync<CompleteAddress>("SELECT * FROM dbo.CompleteAddress AS ca INNER JOIN dbo.Address AS a ON ca.ZipCode = a.ZipCode WHERE ca.Id = @Id ", new { Id = id });
             }
         }
+
         public async Task<Domain.Entities.Address> GetAddressByZipCode(string zipCode)
         {
             using (var db = _context.Connection)
@@ -89,10 +88,10 @@ namespace UPBank.Address.Infra.Repositories
                 var rows = await db.ExecuteAsync("DELETE FROM dbo.CompleteAddress WHERE Id = @Id", new { Id = id });
 
                 if (rows > 0)
-                {
                     return true;
-                }
-                return false;
+
+                else
+                    return false;
             }
         }
     }

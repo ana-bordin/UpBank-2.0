@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Domain", "UP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Infra", "UPBank.Address.Infra\UPBank.Address.Infra.csproj", "{C894B93A-7464-4579-B028-F8E28551A401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Address.Application", "UPBank.Address.Application\UPBank.Address.Application.csproj", "{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Application", "UPBank.Address.Application\UPBank.Address.Application.csproj", "{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Address.API", "UPBank.Address.API\UPBank.Address.API.csproj", "{DE568D40-D122-4C2B-936D-C45461303D71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.API", "UPBank.Address.API\UPBank.Address.API.csproj", "{DE568D40-D122-4C2B-936D-C45461303D71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Address.Test", "UPBank.Address.Test\UPBank.Address.Test.csproj", "{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{DE568D40-D122-4C2B-936D-C45461303D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE568D40-D122-4C2B-936D-C45461303D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE568D40-D122-4C2B-936D-C45461303D71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,6 +2,7 @@
 using UPBank.Customer.Domain.Contracts;
 using UPBank.Customer.Application.Models;
 using UPBank.Utils.Address.Contracts;
+using UPBank.Customer.Application.RabbitMQ;
 
 namespace UPBank.Customer.Application.Services
 {
@@ -9,17 +10,22 @@ namespace UPBank.Customer.Application.Services
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IAddressService _addressService;
+        private readonly RabbitMQPublisher _rabbitMQPublisher;
 
-        public CustomerService(ICustomerRepository customerRepository, IAddressService addressService)
+        public CustomerService(ICustomerRepository customerRepository, IAddressService addressService, RabbitMQPublisher rabbitMQPublisher)
         {
             _customerRepository = customerRepository;
             _addressService = addressService;
+            _rabbitMQPublisher = rabbitMQPublisher;
         }
 
-        public async Task<bool> CreateCustomer(string cpf)
+        public async Task<Domain.Entities.Customer> CreateCustomer(string cpf)
         {
-            return await _customerRepository.CreateCustomer(cpf);
+            var customer = await _customerRepository.CreateCustomer(cpf);
+            _rabbitMQPublisher.Publish(customer);
+            return customer;
         }
+        
         public async Task<Domain.Entities.Customer> GetCustomerByCpf(string cpf)
         {
             return await _customerRepository.GetCustomerByCpf(cpf);

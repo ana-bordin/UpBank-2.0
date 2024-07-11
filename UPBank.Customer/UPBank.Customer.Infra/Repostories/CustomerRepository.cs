@@ -13,44 +13,74 @@ namespace UPBank.Customer.Infra.Repostories
             _context = context;
         }
 
-        public async Task<bool> CreateCustomer(string cpf)
+        public async Task<Domain.Entities.Customer> CreateCustomer(string cpf)
         {
-            using (var db = _context.ConnectionCustomer)
+            try
             {
-                var rows = await db.ExecuteAsync("INSERT INTO dbo.Customer (CPF) VALUES (@CPF)", new { CPF = cpf });
-                if (rows > 0)
-                    return true;
-                else
-                    return false;
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var rows = await db.ExecuteAsync("INSERT INTO dbo.Customer (CPF) VALUES (@CPF)", new { CPF = cpf });
+                    if (rows > 0)
+                        return await GetCustomerByCpf(cpf);
+                    else
+                        return null;
+                }
             }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
 
         public async Task<Domain.Entities.Customer> GetCustomerByCpf(string cpf)
         {
-            using (var db = _context.ConnectionCustomer)
+            try
             {
-                var customer = await db.QueryFirstOrDefaultAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
-                return customer;
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var customer = await db.QueryFirstOrDefaultAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
+                    return customer;
+                }
+            }
+            catch (Exception)
+            {
+               return null;
             }
         }
 
         public async Task<bool> DeleteCustomerByCpf(string cpf)
         {
-            using (var db = _context.ConnectionCustomer)
+            try
             {
-                //mudar a coluna de active para false
-                var rows = db.Execute("UPDATE dbo.Customer SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
-                return true;
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var rows = db.Execute("UPDATE dbo.Customer SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
+                    return true;
+                }
             }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
         public async Task<IEnumerable<Domain.Entities.Customer>> GetAllCustomers()
         {
-            using (var db = _context.ConnectionCustomer)
+            try
             {
-                var customers = await db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Active = 0");
-                return customers;
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var customers = await db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Active = 0");
+                    return customers;
+                }
             }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
 
     }

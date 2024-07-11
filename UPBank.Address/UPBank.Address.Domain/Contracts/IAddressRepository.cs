@@ -6,9 +6,9 @@ namespace UPBank.Address.Infra.Repositories
     {
         Task<bool> CreateAddress(Domain.Entities.Address address);
         Task<Guid> CreateCompleteAddress(CompleteAddress completeAddress);
-        Task<Domain.Entities.CompleteAddress> GetCompleteAddressById(Guid id);
+        Task<CompleteAddress> GetCompleteAddressById(Guid id);
         Task<Domain.Entities.Address> GetAddressByZipCode(string zipCode);
-        Task<Domain.Entities.CompleteAddress> UpdateAddress(Guid id, Domain.Entities.CompleteAddress addressDTO);
+        Task<CompleteAddress> UpdateAddress(Guid id, CompleteAddress addressDTO);
         Task<bool> DeleteAddressById(Guid id);
     }
 }

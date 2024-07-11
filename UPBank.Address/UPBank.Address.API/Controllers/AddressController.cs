@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UPBank.Address.Application.Contracts;
 using UPBank.Address.Application.Models;
-using UPBank.Address.Domain.Entities;
 
 namespace UPBank.Address.API.Controllers
 {
@@ -16,96 +15,62 @@ namespace UPBank.Address.API.Controllers
             _viaCep = viaCep;
         }
 
-        //[HttpGet("api/addresses/api/{zipCode}")]
-        //public async Task<IActionResult> GetAddressInAPI(string zipCode)
-        //{
-        //    var address = await _viaCep.GetAddressInAPI(zipCode);
-        //    if (address == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var adressOutputModel = new AddressOutputModel
-        //    {
-        //        ZipCode = address.ZipCode,
-        //        Street = address.Street,
-        //        Neighborhood = address.Neighborhood,
-        //        City = address.City,
-        //        State = address.State
-        //    };
-
-        //    return Ok(adressOutputModel);
-        //}
-
         [HttpGet("api/addresses/{id}")]
         public async Task<IActionResult> GetAddressById(Guid id)
         {
-            var address = await _addressService.GetCompleteAddressById(id);
+            var completeAddress = await _addressService.GetCompleteAddressById(id);
+            var address = await _addressService.GetAddressByZipCode(completeAddress.ZipCode);
             if (address == null)
-            {
                 return NotFound();
-            }
-            return Ok(address);
+            var addressOutputModel = new AddressOutputModel(completeAddress.Id, completeAddress.ZipCode, completeAddress.Complement, completeAddress.Number, address.Street, address.Neighborhood, address.City, address.State);
+
+            return Ok(addressOutputModel);
         }
 
         [HttpPost("api/addresses")]
         public async Task<IActionResult> CreateAddress([FromBody] AddressInputModel addressInputModel)
         {
-            Domain.Entities.Address getAddressInViaCep = await _viaCep.GetAddressInAPI(addressInputModel.ZipCode);
+            var getIfExists = await _addressService.GetAddressByZipCode(addressInputModel.ZipCode);
+            Domain.Entities.Address getAddressInViaCep;
 
-            if (getAddressInViaCep == null)
-                return NotFound();
+            if (getIfExists == null)
+            {
+                getAddressInViaCep = await _viaCep.GetAddressInAPI(addressInputModel.ZipCode);
 
-            var address = await _addressService.CreateAddress(getAddressInViaCep);
+                if (getAddressInViaCep == null)
+                    return NotFound();
+
+                await _addressService.CreateAddress(getAddressInViaCep);
+            }
+            else
+                getAddressInViaCep = getIfExists;
 
             var completeAddressId = await _addressService.CreateCompleteAddress(addressInputModel);
 
-            if (address == null || completeAddressId == Guid.Empty)
-                return NotFound("Não foi possivel criar o endereço");
+            if (completeAddressId == Guid.Empty)
+                return BadRequest("Não foi possivel criar o endereço");
 
-            AddressOutputModel addressOutputModel = new AddressOutputModel
-            {
-                Id = completeAddressId,
-                ZipCode = getAddressInViaCep.ZipCode,
-                Street = getAddressInViaCep.Street,
-                Neighborhood = getAddressInViaCep.Neighborhood,
-                City = getAddressInViaCep.City,
-                State = getAddressInViaCep.State,
-                Complement = addressInputModel.Complement,
-                Number = addressInputModel.Number
-            };
-
+            var addressOutputModel = new AddressOutputModel(completeAddressId, addressInputModel.ZipCode, addressInputModel.Complement, addressInputModel.Number, getAddressInViaCep.Street, getAddressInViaCep.Neighborhood, getAddressInViaCep.City, getAddressInViaCep.State);
+   
             return Ok(addressOutputModel);
         }
-
+       
         [HttpPatch("api/addresses/{id}")]
         public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressInputModel addressInputModel)
         {
-            var add = await _addressService.GetAddressByZipCode(addressInputModel.ZipCode);
-
-            if (add == null)
+            var getAddress = await _addressService.GetAddressByZipCode(addressInputModel.ZipCode);
+            if (getAddress == null)
             {
-                add = await _viaCep.GetAddressInAPI(addressInputModel.ZipCode);
-
-                if (add == null)
+                getAddress = await _viaCep.GetAddressInAPI(addressInputModel.ZipCode);
+                if (getAddress == null)
                     return NotFound();
                 else
-                    await _addressService.CreateAddress(add);
+                    await _addressService.CreateAddress(getAddress);
             }
+           
+            var completeAddress = await _addressService.UpdateAddress(id, addressInputModel);
 
-            await _addressService.UpdateAddress(id, addressInputModel);
-
-            AddressOutputModel addressOutputModel = new AddressOutputModel
-            {
-                Id = id,
-                ZipCode = add.ZipCode,
-                Street = add.Street,
-                Neighborhood = add.Neighborhood,
-                City = add.City,
-                State = add.State,
-                Complement = addressInputModel.Complement,
-                Number = addressInputModel.Number
-            };
+            AddressOutputModel addressOutputModel = new AddressOutputModel(completeAddress.Id, addressInputModel.ZipCode, addressInputModel.Complement, addressInputModel.Number, getAddress.Street, getAddress.Neighborhood, getAddress.City, getAddress.State);
 
             return Ok(addressOutputModel);
         }
@@ -114,10 +79,10 @@ namespace UPBank.Address.API.Controllers
         public async Task<IActionResult> DeleteAddress(Guid id)
         {
             var address = await _addressService.GetCompleteAddressById(id);
+            
             if (address == null)
-            {
                 return NotFound();
-            }
+            
             await _addressService.DeleteAddressById(id);
             return Ok();
         }

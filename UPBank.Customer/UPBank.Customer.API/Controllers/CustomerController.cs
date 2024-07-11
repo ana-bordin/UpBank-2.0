@@ -43,7 +43,7 @@ namespace UPBank.Customer.API.Controllers
 
             var result = await _customerService.CreateCustomer(customerInputModel.CPF);
 
-            if (!result)
+            if (result == null)
                 return BadRequest();
 
             var customerResult = new CustomerOutputModel
@@ -56,7 +56,7 @@ namespace UPBank.Customer.API.Controllers
                 Email = person.Email,
                 Phone = person.Phone,
                 Address = add,
-                Restriction = false
+                Restriction = result.Restriction,
             };
 
             return Ok(customerResult);
@@ -91,11 +91,14 @@ namespace UPBank.Customer.API.Controllers
         [HttpPatch("api/customers/{cpf}")]
         public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
         {
-            var person = await _personService.GetPersonByCpf(cpf);
-            if (person == null)
-                NotFound();
+            var customer = await _customerService.GetCustomerByCpf(cpf);
 
-            var address = await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
+            if (customer == null)
+                return NotFound();
+
+            var person = await _personService.GetPersonByCpf(cpf);
+
+            await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
 
             var ok = await _personService.PatchPerson(cpf, personPatchDTO);
 
@@ -103,9 +106,7 @@ namespace UPBank.Customer.API.Controllers
                 return NotFound();
 
             else
-            {
-                var customer = await _customerService.GetCustomerByCpf(cpf);
-
+            {    
                 var customerOutputModel = new CustomerOutputModel
                 {
                     CPF = person.CPF,
