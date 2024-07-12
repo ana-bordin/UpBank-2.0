@@ -24,15 +24,14 @@ namespace UPBank.Customer.Application.Services
         public async Task<CustomerOutputModel> CreateCustomer(string cpf)
         {
             var customer = await _customerRepository.CreateCustomer(cpf);
-            var person = await _personService.GetPersonByCpf(cpf);
-
             _rabbitMQPublisher.Publish(customer);
-            return customer;
+            return await CreateCustomerOutputModel(customer);
         }
         
-        public async Task<Domain.Entities.Customer> GetCustomerByCpf(string cpf)
+        public async Task<CustomerOutputModel> GetCustomerByCpf(string cpf)
         {
-            return await _customerRepository.GetCustomerByCpf(cpf);
+            var customer = await _customerRepository.GetCustomerByCpf(cpf);
+            return await CreateCustomerOutputModel(customer);
         }
 
         public async Task<bool> DeleteCustomerByCpf(string cpf)
@@ -45,9 +44,7 @@ namespace UPBank.Customer.Application.Services
            var customersList = await _customerRepository.GetAllCustomers();
             var customersOutputList = new List<CustomerOutputModel>();
             foreach (var customer in customersList)
-            {
-                customersOutputList.Add(cus);
-            }
+                customersOutputList.Add(CreateCustomerOutputModel(customer).Result);
 
             return customersOutputList;
         }

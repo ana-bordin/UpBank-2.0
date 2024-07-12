@@ -57,22 +57,7 @@ namespace UPBank.Customer.API.Controllers
             if (customer == null)
                 return NotFound();
 
-            var person = await _personService.GetPersonByCpf(cpf);
-            
-            var customerOutputModel = new CustomerOutputModel
-            {
-                CPF = person.CPF,
-                Name = person.Name,
-                BirthDate = person.BirthDate,
-                Gender = person.Gender,
-                Salary = person.Salary,
-                Email = person.Email,
-                Phone = person.Phone,
-                Address = await _addressService.GetCompleteAddressById(customer.AddressId),
-                Restriction = customer.Restriction,
-            };
-
-            return Ok(customerOutputModel);
+            return Ok(customer);
         }
 
         [HttpPatch("api/customers/{cpf}")]
@@ -83,14 +68,12 @@ namespace UPBank.Customer.API.Controllers
             if (customer == null)
                 return NotFound();
 
-            var person = await _personService.GetPersonByCpf(cpf);
-
-            await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
+            await _addressService.UpdateAddress(customer.Address.Id, personPatchDTO.Address);
 
             var ok = await _personService.PatchPerson(cpf, personPatchDTO);
 
             if (!ok)
-                return NotFound();
+                return BadRequest();
 
             else
             {    
