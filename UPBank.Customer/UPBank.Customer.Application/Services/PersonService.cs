@@ -1,5 +1,4 @@
 ﻿using UPBank.Customer.Application.Contracts;
-using UPBank.Customer.Application.Models;
 using UPBank.Customer.Domain.Contracts;
 using UPBank.Customer.Domain.Entities;
 
@@ -16,6 +15,7 @@ namespace UPBank.Customer.Application.Services
 
         public Task<bool> CreatePerson(Person person)
         {
+            person.Validate(person);
             return _personRepository.CreatePerson(person);
         }
 
@@ -29,9 +29,9 @@ namespace UPBank.Customer.Application.Services
             return _personRepository.GetPersonByCpf(cpf);
         }
 
-        public Task<bool> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
+        public Task<Person> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
         {
-            throw new NotImplementedException();
+            return _personRepository.PatchPerson(cpf, personPatchDTO);
         }
     }
 }

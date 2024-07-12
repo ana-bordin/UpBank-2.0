@@ -41,24 +41,11 @@ namespace UPBank.Customer.API.Controllers
             if (_personService.CheckIfExist(customerInputModel.CPF).Result)
                 await _personService.CreatePerson(person);
 
-            var result = await _customerService.CreateCustomer(customerInputModel.CPF);
+            var customerResult = await _customerService.CreateCustomer(customerInputModel.CPF);
 
-            if (!result)
+            if (customerResult == null)
                 return BadRequest();
-
-            var customerResult = new CustomerOutputModel
-            {
-                CPF = person.CPF,
-                Name = person.Name,
-                BirthDate = person.BirthDate,
-                Gender = person.Gender,
-                Salary = person.Salary,
-                Email = person.Email,
-                Phone = person.Phone,
-                Address = add,
-                Restriction = false
-            };
-
+           
             return Ok(customerResult);
         }
 
@@ -91,11 +78,14 @@ namespace UPBank.Customer.API.Controllers
         [HttpPatch("api/customers/{cpf}")]
         public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
         {
-            var person = await _personService.GetPersonByCpf(cpf);
-            if (person == null)
-                NotFound();
+            var customer = await _customerService.GetCustomerByCpf(cpf);
 
-            var address = await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
+            if (customer == null)
+                return NotFound();
+
+            var person = await _personService.GetPersonByCpf(cpf);
+
+            await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
 
             var ok = await _personService.PatchPerson(cpf, personPatchDTO);
 
@@ -103,9 +93,7 @@ namespace UPBank.Customer.API.Controllers
                 return NotFound();
 
             else
-            {
-                var customer = await _customerService.GetCustomerByCpf(cpf);
-
+            {    
                 var customerOutputModel = new CustomerOutputModel
                 {
                     CPF = person.CPF,
@@ -126,13 +114,9 @@ namespace UPBank.Customer.API.Controllers
         [HttpDelete("api/customers/{cpf}")]
         public async Task<IActionResult> DeleteCustomer(string cpf)
         {
-            var customer = await _customerService.GetCustomerByCpf(cpf);
-            if (customer == null)
-                return NotFound();
-
             var ok = await _customerService.DeleteCustomerByCpf(cpf);
             if (!ok)
-                return NotFound();
+                return BadRequest();
 
             return Ok();
         }
@@ -143,6 +127,64 @@ namespace UPBank.Customer.API.Controllers
             var customers = await _customerService.GetAllCustomers();
             return Ok(customers);
         }
+
+        
+        
+        
+        
+        [HttpPatch("api/customers/restriction/{cpf}")]
+        public async Task<IActionResult> CustomersRestriction(string cpf)
+        {
+            var customer = await _customerService.CustomerRestriction(cpf);
+            if (customer == null)
+                return NotFound();
+
+            return Ok(customer);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet("api/customers/restriction")]
+        public async Task<IActionResult> GetCustomerWithRestriction()
+        {
+            var customers = await _customerService.GetCustomersWithRestriction();
+            if (customers == null)
+                return NotFound();
+
+            return Ok(customers);
+        }
+
+        [HttpPost("api/customers/accountOpening")]
+        public async Task<IActionResult> AccountOpening(List<string> cpfs)
+        {
+            foreach (var cpf in cpfs)
+            {
+                var customer = await _customerService.GetCustomerByCpf(cpf);
+                if (customer == null)
+                    return NotFound();
+            }   
+
+            var account = await _customerService.AccountOpening(cpfs);
+
+            if (account == null)
+                return BadRequest();
+
+            return Ok();
+        }
+
 
     }
 }
