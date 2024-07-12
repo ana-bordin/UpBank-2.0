@@ -8,7 +8,7 @@ namespace UPBank.Customer.Application.Contracts
         Task<IEnumerable<CustomerOutputModel>> GetAllCustomers();
         Task<CustomerOutputModel> GetCustomerByCpf(string cpf);
         Task<bool> DeleteCustomerByCpf(string cpf);
-        Task <CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer) 
+        Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer);
 
 
 

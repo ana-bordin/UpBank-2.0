@@ -1,6 +1,6 @@
 ﻿using UPBank.Address.Application.Models;
 
-namespace UPBank.Utils.Person.Models.DTOs
+namespace UPBank.Person.Application.Models.DTOs
 {
     public class PersonPatchDTO
     {

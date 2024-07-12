@@ -85,19 +85,23 @@ namespace UPBank.Customer.Application.Services
             if (customer == null)
                 return null;
 
-
+            else
+            {
+                return null;
+            }
 
         }
 
         public Task<IEnumerable<CustomerOutputModel>> GetCustomersWithRestriction()
         {
-            return _customerRepository.GetCustomersWithRestriction();
+            var allCustomers = _customerRepository.GetCustomersWithRestriction();
+            return null;
         }
 
         public Task<bool> AccountOpening(List<string> cpfs)
         {
             return _customerRepository.AccountOpening(cpfs);
-            
+
         }
     }
 }

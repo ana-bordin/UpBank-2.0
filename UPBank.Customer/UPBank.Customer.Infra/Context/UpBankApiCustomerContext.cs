@@ -20,14 +20,5 @@ namespace UPBank.Customer.Infra.Context
                 return new SqlConnection(connectionString);
             }
         }
-
-        IDbConnection IUpBankApiCustomerContext.ConnectionPerson
-        {
-            get
-            {
-                var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiPersonContext").Value;
-                return new SqlConnection(connectionString);
-            }
-        }
     }
 }

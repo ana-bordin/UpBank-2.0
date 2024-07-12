@@ -38,8 +38,7 @@ namespace UPBank.Customer.API.Controllers
                 AddressId = add.Id
             };
 
-            if (_personService.CheckIfExist(customerInputModel.CPF).Result)
-                await _personService.CreatePerson(person);
+            await _personService.CreatePerson(person);
 
             var customerResult = await _customerService.CreateCustomer(customerInputModel.CPF);
 
@@ -70,28 +69,28 @@ namespace UPBank.Customer.API.Controllers
 
             await _addressService.UpdateAddress(customer.Address.Id, personPatchDTO.Address);
 
-            var ok = await _personService.PatchPerson(cpf, personPatchDTO);
+            //var ok = await _personService.PatchPerson(cpf, personPatchDTO);
 
-            if (!ok)
-                return BadRequest();
+            //if (ok == null)
+            //    return BadRequest();
 
-            else
-            {    
-                var customerOutputModel = new CustomerOutputModel
-                {
-                    CPF = person.CPF,
-                    Name = person.Name,
-                    BirthDate = person.BirthDate,
-                    Gender = person.Gender,
-                    Salary = person.Salary,
-                    Email = person.Email,
-                    Phone = person.Phone,
-                    Address = await _addressService.GetCompleteAddressById(customer.AddressId),
-                    Restriction = customer.Restriction,
-                };
+            //else
+            //{    
+            //    //var customerOutputModel = new CustomerOutputModel
+            //    //{
+            //    //    CPF = person.CPF,
+            //    //    Name = person.Name,
+            //    //    BirthDate = person.BirthDate,
+            //    //    Gender = person.Gender,
+            //    //    Salary = person.Salary,
+            //    //    Email = person.Email,
+            //    //    Phone = person.Phone,
+            //    //    Address = await _addressService.GetCompleteAddressById(customer.AddressId),
+            //    //    Restriction = customer.Restriction,
+            //    //};}
 
-                return Ok(customerOutputModel);
-            }
+                return Ok(customer);
+            
         }
 
         [HttpDelete("api/customers/{cpf}")]
