@@ -49,9 +49,23 @@ namespace UPBank.Utils.Person.Services
             return null;
         }
 
-        //public Task<Person> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
-        //{
-        //    return _personRepository.PatchPerson(cpf, personPatchDTO);
-        //}
+        public Task<UPBank.Person.Domain.Entities.Person> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
+        {
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(personPatchDTO), Encoding.UTF8, "application/json");
+                var response = _client.PatchAsync($"https://localhost:7048/api/person/{cpf}", content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    return Task.FromResult(JsonConvert.DeserializeObject<UPBank.Person.Domain.Entities.Person>(result));
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }
