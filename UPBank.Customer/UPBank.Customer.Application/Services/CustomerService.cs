@@ -11,17 +11,21 @@ namespace UPBank.Customer.Application.Services
         private readonly ICustomerRepository _customerRepository;
         private readonly IAddressService _addressService;
         private readonly RabbitMQPublisher _rabbitMQPublisher;
+        private readonly IPersonService _personService;
 
-        public CustomerService(ICustomerRepository customerRepository, IAddressService addressService, RabbitMQPublisher rabbitMQPublisher)
+        public CustomerService(ICustomerRepository customerRepository, IAddressService addressService, RabbitMQPublisher rabbitMQPublisher, IPersonService personService)
         {
             _customerRepository = customerRepository;
             _addressService = addressService;
             _rabbitMQPublisher = rabbitMQPublisher;
+            _personService = personService;
         }
 
-        public async Task<Domain.Entities.Customer> CreateCustomer(string cpf)
+        public async Task<CustomerOutputModel> CreateCustomer(string cpf)
         {
             var customer = await _customerRepository.CreateCustomer(cpf);
+            var person = await _personService.GetPersonByCpf(cpf);
+
             _rabbitMQPublisher.Publish(customer);
             return customer;
         }
@@ -42,21 +46,61 @@ namespace UPBank.Customer.Application.Services
             var customersOutputList = new List<CustomerOutputModel>();
             foreach (var customer in customersList)
             {
-                customersOutputList.Add(new CustomerOutputModel
-                {
-                    CPF = customer.CPF,
-                    Name = customer.Name,
-                    BirthDate = customer.BirthDate,
-                    Address = await _addressService.GetCompleteAddressById(customer.AddressId),
-                    Gender = customer.Gender,
-                    Salary = customer.Salary,
-                    Email = customer.Email,
-                    Phone = customer.Phone,
-                    Restriction = customer.Restriction
-                });
+                customersOutputList.Add(cus);
             }
 
             return customersOutputList;
+        }
+
+        public async Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer)
+        {
+            var person = await _personService.GetPersonByCpf(customer.CPF);
+            var address = await _addressService.GetCompleteAddressById(person.AddressId);
+            return new CustomerOutputModel
+            {
+                CPF = person.CPF,
+                Name = person.Name,
+                BirthDate = person.BirthDate,
+                Address = address,
+                Gender = person.Gender,
+                Salary = person.Salary,
+                Email = person.Email,
+                Phone = person.Phone,
+                Restriction = customer.Restriction
+            };
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<CustomerOutputModel> CustomerRestriction(string cpf)
+        {
+            var customer = await _customerRepository.CustomerRestriction(cpf);
+            if (customer == null)
+                return null;
+
+
+
+        }
+
+        public Task<IEnumerable<CustomerOutputModel>> GetCustomersWithRestriction()
+        {
+            return _customerRepository.GetCustomersWithRestriction();
+        }
+
+        public Task<bool> AccountOpening(List<string> cpfs)
+        {
+            return _customerRepository.AccountOpening(cpfs);
+            
         }
     }
 }

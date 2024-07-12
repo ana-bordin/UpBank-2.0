@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using System.Collections.Generic;
 using UPBank.Customer.Domain.Contracts;
+using UPBank.Customer.Domain.Entities;
 using UPBank.Customer.Infra.Context;
 
 namespace UPBank.Customer.Infra.Repostories
@@ -30,7 +32,6 @@ namespace UPBank.Customer.Infra.Repostories
             {
                 return null;
             }
-
         }
 
         public async Task<Domain.Entities.Customer> GetCustomerByCpf(string cpf)
@@ -45,7 +46,7 @@ namespace UPBank.Customer.Infra.Repostories
             }
             catch (Exception)
             {
-               return null;
+                return null;
             }
         }
 
@@ -63,7 +64,6 @@ namespace UPBank.Customer.Infra.Repostories
             {
                 return false;
             }
-
         }
 
         public async Task<IEnumerable<Domain.Entities.Customer>> GetAllCustomers()
@@ -83,5 +83,68 @@ namespace UPBank.Customer.Infra.Repostories
 
         }
 
+
+
+
+
+
+
+
+
+
+
+        public async Task<Domain.Entities.Customer> CustomerRestriction(string cpf)
+        {
+            try
+            {
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var customer = db.QueryFirstOrDefault<Domain.Entities.Customer>("UPDATE dbo.Customer SET Restriction = 1 WHERE CPF = @CPF", new { CPF = cpf });
+                    return customer;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Domain.Entities.Customer>> GetCustomersWithRestriction()
+        {
+            try
+            {
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var customers = db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Restriction = 1");
+                    return await customers;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<bool> AccountOpening(List<string> cpfs)
+        {
+            try
+            {
+                using (var db = _context.ConnectionCustomer)
+                {
+                    var rows = await db.ExecuteAsync("INSERT INTO dbo.CustomerRequest (First, Second) VALUES (@First, @Second)", new { First = cpfs[0], Second = cpfs[1] });
+
+                    if (rows > 0)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
     }
 }
