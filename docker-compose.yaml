@@ -1,0 +1,26 @@
+services:
+  address:
+    build:
+      context: ./UPBank.Address/
+      dockerfile: Dockerfile
+    ports:
+       - "3001:80" # Mapear porta do host para a porta do container
+
+  person:
+    build:
+      context: ./UPBank.Person/
+      dockerfile: Dockerfile
+    ports:
+      - "3002:80" # Mapear porta do host para a porta do container
+    depends_on:
+      - address
+
+  customer:
+    build:
+      context: ./UPBank.Customer/
+      dockerfile: Dockerfile
+    ports:
+      - "3003:80" # Mapear porta do host para a porta do container
+    depends_on:
+      - person
+      - address

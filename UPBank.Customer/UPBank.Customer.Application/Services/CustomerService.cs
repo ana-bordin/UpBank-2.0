@@ -3,6 +3,7 @@ using UPBank.Customer.Domain.Contracts;
 using UPBank.Customer.Application.Models;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Customer.Application.RabbitMQ;
+using UPBank.Utils.Person.Contracts;
 
 namespace UPBank.Customer.Application.Services
 {
@@ -24,10 +25,20 @@ namespace UPBank.Customer.Application.Services
         public async Task<CustomerOutputModel> CreateCustomer(string cpf)
         {
             var customer = await _customerRepository.CreateCustomer(cpf);
-            _rabbitMQPublisher.Publish(customer);
+            if (customer != null)
+                _rabbitMQPublisher.Publish(customer);
             return await CreateCustomerOutputModel(customer);
+
         }
-        
+
+        public async Task<bool> CheckIfExists(string cpf)
+        {
+            var customer = await _customerRepository.GetCustomerByCpf(cpf);
+            if (customer == null)
+                return false;
+            return true;
+        }
+
         public async Task<CustomerOutputModel> GetCustomerByCpf(string cpf)
         {
             var customer = await _customerRepository.GetCustomerByCpf(cpf);
@@ -41,7 +52,7 @@ namespace UPBank.Customer.Application.Services
 
         public async Task<IEnumerable<CustomerOutputModel>> GetAllCustomers()
         {
-           var customersList = await _customerRepository.GetAllCustomers();
+            var customersList = await _customerRepository.GetAllCustomers();
             var customersOutputList = new List<CustomerOutputModel>();
             foreach (var customer in customersList)
                 customersOutputList.Add(CreateCustomerOutputModel(customer).Result);
@@ -51,20 +62,25 @@ namespace UPBank.Customer.Application.Services
 
         public async Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer)
         {
-            var person = await _personService.GetPersonByCpf(customer.CPF);
-            var address = await _addressService.GetCompleteAddressById(person.AddressId);
-            return new CustomerOutputModel
+            if (customer != null)
             {
-                CPF = person.CPF,
-                Name = person.Name,
-                BirthDate = person.BirthDate,
-                Address = address,
-                Gender = person.Gender,
-                Salary = person.Salary,
-                Email = person.Email,
-                Phone = person.Phone,
-                Restriction = customer.Restriction
-            };
+                var person = await _personService.GetPersonByCpf(customer.CPF);
+                var address = await _addressService.GetCompleteAddressById(person.AddressId);
+                return new CustomerOutputModel
+                {
+                    CPF = person.CPF,
+                    Name = person.Name,
+                    BirthDate = person.BirthDate,
+                    Address = address,
+                    Gender = person.Gender,
+                    Salary = person.Salary,
+                    Email = person.Email,
+                    Phone = person.Phone,
+                    Restriction = customer.Restriction
+                };
+            }
+
+            return null;
         }
 
 

@@ -12,7 +12,7 @@ namespace UPBank.Utils.Person.Services
             try
             {
                 var content = new StringContent(JsonConvert.SerializeObject(person), Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync("https://localhost:7048/api/person", content);
+                var response = await _client.PostAsync("https://localhost:7048/api/peoples", content);
                 if (response.IsSuccessStatusCode)
                     return true;
                 return false;
@@ -27,7 +27,7 @@ namespace UPBank.Utils.Person.Services
         {
             try
             {
-                var response = await _client.GetAsync($"https://localhost:7048/api/person/{cpf}");
+                var response = await _client.GetAsync($"https://localhost:7048/api/peoples/{cpf}");
                 if (response.IsSuccessStatusCode)
                     return true;
                 return false;
@@ -40,7 +40,7 @@ namespace UPBank.Utils.Person.Services
 
         public async Task<UPBank.Person.Domain.Entities.Person> GetPersonByCpf(string cpf)
         {
-            var response = await _client.GetAsync($"https://localhost:7048/api/person/{cpf}");
+            var response = await _client.GetAsync($"https://localhost:7048/api/peoples/{cpf}");
             if (response.IsSuccessStatusCode)
             {
                 var result = response.Content.ReadAsStringAsync().Result;
@@ -49,9 +49,17 @@ namespace UPBank.Utils.Person.Services
             return null;
         }
 
-        //public Task<Person> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
-        //{
-        //    return _personRepository.PatchPerson(cpf, personPatchDTO);
-        //}
+        public async Task<UPBank.Person.Domain.Entities.Person> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(personPatchDTO), Encoding.UTF8, "application/json");
+            var response = await _client.PatchAsync($"https://localhost:7048/api/peoples/{cpf}", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<UPBank.Person.Domain.Entities.Person>(result);
+            }
+            return null;
+        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UPBank.Customer.Application.Contracts;
 using UPBank.Customer.Application.Models;
-using UPBank.Customer.Application.Models.DTOs;
-using UPBank.Customer.Domain.Entities;
 using UPBank.Utils.Address.Contracts;
+using UPBank.Utils.Person.Contracts;
+using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Customer.API.Controllers
 {
@@ -26,7 +26,7 @@ namespace UPBank.Customer.API.Controllers
         {
             var add = await _addressService.CreateAddress(customerInputModel.Address);
 
-            var person = new Person
+            var person = new Person.Domain.Entities.Person
             {
                 CPF = customerInputModel.CPF,
                 Name = customerInputModel.Name,
@@ -44,7 +44,7 @@ namespace UPBank.Customer.API.Controllers
 
             if (customerResult == null)
                 return BadRequest();
-           
+
             return Ok(customerResult);
         }
 
@@ -62,35 +62,21 @@ namespace UPBank.Customer.API.Controllers
         [HttpPatch("api/customers/{cpf}")]
         public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
         {
-            var customer = await _customerService.GetCustomerByCpf(cpf);
+            var ok = await _customerService.CheckIfExists(cpf);
 
-            if (customer == null)
+            if (ok == null)
                 return NotFound();
 
-            await _addressService.UpdateAddress(customer.Address.Id, personPatchDTO.Address);
+            var person = await _personService.PatchPerson(cpf, personPatchDTO);
 
-            //var ok = await _personService.PatchPerson(cpf, personPatchDTO);
+            await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
 
-            //if (ok == null)
-            //    return BadRequest();
+            if (person == null)
+                return BadRequest();
 
-            //else
-            //{    
-            //    //var customerOutputModel = new CustomerOutputModel
-            //    //{
-            //    //    CPF = person.CPF,
-            //    //    Name = person.Name,
-            //    //    BirthDate = person.BirthDate,
-            //    //    Gender = person.Gender,
-            //    //    Salary = person.Salary,
-            //    //    Email = person.Email,
-            //    //    Phone = person.Phone,
-            //    //    Address = await _addressService.GetCompleteAddressById(customer.AddressId),
-            //    //    Restriction = customer.Restriction,
-            //    //};}
+            var customer = await _customerService.GetCustomerByCpf(cpf);
 
-                return Ok(customer);
-            
+            return Ok(customer);
         }
 
         [HttpDelete("api/customers/{cpf}")]
@@ -110,10 +96,10 @@ namespace UPBank.Customer.API.Controllers
             return Ok(customers);
         }
 
-        
-        
-        
-        
+
+
+
+
         [HttpPatch("api/customers/restriction/{cpf}")]
         public async Task<IActionResult> CustomersRestriction(string cpf)
         {
@@ -157,7 +143,7 @@ namespace UPBank.Customer.API.Controllers
                 var customer = await _customerService.GetCustomerByCpf(cpf);
                 if (customer == null)
                     return NotFound();
-            }   
+            }
 
             var account = await _customerService.AccountOpening(cpfs);
 

@@ -9,6 +9,10 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["UPBank.Customer.API/UPBank.Customer.API.csproj", "UPBank.Customer.API/"]
+COPY ["UPBank.Customer.Domain/UPBank.Customer.Domain.csproj", "UPBank.Customer.Domain/"]
+COPY ["UPBank.Customer.Infra/UPBank.Customer.Infra.csproj", "UPBank.Customer.Infra/"]
+COPY ["UPBank.Customer.Application/UPBank.Customer.Application.csproj", "UPBank.Customer.Application/"]
+
 RUN dotnet restore "./UPBank.Customer.API/UPBank.Customer.API.csproj"
 COPY . .
 WORKDIR "/src/UPBank.Customer.API"

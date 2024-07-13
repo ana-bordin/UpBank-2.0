@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.Domain", "U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.Infra", "UPBank.Customer.Infra\UPBank.Customer.Infra.csproj", "{84F65B56-FA74-457B-810C-6D03CB337A89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Customer.Application", "UPBank.Customer.Application\UPBank.Customer.Application.csproj", "{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.Application", "UPBank.Customer.Application\UPBank.Customer.Application.csproj", "{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

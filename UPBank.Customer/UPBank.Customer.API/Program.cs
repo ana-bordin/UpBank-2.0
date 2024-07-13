@@ -1,12 +1,15 @@
 using System.Data;
 using System.Data.SqlClient;
 using UPBank.Customer.Application.Contracts;
+using UPBank.Customer.Application.RabbitMQ;
 using UPBank.Customer.Application.Services;
 using UPBank.Customer.Domain.Contracts;
 using UPBank.Customer.Infra.Context;
 using UPBank.Customer.Infra.Repostories;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Address.Services;
+using UPBank.Utils.Person.Contracts;
+using UPBank.Utils.Person.Services;
 
 namespace UPBank.Customer.API
 {
@@ -22,9 +25,8 @@ namespace UPBank.Customer.API
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IPersonService, PersonService>();
-            builder.Services.AddScoped<IPersonRepository, PersonRepository>();
             builder.Services.AddScoped<IAddressService, AddressService>();
-
+            builder.Services.AddScoped<RabbitMQPublisher>();
 
             // Add services to the container.
 

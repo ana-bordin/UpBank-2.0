@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UPBank.Person.Application\UPBank.Person.Application.csproj" />
+    <ProjectReference Include="..\UPBank.Person.Infra\UPBank.Person.Infra.csproj" />
   </ItemGroup>
 
 </Project>

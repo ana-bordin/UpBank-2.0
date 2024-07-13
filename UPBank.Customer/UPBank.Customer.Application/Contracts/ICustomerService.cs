@@ -9,7 +9,7 @@ namespace UPBank.Customer.Application.Contracts
         Task<CustomerOutputModel> GetCustomerByCpf(string cpf);
         Task<bool> DeleteCustomerByCpf(string cpf);
         Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer);
-
+        Task<bool> CheckIfExists(string cpf);
 
 
 
