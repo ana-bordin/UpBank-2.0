@@ -80,5 +80,17 @@ namespace UPBank.Employee.Application.Services
             var employee = await _employeeRepository.GetEmployeeByCpf(cpf);
             return await CreateEmployeeOutputModel(employee);
         }
+
+
+
+
+        public Task<bool> SetProfile(string cpf, bool manager)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<bool> ApproveAccountOpening(string cpf)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

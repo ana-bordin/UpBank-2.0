@@ -54,7 +54,7 @@ namespace UPBank.Employee.API.Controllers
             return Ok(employee);
         }
 
-        [HttpPatch("api/customers/{cpf}")]
+        [HttpPatch("api/employees/{cpf}")]
         public async Task<IActionResult> UpdateEmployee(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
         {
             var ok = await _employeeService.CheckIfExists(cpf);
@@ -76,7 +76,7 @@ namespace UPBank.Employee.API.Controllers
             return Ok(employee);
         }
 
-        [HttpDelete("api/customers/{cpf}")]
+        [HttpDelete("api/employees/{cpf}")]
         public async Task<IActionResult> DeleteEmployee(string cpf)
         {
             var ok = await _employeeService.DeleteEmployeeByCpf(cpf);
@@ -86,11 +86,32 @@ namespace UPBank.Employee.API.Controllers
             return Ok();
         }
 
-        [HttpGet("api/customers")]
+        [HttpGet("api/employees")]
         public async Task<IActionResult> GetAllEmployees()
         {
             var employees = await _employeeService.GetAllEmployees();
             return Ok(employees);
         }
+
+        //[HttpPatch("api/employees/setProfileAccount")]
+        //public async Task<IActionResult> SetProfileAccount([FromBody] SetProfileDTO setProfileDTO)
+        //{
+        //    var ok = await _employeeService.SetProfile(setProfileDTO.CPF, setProfileDTO.Manager);
+        //    if (!ok)
+        //        return BadRequest();
+
+        //    return Ok();
+        //}
+
+        //[HttpPatch("api/employees/approveAccountOpening")]
+        //public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)
+        //{
+        //    var ok = await _employeeService.ApproveAccountOpening(approveAccountOpeningDTO.CPF);
+        //    if (!ok)
+        //        return BadRequest();
+
+        //    return Ok();
+        //}
+
     }
 }

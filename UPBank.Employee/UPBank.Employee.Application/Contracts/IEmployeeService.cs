@@ -10,6 +10,10 @@ namespace UPBank.Employee.Application.Contracts
         Task<bool> DeleteEmployeeByCpf(string cpf);
         Task<EmployeeOutputModel> CreateEmployeeOutputModel(Domain.Entities.Employee employee);
         Task<string> CheckIfExists(string cpf);
-        
+
+
+        Task<bool> SetProfile(string cpf, bool manager);
+        Task<bool> ApproveAccountOpening(string cpf);
+
     }
 }
