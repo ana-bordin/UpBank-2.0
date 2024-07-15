@@ -122,15 +122,6 @@ namespace UPBank.Customer.Infra.Repostories
 
         }
 
-
-
-
-
-
-
-
-
-
         public async Task<bool> AccountOpening(List<string> cpfs)
         {
             try
