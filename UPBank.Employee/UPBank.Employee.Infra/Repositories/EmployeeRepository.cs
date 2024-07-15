@@ -85,5 +85,19 @@ namespace UPBank.Employee.Infra.Repositories
             }
 
         }
+
+
+
+
+        public Task<Domain.Entities.Employee> SetProfile(string cpf, bool manager)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Domain.Entities.Employee> ApproveAccountOpening(string cpf)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
