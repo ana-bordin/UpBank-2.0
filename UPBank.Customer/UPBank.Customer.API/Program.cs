@@ -26,7 +26,7 @@ namespace UPBank.Customer.API
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IPersonService, PersonService>();
             builder.Services.AddScoped<IAddressService, AddressService>();
-            builder.Services.AddScoped<RabbitMQPublisher>();
+            builder.Services.AddSingleton<RabbitMQPublisher>();
 
             // Add services to the container.
 
@@ -42,6 +42,7 @@ namespace UPBank.Customer.API
 
 
             app.MapControllers();
+            var publisher = new RabbitMQPublisher();
 
             app.Run();
         }

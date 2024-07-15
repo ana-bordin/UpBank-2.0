@@ -31,12 +31,14 @@ namespace UPBank.Customer.Application.Services
 
         }
 
-        public async Task<bool> CheckIfExists(string cpf)
+        public async Task<string> CheckIfExists(string cpf)
         {
             var customer = await _customerRepository.GetCustomerByCpf(cpf);
             if (customer == null)
-                return false;
-            return true;
+                return "cliente não existe!";
+            if (customer.Restriction)
+                return "cliente com restrição!";
+            return "ok";
         }
 
         public async Task<CustomerOutputModel> GetCustomerByCpf(string cpf)
@@ -83,36 +85,29 @@ namespace UPBank.Customer.Application.Services
             return null;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         public async Task<CustomerOutputModel> CustomerRestriction(string cpf)
         {
             var customer = await _customerRepository.CustomerRestriction(cpf);
             if (customer == null)
                 return null;
-
             else
-            {
-                return null;
-            }
-
+                return await CreateCustomerOutputModel(customer);
         }
 
-        public Task<IEnumerable<CustomerOutputModel>> GetCustomersWithRestriction()
+        public async Task<IEnumerable<CustomerOutputModel>> GetCustomersWithRestriction()
         {
-            var allCustomers = _customerRepository.GetCustomersWithRestriction();
-            return null;
+            var allCustomers = await _customerRepository.GetCustomersWithRestriction();
+            var customersOutputList = new List<CustomerOutputModel>();
+            
+            foreach (var customer in allCustomers)
+                customersOutputList.Add(await CreateCustomerOutputModel(customer));
+            
+            return customersOutputList;
         }
+
+
+
+
 
         public Task<bool> AccountOpening(List<string> cpfs)
         {

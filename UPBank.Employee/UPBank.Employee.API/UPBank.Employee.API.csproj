@@ -16,4 +16,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UPBank.Employee.Application\UPBank.Employee.Application.csproj" />
+  </ItemGroup>
+
 </Project>

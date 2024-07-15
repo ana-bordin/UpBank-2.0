@@ -64,8 +64,10 @@ namespace UPBank.Customer.API.Controllers
         {
             var ok = await _customerService.CheckIfExists(cpf);
 
-            if (ok == null)
-                return NotFound();
+            if (ok == "cliente não existe!")
+                return NotFound(ok);
+            if (ok == "cliente com restrição!")
+                return Forbid(ok);
 
             var person = await _personService.PatchPerson(cpf, personPatchDTO);
 
@@ -96,10 +98,6 @@ namespace UPBank.Customer.API.Controllers
             return Ok(customers);
         }
 
-
-
-
-
         [HttpPatch("api/customers/restriction/{cpf}")]
         public async Task<IActionResult> CustomersRestriction(string cpf)
         {
@@ -110,21 +108,6 @@ namespace UPBank.Customer.API.Controllers
             return Ok(customer);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet("api/customers/restriction")]
         public async Task<IActionResult> GetCustomerWithRestriction()
         {
@@ -134,6 +117,10 @@ namespace UPBank.Customer.API.Controllers
 
             return Ok(customers);
         }
+
+
+
+
 
         [HttpPost("api/customers/accountOpening")]
         public async Task<IActionResult> AccountOpening(List<string> cpfs)

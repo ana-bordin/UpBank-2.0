@@ -83,23 +83,19 @@ namespace UPBank.Customer.Infra.Repostories
 
         }
 
-
-
-
-
-
-
-
-
-
-
         public async Task<Domain.Entities.Customer> CustomerRestriction(string cpf)
         {
             try
             {
                 using (var db = _context.ConnectionCustomer)
                 {
-                    var customer = db.QueryFirstOrDefault<Domain.Entities.Customer>("UPDATE dbo.Customer SET Restriction = 1 WHERE CPF = @CPF", new { CPF = cpf });
+                    var restriction = db.QueryFirstOrDefault<int>("SELECT Restriction FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
+                    var customer = new Domain.Entities.Customer();
+                    if (restriction == 1)
+                        customer = db.QueryFirstOrDefault<Domain.Entities.Customer>("UPDATE dbo.Customer SET Restriction = 0 WHERE CPF = @CPF; SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
+                    else
+                        customer = db.QueryFirstOrDefault<Domain.Entities.Customer>("UPDATE dbo.Customer SET Restriction = 1 WHERE CPF = @CPF; SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
+
                     return customer;
                 }
             }
@@ -125,6 +121,15 @@ namespace UPBank.Customer.Infra.Repostories
             }
 
         }
+
+
+
+
+
+
+
+
+
 
         public async Task<bool> AccountOpening(List<string> cpfs)
         {
