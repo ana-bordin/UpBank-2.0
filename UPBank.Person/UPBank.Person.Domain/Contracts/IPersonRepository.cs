@@ -5,6 +5,5 @@
         Task<bool> CreatePerson(Entities.Person person);
         Task<Entities.Person> GetPersonByCpf(string cpf);
         Task<Entities.Person> PatchPerson(string cpf, Entities.Person person);
-        Task<bool> CheckIfExist(string cpf);
     }
 }

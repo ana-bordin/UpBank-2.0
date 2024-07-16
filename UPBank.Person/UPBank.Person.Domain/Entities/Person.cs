@@ -13,9 +13,16 @@ namespace UPBank.Person.Domain.Entities
         public string Email { get; set; }
         public string Phone { get; set; }
 
-        //[NotMapped]
-        //public CompleteAddress Address { get; set; }
         public Guid AddressId { get; set; }
+
+        public string CpfRemoveMask(string cpf)
+        {
+            return cpf.Replace(".", "").Replace("-", "");
+        }
+        public string CpfAddMask(string cpf)
+        {
+            return Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00");
+        }
 
         public string Validate(Person person)
         {

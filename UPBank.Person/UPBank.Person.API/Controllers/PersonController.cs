@@ -16,8 +16,9 @@ namespace UPBank.Person.API.Controllers
         [HttpPost("api/peoples")]
         public async Task<IActionResult> CreatePerson([FromBody] Domain.Entities.Person person)
         {
-            if (_personService.CheckIfExist(person.CPF).Result)
+            if (!await _personService.CheckIfExist(person.CPF))
                 await _personService.CreatePerson(person);
+            person.CPF = person.CpfAddMask(person.CPF);
             return Ok(person);
         }
 
@@ -39,25 +40,8 @@ namespace UPBank.Person.API.Controllers
 
             if (ok == null)
                 return BadRequest();
-
             else
-            {
-                //var customerOutputModel = new CustomerOutputModel
-                //{
-                //    CPF = person.CPF,
-                //    Name = person.Name,
-                //    BirthDate = person.BirthDate,
-                //    Gender = person.Gender,
-                //    Salary = person.Salary,
-                //    Email = person.Email,
-                //    Phone = person.Phone,
-                //    Address = await _addressService.GetCompleteAddressById(customer.AddressId),
-                //    Restriction = customer.Restriction,
-                //};}
-
                 return Ok(ok);
-
-            }
         }
     }
 }
