@@ -16,10 +16,22 @@ namespace UPBank.Person.API.Controllers
         [HttpPost("api/peoples")]
         public async Task<IActionResult> CreatePerson([FromBody] Domain.Entities.Person person)
         {
-            if (!await _personService.CheckIfExist(person.CPF))
-                await _personService.CreatePerson(person);
-            person.CPF = person.CpfAddMask(person.CPF);
-            return Ok(person);
+            (Domain.Entities.Person okResult, string message) getPerson = await _personService.GetPersonByCpf(person.CPF);
+
+            if (getPerson.okResult == null)
+            {
+                if (getPerson.message != null)
+                    return BadRequest(getPerson.message);
+
+                var personResult = await _personService.CreatePerson(person);
+
+                if (personResult.okResult)
+                    return Ok("Cliente criado com sucesso");
+                else
+                    return BadRequest(personResult.message);
+            }
+            else
+                return Ok("CPF já cadastrado");
         }
 
         [HttpGet("api/peoples/{cpf}")]
@@ -27,21 +39,28 @@ namespace UPBank.Person.API.Controllers
         {
             var person = await _personService.GetPersonByCpf(cpf);
 
-            if (person == null)
-                return NotFound();
+            if (person.person == null && person.message == null)
+                return NotFound("Pessoa não encontrada");
 
-            return Ok(person);
+            if (person.message != null)
+                return BadRequest(person.message);
+
+            return Ok(person.person);
         }
 
         [HttpPatch("api/peoples/{cpf}")]
-        public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        public async Task<IActionResult> UpdatePerson(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
         {
             var ok = await _personService.PatchPerson(cpf, personPatchDTO);
 
-            if (ok == null)
-                return BadRequest();
+            if (ok.person == null && ok.message == null)
+                return NotFound("Pessoa não encontrada");
+
+            else if (ok.message != null)
+                return BadRequest(ok.message);
+
             else
-                return Ok(ok);
+                return Ok(ok.person);
         }
     }
 }

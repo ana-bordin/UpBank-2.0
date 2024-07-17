@@ -13,7 +13,7 @@ namespace UPBank.Person.Infra.Repositories
             _context = context;
         }
 
-        public async Task<bool> CreatePerson(Domain.Entities.Person person)
+        public async Task<(bool okResult, string message)> CreatePerson(Domain.Entities.Person person)
         {
             try
             {
@@ -22,35 +22,35 @@ namespace UPBank.Person.Infra.Repositories
                     var rows = await db.ExecuteAsync("INSERT INTO dbo.Person (Name, BirthDate, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @BirthDate, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, BirthDate = person.BirthDate, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
 
                     if (rows > 0)
-                        return true;
+                        return (true, null);
                     else
-                        return false;
+                        return (false, "Erro ao cadastrar pessoa, tente mais tarde");
                 }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return (false, "Houve um erro:" + e.Message);
             }
         }
 
-        public async Task<Domain.Entities.Person> GetPersonByCpf(string cpf)
+        public async Task<(Domain.Entities.Person person, string message)> GetPersonByCpf(string cpf)
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-
                     var person = await db.QueryFirstOrDefaultAsync<Domain.Entities.Person>("SELECT * FROM dbo.Person WHERE CPF = @CPF", new { CPF = cpf });
-                    return person;
+                    return (person, null);
                 }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return (null, "Houve um erro:" + e.Message);
             }
         }
-        public async Task<Domain.Entities.Person> PatchPerson(string cpf, Domain.Entities.Person person)
+        public async Task<(Domain.Entities.Person personResult, string message)> PatchPerson(string cpf, Domain.Entities.Person person)
         {
+            (Domain.Entities.Person personResult, string message) personResult;
             try
             {
                 using (var db = _context.Connection)
@@ -60,12 +60,12 @@ namespace UPBank.Person.Infra.Repositories
                     if (rows > 0)
                         return await GetPersonByCpf(person.CPF);
                     else
-                        return null;
+                        return (null, null);
                 }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return (null, "Houve um erro:" + e.Message);
             }
         }
     }

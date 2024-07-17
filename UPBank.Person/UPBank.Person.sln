@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Domain", "UPB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Infra", "UPBank.Person.Infra\UPBank.Person.Infra.csproj", "{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Person.Test", "UPBank.Person.Test\UPBank.Person.Test.csproj", "{3B21851E-9948-4113-A9C8-D3E097D2DF88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

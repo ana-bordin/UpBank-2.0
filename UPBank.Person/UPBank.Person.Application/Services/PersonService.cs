@@ -12,48 +12,45 @@ namespace UPBank.Person.Application.Services
             _personRepository = personRepository;
         }
 
-        public async Task<Domain.Entities.Person> CreatePerson(Domain.Entities.Person person)
+        public async Task<(bool okResult, string message)> CreatePerson(Domain.Entities.Person person)
         {
             person.CPF = person.CpfRemoveMask(person.CPF);
-            person.Validate(person);
-            if (await _personRepository.CreatePerson(person))
-                return await GetPersonByCpf(person.CPF);
-            return null;
+            var validateCPF = person.Validate(person);
+
+            if (validateCPF != string.Empty)
+                return (false, validateCPF);
+
+            return await _personRepository.CreatePerson(person);
         }
 
-        public async Task<bool> CheckIfExist(string cpf)
-        {
-            if (await _personRepository.GetPersonByCpf(cpf) != null)
-                return true;
-            return false;
-        }
-
-        public async Task<Domain.Entities.Person> GetPersonByCpf(string cpf)
+        public async Task<(Domain.Entities.Person person, string message)> GetPersonByCpf(string cpf)
         {
             var person = await _personRepository.GetPersonByCpf(cpf);
-            person.CPF = person.CpfAddMask(person.CPF);
+            if (person.person != null)
+                person.person.CPF = person.person.CpfAddMask(person.person.CPF);
+
             return person;
         }
 
-        public async Task<Domain.Entities.Person> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
+        public async Task<(Domain.Entities.Person person, string message)> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
         {
-            var person = await _personRepository.GetPersonByCpf(cpf);
-            if (personPatchDTO.Name != person.Name && personPatchDTO.Name != "")
-                person.Name = personPatchDTO.Name;
+            var personResult = await _personRepository.GetPersonByCpf(cpf);
+            if (personPatchDTO.Name != personResult.person.Name && personPatchDTO.Name != "")
+                personResult.person.Name = personPatchDTO.Name;
 
-            if (personPatchDTO.Gender != person.Gender && personPatchDTO.Gender.ToString() != null)
-                person.Gender = personPatchDTO.Gender;
+            if (personPatchDTO.Gender != personResult.person.Gender && personPatchDTO.Gender.ToString() != null)
+                personResult.person.Gender = personPatchDTO.Gender;
 
-            if (personPatchDTO.Salary != person.Salary && personPatchDTO.Salary != 0)
-                person.Salary = personPatchDTO.Salary;
+            if (personPatchDTO.Salary != personResult.person.Salary && personPatchDTO.Salary != 0)
+                personResult.person.Salary = personPatchDTO.Salary;
 
-            if (personPatchDTO.Email != person.Email && personPatchDTO.Email != "")
-                person.Email = personPatchDTO.Email;
+            if (personPatchDTO.Email != personResult.person.Email && personPatchDTO.Email != "")
+                personResult.person.Email = personPatchDTO.Email;
 
-            if (personPatchDTO.Phone != person.Phone && personPatchDTO.Phone != "")
-                person.Phone = personPatchDTO.Phone;
+            if (personPatchDTO.Phone != personResult.person.Phone && personPatchDTO.Phone != "")
+                personResult.person.Phone = personPatchDTO.Phone;
 
-            return await _personRepository.PatchPerson(cpf, person);
+            return await _personRepository.PatchPerson(cpf, personResult.person);
         }
     }
 }
