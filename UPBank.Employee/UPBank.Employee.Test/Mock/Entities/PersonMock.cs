@@ -1,5 +1,5 @@
 ﻿using UPBank.Person.Application.Models;
-using UPBank.Person.Application.Models.DTOs;
+using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Person.Test.Mocks.Entities
 {

@@ -27,7 +27,7 @@ namespace UPBank.Employee.API.Controllers
         {
             var employeeResult = await _employeeService.CreateEmployee(employeeInputModel);
             if (employeeResult.employeeOutputModel == null)
-                BadRequest(employeeResult.message);
+                return BadRequest(employeeResult.message);
 
             return Ok(employeeResult);
         }

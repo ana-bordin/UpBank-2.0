@@ -24,8 +24,8 @@ namespace UPBank.Employee.Application.Services
 
         public async Task<(EmployeeOutputModel employeeOutputModel, string message)> CreateEmployee(EmployeeInputModel employeeInputModel)
         {
-            var getEmployee = GetEmployeeByCpf(employeeInputModel.CPF);
-            if (getEmployee != null)
+            var getEmployee = await GetEmployeeByCpf(employeeInputModel.CPF);
+            if (getEmployee.employee != null)
                 return (null, "funcionário já existe!");
 
             //var personInputModel = new PersonInputModel
