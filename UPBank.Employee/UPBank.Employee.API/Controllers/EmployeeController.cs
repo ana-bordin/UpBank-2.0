@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UPBank.Employee.Application.Contracts;
 using UPBank.Employee.Application.Models;
+using UPBank.Person.Application.Models;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Person.Contracts;
 using UPBank.Utils.Person.Models.DTOs;
@@ -23,23 +24,10 @@ namespace UPBank.Employee.API.Controllers
         [HttpPost("api/employees")]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeInputModel employeeInputModel)
         {
-            var address = await _addressService.CreateAddress(employeeInputModel.Address);
+            var employeeResult = await _employeeService.CreateEmployee(employeeInputModel);
+            if (employeeResult.employeeOutputModel == null)
+                BadRequest(employeeResult.message);
 
-            var person = new Person.Domain.Entities.Person
-            {
-                CPF = employeeInputModel.CPF,
-                Name = employeeInputModel.Name,
-                BirthDate = employeeInputModel.BirthDate,
-                Gender = employeeInputModel.Gender,
-                Salary = employeeInputModel.Salary,
-                Email = employeeInputModel.Email,
-                Phone = employeeInputModel.Phone,
-                AddressId = address.Id
-            };
-
-            await _personService.CreatePerson(person);
-
-            var employeeResult = await _employeeService.CreateEmployee(employeeInputModel.CPF, employeeInputModel.Manager);
             return Ok(employeeResult);
         }
 
@@ -48,8 +36,10 @@ namespace UPBank.Employee.API.Controllers
         {
             var employee = await _employeeService.GetEmployeeByCpf(cpf);
 
-            if (employee == null)
+            if (employee.employee == null)
                 return NotFound();
+            if (employee.message != null)
+                return BadRequest(employee.message);
 
             return Ok(employee);
         }
@@ -80,7 +70,7 @@ namespace UPBank.Employee.API.Controllers
         public async Task<IActionResult> DeleteEmployee(string cpf)
         {
             var ok = await _employeeService.DeleteEmployeeByCpf(cpf);
-            if (!ok)
+            if (!ok.ok)
                 return BadRequest();
 
             return Ok();

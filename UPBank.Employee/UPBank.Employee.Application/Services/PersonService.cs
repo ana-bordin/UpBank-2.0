@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
+using UPBank.Person.Application.Models;
 using UPBank.Utils.Person.Contracts;
 
 namespace UPBank.Utils.Person.Services
@@ -7,19 +8,22 @@ namespace UPBank.Utils.Person.Services
     public class PersonService : IPersonService
     {
         private static readonly HttpClient _client = new HttpClient();
-        public async Task<bool> CreatePerson(UPBank.Person.Domain.Entities.Person person)
+        public async Task<(bool ok, string message)> CreatePerson(PersonInputModel person)
         {
             try
             {
                 var content = new StringContent(JsonConvert.SerializeObject(person), Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync("https://localhost:7048/api/person", content);
                 if (response.IsSuccessStatusCode)
-                    return true;
-                return false;
+                {
+                    return (true, null);
+                }
+                else
+                    return (false, "houve um erro ao criar a pessoa");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return (false, "houve um erro:" + e);
             }
         }
 

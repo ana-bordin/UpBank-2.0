@@ -13,7 +13,7 @@ namespace UPBank.Employee.Infra.Repositories
             _context = context;
         }
 
-        public async Task<Domain.Entities.Employee> CreateEmployee(string cpf, bool manager)
+        public async Task<(Domain.Entities.Employee employee, string message)> CreateEmployee(string cpf, bool manager)
         {
             try
             {
@@ -23,17 +23,16 @@ namespace UPBank.Employee.Infra.Repositories
                     if (rows > 0)
                         return await GetEmployeeByCpf(cpf);
                     else
-                        return null;
+                        return (null, null);
                 }
-
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "houve um erro ao criar funcionario:" + e);
             }
         }
 
-        public async Task<bool> DeleteEmployeeByCpf(string cpf)
+        public async Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf)
         {
             try
             {
@@ -41,47 +40,47 @@ namespace UPBank.Employee.Infra.Repositories
                 {
                     var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
                     if (rows != null)
-                        return true;
+                        return (true, null);
                     else
-                        return false;
+                        return (false, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return (false, "houve um erro ao excluir usuario:" + e);
             }
 
         }
 
-        public Task<IEnumerable<Domain.Entities.Employee>> GetAllEmployees()
+        public async Task<(IEnumerable<Domain.Entities.Employee> employees, string message)> GetAllEmployees()
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-                    var employees = db.QueryAsync<Domain.Entities.Employee>("SELECT * FROM Employee");
-                    return employees;
+                    var employees = await db.QueryAsync<Domain.Entities.Employee>("SELECT * FROM Employee");
+                    return (employees, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "houve um erro ao buscar funcionarios:" + e);
             }
         }
 
-        public Task<Domain.Entities.Employee> GetEmployeeByCpf(string cpf)
+        public async Task<(Domain.Entities.Employee employee, string message)> GetEmployeeByCpf(string cpf)
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-                    var employee = db.QueryFirstOrDefaultAsync<Domain.Entities.Employee>("SELECT * FROM Employee WHERE CPF = @cpf", new { CPF = cpf });
-                    return employee;
+                    var employeeResult = await db.QueryFirstOrDefaultAsync<Domain.Entities.Employee>("SELECT * FROM Employee WHERE CPF = @cpf", new { CPF = cpf });
+                    return (employeeResult, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "houve um erro ao buscar funcionario:" + e);
             }
 
         }
