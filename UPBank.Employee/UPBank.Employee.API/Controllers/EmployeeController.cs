@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UPBank.Employee.Application.Contracts;
 using UPBank.Employee.Application.Models;
+using UPBank.Employee.Application.Models.DTOs;
 using UPBank.Person.Application.Models;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Person.Contracts;
@@ -45,23 +46,11 @@ namespace UPBank.Employee.API.Controllers
         }
 
         [HttpPatch("api/employees/{cpf}")]
-        public async Task<IActionResult> UpdateEmployee(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        public async Task<IActionResult> UpdateEmployee(string cpf, [FromBody] EmployeePatchDTO employeePatchDTO)
         {
-            var ok = await _employeeService.CheckIfExists(cpf);
-
-            if (ok == "funcionário não existe!")
-                return NotFound(ok);
-            if (ok == "funcionário com restrição!")
-                return Forbid(ok);
-
-            var person = await _personService.PatchPerson(cpf, personPatchDTO);
-
-            await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
-
-            if (person == null)
-                return BadRequest();
-
-            var employee = await _employeeService.GetEmployeeByCpf(cpf);
+            var employee = await _employeeService.PatchEmployee(cpf, employeePatchDTO);
+            if (employee.employee == null)
+                return BadRequest(employee.message);
 
             return Ok(employee);
         }

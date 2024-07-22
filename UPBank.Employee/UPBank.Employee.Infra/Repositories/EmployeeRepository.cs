@@ -85,6 +85,25 @@ namespace UPBank.Employee.Infra.Repositories
 
         }
 
+        public async Task<(Domain.Entities.Employee employee, string message)> PatchEmployee(string cpf, bool manager)
+        {
+            try
+            {
+                using (var db = _context.Connection)
+                {
+                    var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Manager = @Manager WHERE CPF = @CPF", new { CPF = cpf, Manager = manager });
+                    if (rows > 0)
+                        return (await GetEmployeeByCpf(cpf));
+                    else
+                        return (null, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (null, "houve um erro ao atualizar funcionario:" + e);
+            }
+        }
+
 
 
 
@@ -97,6 +116,7 @@ namespace UPBank.Employee.Infra.Repositories
         {
             throw new NotImplementedException();
         }
+
 
     }
 }

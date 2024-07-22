@@ -1,4 +1,5 @@
 ﻿using UPBank.Employee.Application.Models;
+using UPBank.Employee.Application.Models.DTOs;
 
 namespace UPBank.Employee.Application.Contracts
 {
@@ -9,7 +10,7 @@ namespace UPBank.Employee.Application.Contracts
         Task<(EmployeeOutputModel employee, string message)> GetEmployeeByCpf(string cpf);
         Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf);
         Task<EmployeeOutputModel> CreateEmployeeOutputModel(Domain.Entities.Employee employee);
-        Task<string> CheckIfExists(string cpf);
+        Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO);
 
 
         Task<bool> SetProfile(string cpf, bool manager);

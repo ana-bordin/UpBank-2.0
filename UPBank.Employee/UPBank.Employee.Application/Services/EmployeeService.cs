@@ -1,34 +1,25 @@
 ﻿using UPBank.Employee.Application.Contracts;
 using UPBank.Employee.Application.Models;
+using UPBank.Employee.Application.Models.DTOs;
 using UPBank.Employee.Application.RabbitMQ;
-using UPBank.Employee.Infra.Repositories;
-using UPBank.Person.Application.Models;
-using UPBank.Utils.Address.Contracts;
+using UPBank.Employee.Domain.Contracts;
 using UPBank.Utils.Person.Contracts;
 
 namespace UPBank.Employee.Application.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly EmployeeRepository _employeeRepository;
-        private readonly IAddressService _addressService;
+        private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IAddressService _addressService;
         private readonly IPersonService _personService;
         private readonly RabbitMQConsumer _rabbitMQService;
 
-        public EmployeeService(EmployeeRepository employeeRepository, IAddressService addressService, IPersonService personService, RabbitMQConsumer rabbitMQConsumer)
+        public EmployeeService(IEmployeeRepository employeeRepository, /*IAddressService addressService,*/ IPersonService personService, RabbitMQConsumer rabbitMQConsumer)
         {
             _employeeRepository = employeeRepository;
-            _addressService = addressService;
+            //_addressService = addressService;
             _personService = personService;
             _rabbitMQService = rabbitMQConsumer;
-        }
-
-        public async Task<string> CheckIfExists(string cpf)
-        {
-            var employee = await _employeeRepository.GetEmployeeByCpf(cpf);
-            if (employee.employee == null)
-                return "funcionário não existe!";
-            return "ok";
         }
 
         public async Task<(EmployeeOutputModel employeeOutputModel, string message)> CreateEmployee(EmployeeInputModel employeeInputModel)
@@ -37,19 +28,19 @@ namespace UPBank.Employee.Application.Services
             if (getEmployee != null)
                 return (null, "funcionário já existe!");
 
-            var personInputModel = new PersonInputModel
-            {
-                CPF = employeeInputModel.CPF,
-                Name = employeeInputModel.Name,
-                BirthDate = employeeInputModel.BirthDate,
-                Gender = employeeInputModel.Gender,
-                Salary = employeeInputModel.Salary,
-                Email = employeeInputModel.Email,
-                Phone = employeeInputModel.Phone,
-                Address = employeeInputModel.Address
-            };
+            //var personInputModel = new PersonInputModel
+            //{
+            //    CPF = employeeInputModel.CPF,
+            //    Name = employeeInputModel.Name,
+            //    BirthDate = employeeInputModel.BirthDate,
+            //    Gender = employeeInputModel.Gender,
+            //    Salary = employeeInputModel.Salary,
+            //    Email = employeeInputModel.Email,
+            //    Phone = employeeInputModel.Phone,
+            //    Address = employeeInputModel.Address
+            //};
 
-            var ok = await _personService.CreatePerson(personInputModel);
+            var ok = await _personService.CreatePerson(employeeInputModel);
 
             if (ok.ok)
             {
@@ -65,18 +56,17 @@ namespace UPBank.Employee.Application.Services
             if (employee != null)
             {
                 var person = await _personService.GetPersonByCpf(employee.CPF);
-                var address = await _addressService.GetCompleteAddressById(person.AddressId);
 
                 var employeeOutputModel = new EmployeeOutputModel
                 {
-                    CPF = person.CPF,
-                    Name = person.Name,
-                    BirthDate = person.BirthDate,
-                    Address = address,
-                    Gender = person.Gender,
-                    Salary = person.Salary,
-                    Email = person.Email,
-                    Phone = person.Phone,
+                    CPF = person.person.CPF,
+                    Name = person.person.Name,
+                    BirthDate = person.person.BirthDate,
+                    Address = person.person.Address,
+                    Gender = person.person.Gender,
+                    Salary = person.person.Salary,
+                    Email = person.person.Email,
+                    Phone = person.person.Phone,
                     Manager = employee.Manager
                 };
 
@@ -113,6 +103,33 @@ namespace UPBank.Employee.Application.Services
                 return (await CreateEmployeeOutputModel(employee.employee), null);
         }
 
+        public async Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO)
+        {
+            var getEmployee = await GetEmployeeByCpf(cpf);
+            if (getEmployee.employee == null)
+                return (null, "funcionário não existe!");
+
+            //var personPatchDTO = new PersonPatchDTO
+            //{
+            //    Name = employeePatchDTO.Name,
+            //    Address = employeePatchDTO.Address,
+            //    Email = employeePatchDTO.Email,
+            //    Phone = employeePatchDTO.Phone,
+            //    Gender = employeePatchDTO.Gender,
+            //    Salary = employeePatchDTO.Salary
+            //};
+
+            var person = await _personService.PatchPerson(cpf, employeePatchDTO);
+
+            if (person.person == null)
+                return (null, person.message);
+
+            var employee = await _employeeRepository.PatchEmployee(cpf, employeePatchDTO.Manager);
+            if (employee.employee == null)
+                return (null, employee.message);
+
+            return (await CreateEmployeeOutputModel(employee.employee), null);
+        }
 
 
 
@@ -125,5 +142,7 @@ namespace UPBank.Employee.Application.Services
         {
             throw new NotImplementedException();
         }
+
+
     }
 }
