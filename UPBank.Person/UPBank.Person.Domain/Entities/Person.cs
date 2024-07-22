@@ -15,7 +15,7 @@ namespace UPBank.Person.Domain.Entities
 
         public Guid AddressId { get; set; }
 
-        public string CpfRemoveMask(string cpf)
+        public static string CpfRemoveMask(string cpf)
         {
             return cpf.Replace(".", "").Replace("-", "");
         }
@@ -29,7 +29,7 @@ namespace UPBank.Person.Domain.Entities
             if (string.IsNullOrEmpty(person.CPF))
                 return "É necessário cadastrar CPF";
 
-            if (CpfValidate(person.CPF))
+            if (person.CPF.Count() < 11 || !CpfValidate(person.CPF))
                 return "CPF inválido";
 
             if (string.IsNullOrEmpty(Name) || person.Name.Length < 3)

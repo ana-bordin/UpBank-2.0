@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using UPBank.Address.Application.Models;
 using UPBank.Person.API.Controllers;
 using UPBank.Person.Application.Contracts;
-using UPBank.Person.Application.Models.DTOs;
 using UPBank.Person.Application.Services;
 using UPBank.Person.Domain.Contracts;
+using UPBank.Person.Test.Mocks.Entities;
+using UPBank.Utils.Address.Contracts;
 
 namespace UPBank.Person.Test
 {
@@ -13,49 +15,38 @@ namespace UPBank.Person.Test
         private readonly PersonController _personController;
         private readonly IPersonService _personService;
         private readonly Mock<IPersonRepository> _personRepository;
+        private readonly Mock<IAddressService> _addressService;
 
         public PersonUnitTest()
         {
+            _addressService = new Mock<IAddressService>();
             _personRepository = new Mock<IPersonRepository>();
-            _personService = new PersonService(_personRepository.Object);
+            _personService = new PersonService(_personRepository.Object, _addressService.Object);
             _personController = new PersonController(_personService);
         }
-        static Domain.Entities.Person person = new Domain.Entities.Person
-        {
-            CPF = "12345678901",
-            Name = "Person Name",
-            BirthDate = DateTime.Parse("2000/10/10"),
-            AddressId = Guid.NewGuid(),
-            Email = "test@gmail.com",
-            Gender = 'm',
-            Phone = "16991999999",
-            Salary = 30000
 
-        };
-
-        static PersonPatchDTO personPatchDTO = new PersonPatchDTO
-        {
-            Name = "Person Name update",
-            Email = ""
-        };
         #region Testes Positivos
 
         [Fact]
         public void CreatePerson_ReturnSucess()
         {
-            _personRepository.Setup(m => m.CreatePerson(person)).ReturnsAsync((true, ""));
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
+            _personRepository.Setup(m => m.CreatePerson(It.IsAny<Domain.Entities.Person>())).ReturnsAsync((PersonMock.Person, null));
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync(AddressMock.AddressOutputModel);
 
-            var result = _personController.CreatePerson(person);
+            var result = _personController.CreatePerson(PersonMock.PersonInputModel);
+            
             Assert.IsType<OkObjectResult>(result.Result);
         }
-
 
         [Fact]
         public void GetPerson_ReturnSucess()
         {
-            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((person, ""));
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((PersonMock.PersonGet, null));
 
-            var result = _personController.GetPerson("12345678901");
+            var result = _personController.GetPerson("96649661007");
+            
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
@@ -63,10 +54,11 @@ namespace UPBank.Person.Test
         public void UpdatePerson_ReturnSucess()
         {
 
-            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((person, ""));
-            _personRepository.Setup(m => m.PatchPerson(It.IsAny<string>(), It.IsAny<Domain.Entities.Person>())).ReturnsAsync((person, null));
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((PersonMock.Person, ""));
+            _personRepository.Setup(m => m.PatchPerson(It.IsAny<string>(), It.IsAny<Domain.Entities.Person>())).ReturnsAsync((PersonMock.Person, null));
 
-            var result = _personController.UpdatePerson("12345678901", personPatchDTO);
+            var result = _personController.UpdatePerson("12345678901", PersonMock.PersonPatchDTO);
+            
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
@@ -76,10 +68,11 @@ namespace UPBank.Person.Test
         [Fact]
         public void UpdatePerson_ReturnBadRequest()
         {
-            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((person, ""));
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((PersonMock.PersonUpdate, null));
             _personRepository.Setup(m => m.PatchPerson(It.IsAny<string>(), It.IsAny<Domain.Entities.Person>())).ReturnsAsync((null, "erro"));
 
-            var result = _personController.UpdatePerson("12345678901", personPatchDTO);
+            var result = _personController.UpdatePerson("96649661007", PersonMock.PersonPatchDTO);
+            
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
@@ -89,6 +82,7 @@ namespace UPBank.Person.Test
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
 
             var result = _personController.GetPerson("12345678901");
+            
             Assert.IsType<NotFoundObjectResult>(result.Result);
             Assert.Equal("Pessoa não encontrada", ((NotFoundObjectResult)result.Result).Value);
         }
@@ -96,55 +90,76 @@ namespace UPBank.Person.Test
         [Fact]
         public void CreatePerson_ReturnBadRequest()
         {
-            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, "error"));
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync(AddressMock.AddressOutputModel);
 
-            var result = _personController.CreatePerson(person);
+            var result = _personController.CreatePerson(PersonMock.PersonInputModel);
+
             Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Erro ao criar pessoa", ((BadRequestObjectResult)result.Result).Value);
         }
 
         [Fact]
         public void CreatePersonWithInvalidDocument_ReturnBadRequest()
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
-            var invalidPerson = new Domain.Entities.Person
-            {
-                CPF = "1234567890",
-            };
-            // (invalidPerson));
-            var result = _personController.CreatePerson(invalidPerson);
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+
+            var result = _personController.CreatePerson(PersonMock.InvalidPersonCPF);
 
             Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("CPF inválido", ((BadRequestObjectResult)result.Result).Value);
         }
 
         [Fact]
-        public void CreatePersonWithExistingDocument_ReturnBadRequest()
+        public void CreatePersonWithInvalidName_ReturnBadRequest()
         {
-            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((person, ""));
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
 
-            var result = _personController.CreatePerson(person);
-            Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal("CPF já cadastrado", ((OkObjectResult)result.Result).Value);
+            var result = _personController.CreatePerson(PersonMock.InvalidPersonName);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Nome inválido", ((BadRequestObjectResult)result.Result).Value);
         }
 
         [Fact]
-
-        public void CreatePersonWithInvalidName_ReturnBadRequest()
+        public void CreatePersonWithInvalidEmail_ReturnBadRequest()
         {
-            var invalidPerson = new Domain.Entities.Person
-            {
-                CPF = "53378006048",
-                Name = ""
-            };
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
 
-            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((person, ""));
-
-            var result = _personController.CreatePerson(person);
-            Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal("Nome inválido", ((OkObjectResult)result.Result).Value);
+            var result = _personController.CreatePerson(PersonMock.InvalidPersonEmail);
+            
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Email inválido", ((BadRequestObjectResult)result.Result).Value);
         }
 
+        [Fact]
+        public void CreatePersonWithInvalidPhone_ReturnBadRequest()
+        {
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+
+            var result = _personController.CreatePerson(PersonMock.InvalidPersonPhone);
+            
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Telefone inválido", ((BadRequestObjectResult)result.Result).Value);
+
+        }
+
+        [Fact]
+        public void CreatePersonWithInvalidSalary_ReturnBadRequest()
+        {
+
+            _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            
+            var result = _personController.CreatePerson(PersonMock.InvalidPersonSalary);
+            
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Salário inválido", ((BadRequestObjectResult)result.Result).Value);
+        }
         #endregion
     }
 }

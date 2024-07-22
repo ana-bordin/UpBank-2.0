@@ -13,7 +13,7 @@ namespace UPBank.Person.Infra.Repositories
             _context = context;
         }
 
-        public async Task<(bool okResult, string message)> CreatePerson(Domain.Entities.Person person)
+        public async Task<(Domain.Entities.Person okResult, string message)> CreatePerson(Domain.Entities.Person person)
         {
             try
             {
@@ -22,14 +22,18 @@ namespace UPBank.Person.Infra.Repositories
                     var rows = await db.ExecuteAsync("INSERT INTO dbo.Person (Name, BirthDate, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @BirthDate, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, BirthDate = person.BirthDate, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
 
                     if (rows > 0)
-                        return (true, null);
+                    {
+                        var getPerson = GetPersonByCpf(person.CPF);
+                        return (getPerson.Result.person, null);
+                    }
+                       
                     else
-                        return (false, "Erro ao cadastrar pessoa, tente mais tarde");
+                        return (null, "Erro ao cadastrar pessoa, tente mais tarde");
                 }
             }
             catch (Exception e)
             {
-                return (false, "Houve um erro:" + e.Message);
+                return (null, "Houve um erro:" + e.Message);
             }
         }
 
