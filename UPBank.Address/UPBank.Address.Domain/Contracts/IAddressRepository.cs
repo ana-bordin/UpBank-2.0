@@ -4,11 +4,11 @@ namespace UPBank.Address.Infra.Repositories
 {
     public interface IAddressRepository
     {
-        Task<bool> CreateAddress(Domain.Entities.Address address);
-        Task<Guid> CreateCompleteAddress(CompleteAddress completeAddress);
-        Task<CompleteAddress> GetCompleteAddressById(Guid id);
-        Task<Domain.Entities.Address> GetAddressByZipCode(string zipCode);
-        Task<CompleteAddress> UpdateAddress(Guid id, CompleteAddress addressDTO);
-        Task<bool> DeleteAddressById(Guid id);
+        Task<(Domain.Entities.Address address, string message)> CreateAddress(Domain.Entities.Address address);
+        Task<(bool ok, string message)> CreateCompleteAddress(CompleteAddress completeAddress);
+        Task<(CompleteAddress completeAddress, string message)> GetCompleteAddressById(Guid id);
+        Task<(Domain.Entities.Address address, string message)> GetAddressByZipCode(string zipCode);
+        Task<(CompleteAddress completeAddress, string message)> UpdateAddress(Guid id, CompleteAddress completeAddress);
+        Task<(bool ok, string message)> DeleteAddressById(Guid id);
     }
 }

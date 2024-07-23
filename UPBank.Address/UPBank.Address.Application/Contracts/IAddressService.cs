@@ -5,11 +5,12 @@ namespace UPBank.Address.Application.Contracts
 {
     public interface IAddressService
     {
-        Task<bool> CreateAddress(Domain.Entities.Address address);
-        Task<Guid> CreateCompleteAddress(AddressInputModel addressInputModel);
-        Task<CompleteAddress> GetCompleteAddressById(Guid id);
-        Task<Domain.Entities.Address> GetAddressByZipCode(string zipCode);
-        Task<CompleteAddress> UpdateAddress(Guid id, AddressInputModel addressInputModel);
-        Task<bool> DeleteAddressById(Guid id);
+        Task<(bool ok, string message)> CreateAddress(string zipCode);
+        Task<(Guid guid, string message)> CreateCompleteAddress(AddressInputModel addressInputModel);
+        Task<(AddressOutputModel addressOutputModel, string message)> GetCompleteAddressById(Guid id);
+        Task<(Domain.Entities.Address address, string message)> GetAddressByZipCode(string zipCode);
+        Task<(AddressOutputModel addressOutputModel, string message)> UpdateAddress(Guid id, AddressInputModel addressInputModel);
+        Task<(bool ok, string message)> DeleteAddressById(Guid id);
+        Task<AddressOutputModel> CreateAddressOutputModel(CompleteAddress completeAddress, Domain.Entities.Address address);
     }
 }

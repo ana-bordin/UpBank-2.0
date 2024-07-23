@@ -7,84 +7,68 @@ namespace UPBank.Address.API.Controllers
     public class AddressController : Controller
     {
         private readonly IAddressService _addressService;
-        private readonly IViaCepService _viaCep;
 
-        public AddressController(IAddressService addressService, IViaCepService viaCep)
+        public AddressController(IAddressService addressService)
         {
             _addressService = addressService;
-            _viaCep = viaCep;
         }
 
         [HttpGet("api/addresses/{id}")]
         public async Task<IActionResult> GetAddressById(Guid id)
         {
-            var completeAddress = await _addressService.GetCompleteAddressById(id);
-            var address = await _addressService.GetAddressByZipCode(completeAddress.ZipCode);
-            if (address == null)
-                return NotFound();
-            var addressOutputModel = new AddressOutputModel(completeAddress.Id, completeAddress.ZipCode, completeAddress.Complement, completeAddress.Number, address.Street, address.Neighborhood, address.City, address.State);
+            var addressOutputModel = await _addressService.GetCompleteAddressById(id);
 
-            return Ok(addressOutputModel);
+            if (addressOutputModel.addressOutputModel == null && addressOutputModel.message == null)
+                return NotFound();
+            else if (addressOutputModel.message != null)
+                return BadRequest(addressOutputModel.message);
+
+            return Ok(addressOutputModel.addressOutputModel);
         }
 
         [HttpPost("api/addresses")]
         public async Task<IActionResult> CreateAddress([FromBody] AddressInputModel addressInputModel)
         {
-            var getIfExists = await _addressService.GetAddressByZipCode(addressInputModel.ZipCode);
-            Domain.Entities.Address getAddressInViaCep;
+            var address = await _addressService.CreateAddress(addressInputModel.ZipCode);
 
-            if (getIfExists == null)
-            {
-                getAddressInViaCep = await _viaCep.GetAddressInAPI(addressInputModel.ZipCode);
+            if (!address.ok)
+                return BadRequest(address.message);
 
-                if (getAddressInViaCep == null)
-                    return NotFound();
+            var completeAddress = await _addressService.CreateCompleteAddress(addressInputModel);
 
-                await _addressService.CreateAddress(getAddressInViaCep);
-            }
-            else
-                getAddressInViaCep = getIfExists;
+            if (completeAddress.guid == Guid.Empty)
+                return BadRequest(completeAddress.message);
 
-            var completeAddressId = await _addressService.CreateCompleteAddress(addressInputModel);
+            var addressOutputModel = await _addressService.GetCompleteAddressById(completeAddress.guid);
 
-            if (completeAddressId == Guid.Empty)
-                return BadRequest("Não foi possivel criar o endereço");
-
-            var addressOutputModel = new AddressOutputModel(completeAddressId, addressInputModel.ZipCode, addressInputModel.Complement, addressInputModel.Number, getAddressInViaCep.Street, getAddressInViaCep.Neighborhood, getAddressInViaCep.City, getAddressInViaCep.State);
-   
-            return Ok(addressOutputModel);
-        }
-       
-        [HttpPatch("api/addresses/{id}")]
-        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressInputModel addressInputModel)
-        {
-            var getAddress = await _addressService.GetAddressByZipCode(addressInputModel.ZipCode);
-            if (getAddress == null)
-            {
-                getAddress = await _viaCep.GetAddressInAPI(addressInputModel.ZipCode);
-                if (getAddress == null)
-                    return NotFound();
-                else
-                    await _addressService.CreateAddress(getAddress);
-            }
-           
-            var completeAddress = await _addressService.UpdateAddress(id, addressInputModel);
-
-            AddressOutputModel addressOutputModel = new AddressOutputModel(completeAddress.Id, addressInputModel.ZipCode, addressInputModel.Complement, addressInputModel.Number, getAddress.Street, getAddress.Neighborhood, getAddress.City, getAddress.State);
-
-            return Ok(addressOutputModel);
+            return Ok(addressOutputModel.addressOutputModel);
         }
 
         [HttpDelete("api/addresses/{id}")]
         public async Task<IActionResult> DeleteAddress(Guid id)
         {
-            var address = await _addressService.GetCompleteAddressById(id);
-            
-            if (address == null)
-                return NotFound();
-            
-            await _addressService.DeleteAddressById(id);
+            var address = await _addressService.DeleteAddressById(id);
+
+            if (!address.ok)
+            {
+                if (address.message == "Endereço não encontrado")
+                    return NotFound(address.message);
+
+                return BadRequest(address.message);
+            }
             return Ok();
         }
+
+        [HttpPatch("api/addresses/{id}")]
+        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressInputModel addressInputModel)
+        {
+            var address = await _addressService.UpdateAddress(id, addressInputModel);
+
+            if (address.addressOutputModel == null)
+                return BadRequest(address.message);
+
+            return Ok(address.addressOutputModel);
+        }
+
     }
 }
