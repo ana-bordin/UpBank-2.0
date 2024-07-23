@@ -63,6 +63,7 @@ namespace UPBank.Person.Application.Services
         public async Task<(Domain.Entities.Person person, string message)> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
         {
             var personResult = await _personRepository.GetPersonByCpf(cpf);
+
             if (personPatchDTO.Name != personResult.person.Name && personPatchDTO.Name != "")
                 personResult.person.Name = personPatchDTO.Name;
 
@@ -77,6 +78,9 @@ namespace UPBank.Person.Application.Services
 
             if (personPatchDTO.Phone != personResult.person.Phone && personPatchDTO.Phone != "")
                 personResult.person.Phone = personPatchDTO.Phone;
+
+            if (personPatchDTO.Address.Number != "" || personPatchDTO.Address.Complement != "" || personPatchDTO.Address.ZipCode != "")
+                    await _addressService.UpdateAddress(personResult.person.AddressId, personPatchDTO.Address);
 
             return await _personRepository.PatchPerson(cpf, personResult.person);
         }

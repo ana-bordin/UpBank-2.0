@@ -20,7 +20,7 @@ namespace UPBank.Person.API.Controllers
             var personResult = await _personService.CreatePerson(person);
 
             if (personResult.okResult != null)
-                return Ok(personResult);
+                return Ok(personResult.okResult);
             else
                 return BadRequest(personResult.message);
         }

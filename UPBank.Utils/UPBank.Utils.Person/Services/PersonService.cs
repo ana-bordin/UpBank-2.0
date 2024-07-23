@@ -17,7 +17,11 @@ namespace UPBank.Utils.Person.Services
             if (response.IsSuccessStatusCode)
                 return (true, null);
             else
-                return (false, "houve um erro ao criar a pessoa:");
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return (false, "houve um erro ao criar a pessoa: " + errorMessage);
+            }
+
         }
 
         public async Task<bool> CheckIfExist(string cpf)
@@ -40,7 +44,10 @@ namespace UPBank.Utils.Person.Services
                 return (JsonConvert.DeserializeObject<PersonOutputModel>(result), null);
             }
             else
-                return (null, "Houve um erro ao buscar pessoa:");
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return (null, "Houve um erro ao buscar pessoa: " + errorMessage);
+            }
         }
 
         public async Task<(PersonOutputModel person, string message)> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
@@ -55,24 +62,10 @@ namespace UPBank.Utils.Person.Services
                 return (JsonConvert.DeserializeObject<PersonOutputModel>(result), null);
             }
             else
-                return (null, "Houve um erro ao atualizar pessoa:");
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return (null, "Houve um erro ao atualizar pessoa: " + errorMessage);
+            }
         }
-
-        //public Task<PersonInputModel> CreatePersonInputModel<T>(T inputModel) where T : class
-        //{
-        //    if (/*typeof(T) == typeof(CustomerInputModel) || */typeof(T) == typeof(EmployeeInputModel))
-        //    {
-        //        var personInputModel = new PersonInputModel
-        //    {
-        //        CPF = T.CPF,
-        //        Name = employeeInputModel.Name,
-        //        BirthDate = employeeInputModel.BirthDate,
-        //        Gender = employeeInputModel.Gender,
-        //        Salary = employeeInputModel.Salary,
-        //        Email = employeeInputModel.Email,
-        //        Phone = employeeInputModel.Phone,
-        //        Address = employeeInputModel.Address
-        //    };
-        //}
     }
 }
