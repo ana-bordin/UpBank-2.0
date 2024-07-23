@@ -1,6 +1,8 @@
-﻿namespace UPBank.Customer.Application.Models
+﻿using UPBank.Address.Application.Models;
+
+namespace UPBank.Person.Application.Models
 {
-    public class CustomerInputModel
+    public class PersonInputModel
     {
         public string CPF { get; set; }
         public string Name { get; set; }

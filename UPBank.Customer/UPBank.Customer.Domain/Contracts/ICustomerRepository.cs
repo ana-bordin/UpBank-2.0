@@ -2,14 +2,14 @@
 {
     public interface ICustomerRepository
     {
-        Task<Entities.Customer> CreateCustomer(string cpf);
-        Task<Entities.Customer> GetCustomerByCpf(string cpf);
-        Task<bool> DeleteCustomerByCpf(string cpf);
+        Task<(Entities.Customer customer, string message)> CreateCustomer(string cpf);
+        Task<(Entities.Customer customer, string message)> GetCustomerByCpf(string cpf);
+        Task<(bool ok, string message)> DeleteCustomerByCpf(string cpf);
         Task<IEnumerable<Entities.Customer>> GetAllCustomers();
         Task<Entities.Customer> CustomerRestriction(string cpf);
         Task<IEnumerable<Entities.Customer>> GetCustomersWithRestriction();
 
 
-        Task<bool> AccountOpening(List<string> cpfs);
+        Task<(bool ok, string message)> AccountOpening(List<string> cpfs);
     }
 }

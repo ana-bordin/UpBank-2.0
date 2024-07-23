@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UPBank.Customer.Application.Contracts;
-using UPBank.Customer.Application.Models;
+using UPBank.Person.Application.Models;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Person.Contracts;
 using UPBank.Utils.Person.Models.DTOs;
@@ -22,30 +22,19 @@ namespace UPBank.Customer.API.Controllers
         }
 
         [HttpPost("api/customers")]
-        public async Task<IActionResult> CreateCustomer([FromBody] CustomerInputModel customerInputModel)
+        public async Task<IActionResult> CreateCustomer([FromBody] PersonInputModel personInputModel)
         {
-            var add = await _addressService.CreateAddress(customerInputModel.Address);
+            var person = await _personService.CreatePerson(personInputModel);
 
-            var person = new Person.Domain.Entities.Person
-            {
-                CPF = customerInputModel.CPF,
-                Name = customerInputModel.Name,
-                BirthDate = customerInputModel.BirthDate,
-                Gender = customerInputModel.Gender,
-                Salary = customerInputModel.Salary,
-                Email = customerInputModel.Email,
-                Phone = customerInputModel.Phone,
-                AddressId = add.Id
-            };
+            if (!person.ok)
+                return BadRequest(person.message);
 
-            await _personService.CreatePerson(person);
+            var customer = await _customerService.CreateCustomer(personInputModel.CPF);
 
-            var customerResult = await _customerService.CreateCustomer(customerInputModel.CPF);
+            if (customer.customerOutputModel == null)
+                return BadRequest(customer.message);
 
-            if (customerResult == null)
-                return BadRequest();
-
-            return Ok(customerResult);
+            return Ok(customer.customerOutputModel);
         }
 
         [HttpGet("api/customers/{cpf}")]
@@ -53,11 +42,19 @@ namespace UPBank.Customer.API.Controllers
         {
             var customer = await _customerService.GetCustomerByCpf(cpf);
 
-            if (customer == null)
+            if (customer.customerOutputModel == null)
                 return NotFound();
 
             return Ok(customer);
         }
+
+
+
+
+
+
+
+
 
         [HttpPatch("api/customers/{cpf}")]
         public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
@@ -71,9 +68,7 @@ namespace UPBank.Customer.API.Controllers
 
             var person = await _personService.PatchPerson(cpf, personPatchDTO);
 
-            await _addressService.UpdateAddress(person.AddressId, personPatchDTO.Address);
-
-            if (person == null)
+            if (person.person == null)
                 return BadRequest();
 
             var customer = await _customerService.GetCustomerByCpf(cpf);
@@ -98,8 +93,8 @@ namespace UPBank.Customer.API.Controllers
             return Ok(customers);
         }
 
-        [HttpPatch("api/customers/restriction/{cpf}")]
-        public async Task<IActionResult> CustomersRestriction(string cpf)
+        [HttpPatch("api/customers/patchRestriction/{cpf}")]
+        public async Task<IActionResult> CustomerPatchRestriction(string cpf)
         {
             var customer = await _customerService.CustomerRestriction(cpf);
             if (customer == null)

@@ -4,6 +4,7 @@ using UPBank.Customer.Application.Models;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Customer.Application.RabbitMQ;
 using UPBank.Utils.Person.Contracts;
+using UPBank.Customer.Domain.Entities;
 
 namespace UPBank.Customer.Application.Services
 {
@@ -22,14 +23,33 @@ namespace UPBank.Customer.Application.Services
             _personService = personService;
         }
 
-        public async Task<CustomerOutputModel> CreateCustomer(string cpf)
+        public async Task<(CustomerOutputModel customerOutputModel, string message)> CreateCustomer(string cpf)
         {
             var customer = await _customerRepository.CreateCustomer(cpf);
-            if (customer != null)
-                _rabbitMQPublisher.Publish(customer);
-            return await CreateCustomerOutputModel(customer);
 
+            if (customer.customer != null)
+                return (await CreateCustomerOutputModel(customer.customer), null);
+            else
+                return (null, customer.message);
         }
+
+        public async Task<(CustomerOutputModel customerOutputModel, string message)> GetCustomerByCpf(string cpf)
+        {
+            var customer = await _customerRepository.GetCustomerByCpf(cpf);
+            
+            if (customer.customer != null)
+                return (await CreateCustomerOutputModel(customer.customer), null);
+            else
+                return (null, customer.message);
+        }
+
+
+
+
+
+
+
+
 
         public async Task<string> CheckIfExists(string cpf)
         {
@@ -41,11 +61,7 @@ namespace UPBank.Customer.Application.Services
             return "ok";
         }
 
-        public async Task<CustomerOutputModel> GetCustomerByCpf(string cpf)
-        {
-            var customer = await _customerRepository.GetCustomerByCpf(cpf);
-            return await CreateCustomerOutputModel(customer);
-        }
+
 
         public async Task<bool> DeleteCustomerByCpf(string cpf)
         {
@@ -98,10 +114,10 @@ namespace UPBank.Customer.Application.Services
         {
             var allCustomers = await _customerRepository.GetCustomersWithRestriction();
             var customersOutputList = new List<CustomerOutputModel>();
-            
+
             foreach (var customer in allCustomers)
                 customersOutputList.Add(await CreateCustomerOutputModel(customer));
-            
+
             return customersOutputList;
         }
 
@@ -111,7 +127,9 @@ namespace UPBank.Customer.Application.Services
 
         public Task<bool> AccountOpening(List<string> cpfs)
         {
+            //_rabbitMQPublisher.Publish(GetCustomerByCpf(cpfs[1]);
             return _customerRepository.AccountOpening(cpfs);
+
 
         }
     }

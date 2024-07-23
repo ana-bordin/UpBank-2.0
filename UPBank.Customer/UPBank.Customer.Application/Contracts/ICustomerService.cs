@@ -4,10 +4,10 @@ namespace UPBank.Customer.Application.Contracts
 {
     public interface ICustomerService
     {
-        Task<CustomerOutputModel> CreateCustomer(string cpf);
+        Task<(CustomerOutputModel customerOutputModel, string message)> CreateCustomer(string cpf);
         Task<IEnumerable<CustomerOutputModel>> GetAllCustomers();
-        Task<CustomerOutputModel> GetCustomerByCpf(string cpf);
-        Task<bool> DeleteCustomerByCpf(string cpf);
+        Task<(CustomerOutputModel customerOutputModel, string message)> GetCustomerByCpf(string cpf);
+        Task<(bool ok, string message)> DeleteCustomerByCpf(string cpf);
         Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer);
         Task<string> CheckIfExists(string cpf);
         Task<CustomerOutputModel> CustomerRestriction(string cpf);

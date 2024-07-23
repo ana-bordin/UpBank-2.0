@@ -1,7 +1,5 @@
 ﻿using Dapper;
-using System.Collections.Generic;
 using UPBank.Customer.Domain.Contracts;
-using UPBank.Customer.Domain.Entities;
 using UPBank.Customer.Infra.Context;
 
 namespace UPBank.Customer.Infra.Repostories
@@ -15,7 +13,7 @@ namespace UPBank.Customer.Infra.Repostories
             _context = context;
         }
 
-        public async Task<Domain.Entities.Customer> CreateCustomer(string cpf)
+        public async Task<(Domain.Entities.Customer customer, string message)> CreateCustomer(string cpf)
         {
             try
             {
@@ -25,30 +23,37 @@ namespace UPBank.Customer.Infra.Repostories
                     if (rows > 0)
                         return await GetCustomerByCpf(cpf);
                     else
-                        return null;
+                        return (null, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "Houve um erro ao criar o cliente: " + e.Message);
             }
         }
 
-        public async Task<Domain.Entities.Customer> GetCustomerByCpf(string cpf)
+        public async Task<(Domain.Entities.Customer customer, string message)> GetCustomerByCpf(string cpf)
         {
             try
             {
                 using (var db = _context.ConnectionCustomer)
                 {
                     var customer = await db.QueryFirstOrDefaultAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
-                    return customer;
+                    return (customer, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "Houve um erro ao buscar o cliente: " + e.Message);
             }
         }
+
+
+
+
+
+
+
 
         public async Task<bool> DeleteCustomerByCpf(string cpf)
         {
