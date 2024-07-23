@@ -5,6 +5,8 @@ using UPBank.Utils.Address.Contracts;
 using UPBank.Customer.Application.RabbitMQ;
 using UPBank.Utils.Person.Contracts;
 using UPBank.Customer.Domain.Entities;
+using System.Runtime.CompilerServices;
+using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Customer.Application.Services
 {
@@ -36,101 +38,110 @@ namespace UPBank.Customer.Application.Services
         public async Task<(CustomerOutputModel customerOutputModel, string message)> GetCustomerByCpf(string cpf)
         {
             var customer = await _customerRepository.GetCustomerByCpf(cpf);
-            
+
             if (customer.customer != null)
                 return (await CreateCustomerOutputModel(customer.customer), null);
             else
                 return (null, customer.message);
         }
 
-
-
-
-
-
-
-
-
-        public async Task<string> CheckIfExists(string cpf)
-        {
-            var customer = await _customerRepository.GetCustomerByCpf(cpf);
-            if (customer == null)
-                return "cliente não existe!";
-            if (customer.Restriction)
-                return "cliente com restrição!";
-            return "ok";
-        }
-
-
-
-        public async Task<bool> DeleteCustomerByCpf(string cpf)
+        public async Task<(bool ok, string message)> DeleteCustomerByCpf(string cpf)
         {
             return await _customerRepository.DeleteCustomerByCpf(cpf);
         }
 
-        public async Task<IEnumerable<CustomerOutputModel>> GetAllCustomers()
+        public async Task<(IEnumerable<CustomerOutputModel> customers, string message)> GetAllCustomers()
         {
             var customersList = await _customerRepository.GetAllCustomers();
             var customersOutputList = new List<CustomerOutputModel>();
-            foreach (var customer in customersList)
+            foreach (var customer in customersList.customers)
                 customersOutputList.Add(CreateCustomerOutputModel(customer).Result);
 
-            return customersOutputList;
+            return (customersOutputList, null);
         }
 
+        public async Task<(CustomerOutputModel customerOutputodel, string message)> CustomerPatchRestriction(string cpf)
+        {
+            var customer = await _customerRepository.CustomerPatchRestriction(cpf);
+
+            if (customer.customer == null)
+                return (null, customer.message);
+            else
+                return (await CreateCustomerOutputModel(customer.customer), null);
+        }
+
+        public async Task<(IEnumerable<CustomerOutputModel> customers, string message)> GetAllCustomersWithRestriction()
+        {
+            var allCustomers = await _customerRepository.GetAllCustomersWithRestriction();
+
+            if (allCustomers.customers == null)
+                return (null, allCustomers.message);
+
+            var customersOutputList = new List<CustomerOutputModel>();
+            foreach (var customer in allCustomers.customers)
+                customersOutputList.Add(await CreateCustomerOutputModel(customer));
+
+            return (customersOutputList, null);
+
+        }
+
+        public async Task<(bool ok, string message)> AccountOpening(List<string> cpfs)
+        {
+            int majority = 0;
+            foreach (var cpf in cpfs)
+            {
+                var customer = await _customerRepository.GetCustomerByCpf(cpf);
+                if (customer.customer == null)
+                    return (false, "cliente não existe!");
+                if (customer.customer.Restriction)
+                    return (false, "cliente com restrição!");
+                if (customer.customer.BirthDate < DateTime.Now.AddYears(-18))
+                    majority++;
+
+            }
+            if (majority == 0)
+                return (false, "nenhum cliente é maior de idade para abrir a conta!");
+            //_rabbitMQPublisher.Publish(GetCustomerByCpf(cpfs[1]);
+
+            return await _customerRepository.AccountOpening(cpfs);
+        }
+
+        public async Task<(CustomerOutputModel customerOutputModel, string message)> UpdateCustomer(string cpf, PersonPatchDTO personPatchDTO)
+        {
+            var customer = await _customerRepository.GetCustomerByCpf(cpf);
+            if (customer.customer == null)
+                return (null, "cliente não existe!");
+            if (customer.customer.Restriction)
+                return (null, "cliente com restrição!");
+            
+            var personResult = await _personService.PatchPerson(cpf, personPatchDTO);
+            if (personResult.person == null)
+                return (null, personResult.message);          
+            
+            return (await CreateCustomerOutputModel(customer.customer), null);
+        }
+      
         public async Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer)
         {
             if (customer != null)
             {
                 var person = await _personService.GetPersonByCpf(customer.CPF);
-                var address = await _addressService.GetCompleteAddressById(person.AddressId);
+                
                 return new CustomerOutputModel
                 {
-                    CPF = person.CPF,
-                    Name = person.Name,
-                    BirthDate = person.BirthDate,
-                    Address = address,
-                    Gender = person.Gender,
-                    Salary = person.Salary,
-                    Email = person.Email,
-                    Phone = person.Phone,
+                    CPF = person.person.CPF,
+                    Name = person.person.Name,
+                    BirthDate = person.person.BirthDate,
+                    Address = person.person.Address,
+                    Gender = person.person.Gender,
+                    Salary = person.person.Salary,
+                    Email = person.person.Email,
+                    Phone = person.person.Phone,
                     Restriction = customer.Restriction
                 };
             }
 
             return null;
-        }
-
-        public async Task<CustomerOutputModel> CustomerRestriction(string cpf)
-        {
-            var customer = await _customerRepository.CustomerRestriction(cpf);
-            if (customer == null)
-                return null;
-            else
-                return await CreateCustomerOutputModel(customer);
-        }
-
-        public async Task<IEnumerable<CustomerOutputModel>> GetCustomersWithRestriction()
-        {
-            var allCustomers = await _customerRepository.GetCustomersWithRestriction();
-            var customersOutputList = new List<CustomerOutputModel>();
-
-            foreach (var customer in allCustomers)
-                customersOutputList.Add(await CreateCustomerOutputModel(customer));
-
-            return customersOutputList;
-        }
-
-
-
-
-
-        public Task<bool> AccountOpening(List<string> cpfs)
-        {
-            //_rabbitMQPublisher.Publish(GetCustomerByCpf(cpfs[1]);
-            return _customerRepository.AccountOpening(cpfs);
-
-
         }
     }
 }

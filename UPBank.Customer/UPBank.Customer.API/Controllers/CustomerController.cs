@@ -48,40 +48,12 @@ namespace UPBank.Customer.API.Controllers
             return Ok(customer);
         }
 
-
-
-
-
-
-
-
-
-        [HttpPatch("api/customers/{cpf}")]
-        public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
-        {
-            var ok = await _customerService.CheckIfExists(cpf);
-
-            if (ok == "cliente não existe!")
-                return NotFound(ok);
-            if (ok == "cliente com restrição!")
-                return Forbid(ok);
-
-            var person = await _personService.PatchPerson(cpf, personPatchDTO);
-
-            if (person.person == null)
-                return BadRequest();
-
-            var customer = await _customerService.GetCustomerByCpf(cpf);
-
-            return Ok(customer);
-        }
-
         [HttpDelete("api/customers/{cpf}")]
         public async Task<IActionResult> DeleteCustomer(string cpf)
         {
             var ok = await _customerService.DeleteCustomerByCpf(cpf);
-            if (!ok)
-                return BadRequest();
+            if (!ok.ok)
+                return BadRequest(ok.message);
 
             return Ok();
         }
@@ -90,51 +62,65 @@ namespace UPBank.Customer.API.Controllers
         public async Task<IActionResult> GetAllCustomers()
         {
             var customers = await _customerService.GetAllCustomers();
-            return Ok(customers);
+
+            if (customers.message != null)
+                return BadRequest(customers.message);
+            else if (customers.customers == null)
+                return NoContent();
+            else
+                return Ok(customers);
         }
 
         [HttpPatch("api/customers/patchRestriction/{cpf}")]
         public async Task<IActionResult> CustomerPatchRestriction(string cpf)
         {
-            var customer = await _customerService.CustomerRestriction(cpf);
-            if (customer == null)
-                return NotFound();
+            var customer = await _customerService.CustomerPatchRestriction(cpf);
+
+            if (customer.customerOutputodel == null)
+                return BadRequest(customer.message);
 
             return Ok(customer);
         }
 
         [HttpGet("api/customers/restriction")]
-        public async Task<IActionResult> GetCustomerWithRestriction()
+        public async Task<IActionResult> GetAllCustomerWithRestriction()
         {
-            var customers = await _customerService.GetCustomersWithRestriction();
-            if (customers == null)
-                return NotFound();
+            var customers = await _customerService.GetAllCustomersWithRestriction();
+
+            if (customers.customers == null)
+                return BadRequest(customers.message);
 
             return Ok(customers);
         }
 
-
-
-
-
         [HttpPost("api/customers/accountOpening")]
         public async Task<IActionResult> AccountOpening(List<string> cpfs)
         {
-            foreach (var cpf in cpfs)
-            {
-                var customer = await _customerService.GetCustomerByCpf(cpf);
-                if (customer == null)
-                    return NotFound();
-            }
-
             var account = await _customerService.AccountOpening(cpfs);
 
-            if (account == null)
-                return BadRequest();
+            if (account.ok == null)
+            {
+                if (account.message == "cliente com restrição!")
+                    return Forbid(account.message);
+                else
+                    return BadRequest(account.message);
+            }
 
-            return Ok();
+            return Ok("Conta solicitada com sucesso! Aguarde para ter mais informações");
         }
 
+        [HttpPatch("api/customers/{cpf}")]
+        public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        {
+            var customer = await _customerService.UpdateCustomer(cpf, personPatchDTO);
 
+            if (customer.message == "cliente com restrição!")
+                return Forbid(customer.message);
+
+            if (customer.message != null)
+                return BadRequest(customer.message);
+
+            return Ok(customer);
+        }
     }
 }

@@ -48,47 +48,40 @@ namespace UPBank.Customer.Infra.Repostories
             }
         }
 
-
-
-
-
-
-
-
-        public async Task<bool> DeleteCustomerByCpf(string cpf)
+        public async Task<(bool ok, string message)> DeleteCustomerByCpf(string cpf)
         {
             try
             {
                 using (var db = _context.ConnectionCustomer)
                 {
-                    var rows = db.Execute("UPDATE dbo.Customer SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
-                    return true;
+                    var rows = db.ExecuteAsync("UPDATE dbo.Customer SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
+                    return (true, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return (false, "Houve um erro ao deletar o cliente: " + e.Message);
             }
         }
 
-        public async Task<IEnumerable<Domain.Entities.Customer>> GetAllCustomers()
+        public async Task<(IEnumerable<Domain.Entities.Customer> customers, string message)> GetAllCustomers()
         {
             try
             {
                 using (var db = _context.ConnectionCustomer)
                 {
                     var customers = await db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Active = 0");
-                    return customers;
+                    return (customers, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "Houve um erro ao buscar os clientes: " + e.Message);
             }
 
         }
 
-        public async Task<Domain.Entities.Customer> CustomerRestriction(string cpf)
+        public async Task<(Domain.Entities.Customer customer, string message)> CustomerPatchRestriction(string cpf)
         {
             try
             {
@@ -96,38 +89,40 @@ namespace UPBank.Customer.Infra.Repostories
                 {
                     var restriction = db.QueryFirstOrDefault<int>("SELECT Restriction FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
                     var customer = new Domain.Entities.Customer();
+
                     if (restriction == 1)
                         customer = db.QueryFirstOrDefault<Domain.Entities.Customer>("UPDATE dbo.Customer SET Restriction = 0 WHERE CPF = @CPF; SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
+
                     else
                         customer = db.QueryFirstOrDefault<Domain.Entities.Customer>("UPDATE dbo.Customer SET Restriction = 1 WHERE CPF = @CPF; SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
 
-                    return customer;
+                    return (customer, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "Houve um erro ao modificar a restrição do cliente: " + e.Message);
             }
         }
 
-        public async Task<IEnumerable<Domain.Entities.Customer>> GetCustomersWithRestriction()
+        public async Task<(IEnumerable<Domain.Entities.Customer> customers, string message)> GetAllCustomersWithRestriction()
         {
             try
             {
                 using (var db = _context.ConnectionCustomer)
                 {
                     var customers = db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Restriction = 1");
-                    return await customers;
+                    return (await customers, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return (null, "Houve um erro ao buscar os clientes com restrição: " + e.Message);
             }
 
         }
 
-        public async Task<bool> AccountOpening(List<string> cpfs)
+        public async Task<(bool ok, string message)> AccountOpening(List<string> cpfs)
         {
             try
             {
@@ -136,14 +131,14 @@ namespace UPBank.Customer.Infra.Repostories
                     var rows = await db.ExecuteAsync("INSERT INTO dbo.CustomerRequest (First, Second) VALUES (@First, @Second)", new { First = cpfs[0], Second = cpfs[1] });
 
                     if (rows > 0)
-                        return true;
+                        return (true, null);
                     else
-                        return false;
+                        return (false, null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return (false, "Houve um erro ao abrir a conta: " + e.Message);
             }
 
         }
