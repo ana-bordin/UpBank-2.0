@@ -2,7 +2,7 @@
 {
     public interface IEmployeeRepository
     {
-        Task<(Entities.Employee employee, string message)> CreateEmployee(string cpf, bool manager);
+        Task<(Entities.Employee employee, string message)> CreateEmployee(Entities.Employee employee);
         Task<(Entities.Employee employee, string message)> GetEmployeeByCpf(string cpf);
         Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf);
         Task<(IEnumerable<Entities.Employee> employees, string message)> GetAllEmployees();

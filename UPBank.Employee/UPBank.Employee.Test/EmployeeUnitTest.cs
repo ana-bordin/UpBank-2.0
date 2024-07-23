@@ -27,7 +27,7 @@ namespace UPBank.Employee.Test
             _employeeRepository = new Mock<IEmployeeRepository>();
             _personService = new Mock<IPersonService>();
             _employeeService = new EmployeeService(_employeeRepository.Object, _personService.Object, null);
-            _employeeController = new EmployeeController(_employeeService, _personService.Object, _addressService.Object);
+            _employeeController = new EmployeeController(_employeeService);
         }
 
         #region Testes Positivos

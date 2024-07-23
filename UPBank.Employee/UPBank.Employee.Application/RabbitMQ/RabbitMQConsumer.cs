@@ -1,21 +1,19 @@
-﻿using Newtonsoft.Json;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using UPBank.Employee.Application.Contracts;
 
 namespace UPBank.Employee.Application.RabbitMQ
 {
     public class RabbitMQConsumer
     {
-        private readonly IEmployeeService _employeeService;
+        //private readonly IEmployeeService _employeeService;
         private readonly ConnectionFactory _factory;
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public RabbitMQConsumer(IEmployeeService employeeService)
+        public RabbitMQConsumer(/*IEmployeeService employeeService*/)
         {
-            _employeeService = employeeService;
+            //_employeeService = employeeService;
             _factory = new ConnectionFactory { HostName = "localhost" };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();

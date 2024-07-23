@@ -13,8 +13,9 @@ namespace UPBank.Employee.Application.Contracts
         Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO);
 
 
-        Task<bool> SetProfile(string cpf, bool manager);
-        Task<bool> ApproveAccountOpening(string cpf);
+        Task<bool> SetProfile(SetProfileDTO setProfileDTO);
+        Task<bool> ApproveAccountOpening(ApproveAccountOpeningDTO approveAccountOpeningDTO);
+        Task<bool> AccountOpeningRequests();
 
     }
 }

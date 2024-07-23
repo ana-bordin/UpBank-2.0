@@ -13,15 +13,15 @@ namespace UPBank.Employee.Infra.Repositories
             _context = context;
         }
 
-        public async Task<(Domain.Entities.Employee employee, string message)> CreateEmployee(string cpf, bool manager)
+        public async Task<(Domain.Entities.Employee employee, string message)> CreateEmployee(Domain.Entities.Employee employee)
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-                    var rows = await db.ExecuteAsync("INSERT INTO Employee (CPF, Manager) VALUES (@cpf, @manager)", new { CPF = cpf, Manager = manager });
+                    var rows = await db.ExecuteAsync("INSERT INTO Employee (CPF, Manager, RecordNumber) VALUES (@cpf, @manager, @recordNumber)", new { CPF = employee.CPF, Manager = employee.Manager, RecordNumber = employee.RecordNumber});
                     if (rows > 0)
-                        return await GetEmployeeByCpf(cpf);
+                        return await GetEmployeeByCpf(employee.CPF);
                     else
                         return (null, null);
                 }

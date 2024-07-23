@@ -6,7 +6,7 @@ namespace UPBank.Employee.Domain.Entities
     {
         public bool Manager { get; set; }
         public Guid RecordNumber { get; set; }
-
         public bool Active { get; set; }
+
     }
 }

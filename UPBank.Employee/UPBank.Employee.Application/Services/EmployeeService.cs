@@ -10,14 +10,12 @@ namespace UPBank.Employee.Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
-        //private readonly IAddressService _addressService;
         private readonly IPersonService _personService;
         private readonly RabbitMQConsumer _rabbitMQService;
 
-        public EmployeeService(IEmployeeRepository employeeRepository, /*IAddressService addressService,*/ IPersonService personService, RabbitMQConsumer rabbitMQConsumer)
+        public EmployeeService(IEmployeeRepository employeeRepository, IPersonService personService, RabbitMQConsumer rabbitMQConsumer)
         {
             _employeeRepository = employeeRepository;
-            //_addressService = addressService;
             _personService = personService;
             _rabbitMQService = rabbitMQConsumer;
         }
@@ -28,23 +26,18 @@ namespace UPBank.Employee.Application.Services
             if (getEmployee.employee != null)
                 return (null, "funcionário já existe!");
 
-            //var personInputModel = new PersonInputModel
-            //{
-            //    CPF = employeeInputModel.CPF,
-            //    Name = employeeInputModel.Name,
-            //    BirthDate = employeeInputModel.BirthDate,
-            //    Gender = employeeInputModel.Gender,
-            //    Salary = employeeInputModel.Salary,
-            //    Email = employeeInputModel.Email,
-            //    Phone = employeeInputModel.Phone,
-            //    Address = employeeInputModel.Address
-            //};
-
             var ok = await _personService.CreatePerson(employeeInputModel);
 
             if (ok.ok)
             {
-                var employee = await _employeeRepository.CreateEmployee(employeeInputModel.CPF, employeeInputModel.Manager);
+                Domain.Entities.Employee employeeEntity = new Domain.Entities.Employee
+                {
+                    CPF = employeeInputModel.CPF,
+                    Manager = employeeInputModel.Manager,
+                    RecordNumber = Guid.NewGuid()
+                };
+
+                var employee = await _employeeRepository.CreateEmployee(employeeEntity);
                 return (await CreateEmployeeOutputModel(employee.employee), employee.message);
             }
 
@@ -109,16 +102,6 @@ namespace UPBank.Employee.Application.Services
             if (getEmployee.employee == null)
                 return (null, "funcionário não existe!");
 
-            //var personPatchDTO = new PersonPatchDTO
-            //{
-            //    Name = employeePatchDTO.Name,
-            //    Address = employeePatchDTO.Address,
-            //    Email = employeePatchDTO.Email,
-            //    Phone = employeePatchDTO.Phone,
-            //    Gender = employeePatchDTO.Gender,
-            //    Salary = employeePatchDTO.Salary
-            //};
-
             var person = await _personService.PatchPerson(cpf, employeePatchDTO);
 
             if (person.person == null)
@@ -134,15 +117,21 @@ namespace UPBank.Employee.Application.Services
 
 
 
-        public Task<bool> SetProfile(string cpf, bool manager)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<bool> ApproveAccountOpening(string cpf)
+
+
+        public Task<bool> SetProfile(SetProfileDTO setProfileDTO)
         {
             throw new NotImplementedException();
         }
 
+        public Task<bool> ApproveAccountOpening(ApproveAccountOpeningDTO approveAccountOpeningDTO)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<bool> AccountOpeningRequests()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

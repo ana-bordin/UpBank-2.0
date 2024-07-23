@@ -2,24 +2,16 @@
 using UPBank.Employee.Application.Contracts;
 using UPBank.Employee.Application.Models;
 using UPBank.Employee.Application.Models.DTOs;
-using UPBank.Person.Application.Models;
-using UPBank.Utils.Address.Contracts;
-using UPBank.Utils.Person.Contracts;
-using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Employee.API.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
-        private readonly IPersonService _personService;
-        private readonly IAddressService _addressService;
 
-        public EmployeeController(IEmployeeService employeeService, IPersonService personService, IAddressService addressService)
+        public EmployeeController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
-            _personService = personService;
-            _addressService = addressService;
         }
 
         [HttpPost("api/employees")]
@@ -29,7 +21,7 @@ namespace UPBank.Employee.API.Controllers
             if (employeeResult.employeeOutputModel == null)
                 return BadRequest(employeeResult.message);
 
-            return Ok(employeeResult);
+            return Ok(employeeResult.employeeOutputModel);
         }
 
         [HttpGet("api/employees/{cpf}")]
@@ -72,25 +64,37 @@ namespace UPBank.Employee.API.Controllers
             return Ok(employees);
         }
 
-        //[HttpPatch("api/employees/setProfileAccount")]
-        //public async Task<IActionResult> SetProfileAccount([FromBody] SetProfileDTO setProfileDTO)
-        //{
-        //    var ok = await _employeeService.SetProfile(setProfileDTO.CPF, setProfileDTO.Manager);
-        //    if (!ok)
-        //        return BadRequest();
+       
+        
+        
+        [HttpPatch("api/employees/setProfileAccount")]
+        public async Task<IActionResult> SetProfileAccount([FromBody] SetProfileDTO setProfileDTO)
+        {
+            var ok = await _employeeService.SetProfile(setProfileDTO);
+            
+            if (!ok)
+                return BadRequest();
 
-        //    return Ok();
-        //}
+            return Ok();
+        }
 
-        //[HttpPatch("api/employees/approveAccountOpening")]
-        //public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)
-        //{
-        //    var ok = await _employeeService.ApproveAccountOpening(approveAccountOpeningDTO.CPF);
-        //    if (!ok)
-        //        return BadRequest();
+        [HttpPatch("api/employees/accountOpeningRequests")]
+        public async Task<IActionResult> AccountOpeningRequests()
+        {
+            var accountOpeningRequests = await _customerService.GetAccountOpeningRequests();
+            
+            return Ok(accountOpeningRequests);
+        }
 
-        //    return Ok();
-        //}
+        [HttpPatch("api/employees/approveAccountOpening")]
+        public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)
+        {
+            var ok = await _employeeService.ApproveAccountOpening(approveAccountOpeningDTO);
+            if (!ok)
+                return BadRequest();
+
+            return Ok();
+        }
 
     }
 }

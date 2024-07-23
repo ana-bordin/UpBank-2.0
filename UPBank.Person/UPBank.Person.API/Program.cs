@@ -5,6 +5,8 @@ using UPBank.Person.Application.Services;
 using UPBank.Person.Domain.Contracts;
 using UPBank.Person.Infra.Context;
 using UPBank.Person.Infra.Repositories;
+using UPBank.Utils.Address.Contracts;
+using UPBank.Utils.Address.Services;
 
 namespace UPBank.Person.API
 {
@@ -19,6 +21,7 @@ namespace UPBank.Person.API
             builder.Services.AddSingleton<IUpBankApiPersonContext, UpBankApiPersonContext>();
             builder.Services.AddScoped<IPersonRepository, PersonRepository>();
             builder.Services.AddScoped<IPersonService, PersonService>();
+            builder.Services.AddScoped<IAddressService, AddressService>();
 
             // Add services to the container.
 
