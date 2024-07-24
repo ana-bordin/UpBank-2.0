@@ -18,10 +18,14 @@ namespace UPBank.Address.Application.Services
         public async Task<(AddressOutputModel addressOutputModel, string message)> GetCompleteAddressById(Guid id)
         {
             var completeAddress = await _addressRepository.GetCompleteAddressById(id);
+            
+            if (completeAddress.completeAddress == null)
+                return (null, completeAddress.message);
+            
             var address = await _addressRepository.GetAddressByZipCode(completeAddress.completeAddress.ZipCode);
 
-            if (completeAddress.completeAddress == null || address.address == null)
-                return (null, completeAddress.message + address.message);
+            if (address.address == null)
+                return (null, address.message);
 
             return (await CreateAddressOutputModel(completeAddress.completeAddress, address.address), null);
         }
@@ -32,6 +36,8 @@ namespace UPBank.Address.Application.Services
             if (getAddress.address == null)
             {
                 var getAddressInViaCep = await _viaCep.GetAddressInAPI(zipCode);
+                if (getAddressInViaCep == null)
+                    return (false, "Endereço não encontrado");
                 getAddress = await _addressRepository.CreateAddress(getAddressInViaCep);
             }
 

@@ -12,13 +12,11 @@ namespace UPBank.Customer.API.Controllers
         private readonly ICustomerService _customerService;
         //private readonly ILogger<CustomerController> _logger;
         private readonly IPersonService _personService;
-        private readonly IAddressService _addressService;
 
-        public CustomerController(ICustomerService customerService, IPersonService personService, IAddressService addressService)
+        public CustomerController(ICustomerService customerService, IPersonService personService)
         {
             _customerService = customerService;
             _personService = personService;
-            _addressService = addressService;
         }
 
         [HttpPost("api/customers")]

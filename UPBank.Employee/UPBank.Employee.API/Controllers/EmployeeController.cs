@@ -78,13 +78,13 @@ namespace UPBank.Employee.API.Controllers
             return Ok();
         }
 
-        [HttpPatch("api/employees/accountOpeningRequests")]
-        public async Task<IActionResult> AccountOpeningRequests()
-        {
-            var accountOpeningRequests = await _customerService.GetAccountOpeningRequests();
+        //[HttpPatch("api/employees/accountOpeningRequests")]
+        //public async Task<IActionResult> AccountOpeningRequests()
+        //{
+        //    var accountOpeningRequests = await _customerService.GetAccountOpeningRequests();
             
-            return Ok(accountOpeningRequests);
-        }
+        //    return Ok(accountOpeningRequests);
+        //}
 
         [HttpPatch("api/employees/approveAccountOpening")]
         public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)

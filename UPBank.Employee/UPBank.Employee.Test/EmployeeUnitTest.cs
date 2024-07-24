@@ -38,7 +38,7 @@ namespace UPBank.Employee.Test
             _employeeRepository.Setup(m => m.GetEmployeeByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
             _personService.Setup(m => m.CreatePerson(It.IsAny<EmployeeInputModel>())).ReturnsAsync((true, null));
             _personService.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((PersonMock.PersonOutputModel, null));
-            _employeeRepository.Setup(m => m.CreateEmployee(It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync((EmployeeMock.Employee, null));
+            _employeeRepository.Setup(m => m.CreateEmployee(It.IsAny<Domain.Entities.Employee>())).ReturnsAsync((EmployeeMock.Employee, null));
 
             var result = _employeeController.CreateEmployee(EmployeeMock.EmployeeInputModel);
 

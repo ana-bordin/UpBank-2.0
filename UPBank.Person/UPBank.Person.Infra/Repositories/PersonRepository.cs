@@ -21,14 +21,8 @@ namespace UPBank.Person.Infra.Repositories
                 {
                     var rows = await db.ExecuteAsync("INSERT INTO dbo.Person (Name, BirthDate, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @BirthDate, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, BirthDate = person.BirthDate, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
 
-                    if (rows > 0)
-                    {
-                        var getPerson = GetPersonByCpf(person.CPF);
-                        return (getPerson.Result.person, null);
-                    }
-                       
-                    else
-                        return (null, "Erro ao cadastrar pessoa, tente mais tarde");
+                    var getPerson = GetPersonByCpf(person.CPF);
+                    return (getPerson.Result.person, null);
                 }
             }
             catch (Exception e)

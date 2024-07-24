@@ -21,7 +21,7 @@ namespace UPBank.Utils.Person.Services
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return (false, "houve um erro ao criar a pessoa: " + errorMessage);
             }
-                
+
         }
 
         public async Task<bool> CheckIfExist(string cpf)
@@ -37,7 +37,7 @@ namespace UPBank.Utils.Person.Services
         public async Task<(PersonOutputModel person, string message)> GetPersonByCpf(string cpf)
         {
             var response = await _client.GetAsync($"https://localhost:7048/api/peoples/{cpf}");
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var result = response.Content.ReadAsStringAsync().Result;
@@ -46,7 +46,7 @@ namespace UPBank.Utils.Person.Services
             else
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                return (false, "Houve um erro ao buscar pessoa: " + errorMessage);
+                return (null, "Houve um erro ao buscar pessoa: " + errorMessage);
             }
         }
 
@@ -55,7 +55,7 @@ namespace UPBank.Utils.Person.Services
 
             var content = new StringContent(JsonConvert.SerializeObject(personPatchDTO), Encoding.UTF8, "application/json");
             var response = _client.PatchAsync($"https://localhost:7048/api/peoples/{cpf}", content).Result;
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var result = response.Content.ReadAsStringAsync().Result;
@@ -64,7 +64,7 @@ namespace UPBank.Utils.Person.Services
             else
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                return (false, "Houve um erro ao atualizar pessoa: " + errorMessage);
+                return (null, "Houve um erro ao atualizar pessoa: " + errorMessage);
             }
         }
     }

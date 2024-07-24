@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Net;
 using UPBank.Address.API.Controllers;
 using UPBank.Address.Application.Contracts;
 using UPBank.Address.Application.Models;
 using UPBank.Address.Application.Services;
 using UPBank.Address.Domain.Entities;
-using UPBank.Address.Infra.Context;
+using UPBank.Address.Infra.Repositories;
 
 namespace UPBank.Address.Test
 {
@@ -16,99 +15,123 @@ namespace UPBank.Address.Test
 
         private readonly AddressController _addressController;
         private readonly Mock<IViaCepService> _viaCepService;
-        private readonly Mock<IAddressService> _addressService;
-        static readonly Domain.Entities.Address address = new Domain.Entities.Address
-
-        {
-            ZipCode = "15997088",
-            Street = "Rua 1",
-            Neighborhood = "Bairro 1",
-            City = "Cidade 1",
-            State = "Estado 1"
-        };
-
-        static readonly Domain.Entities.Address address2 = new Domain.Entities.Address
-        {
-            ZipCode = "15997088",
-            Street = "Rua 1",
-            Neighborhood = "Bairro 1",
-            City = "Cidade 1",
-            State = "Estado 1"
-        };
-
-        static readonly AddressInputModel addressInputModel = new AddressInputModel
-        {
-            ZipCode = "15997088",
-            Number = "123",
-            Complement = "Complement"
-        };
-
-        static readonly CompleteAddress completeAddress = new CompleteAddress
-        {
-            Id = id,
-            ZipCode = "15997088",
-            Number = "123",
-            Complement = "Complement"
-        };
-
-        static readonly Guid id = Guid.NewGuid();
-
-        static readonly AddressOutputModel addressOutputModel = new AddressOutputModel(addressInputModel, address, id);
-        
+        private readonly IAddressService _addressService;
+        private readonly Mock<IAddressRepository> _addressRepository;
 
         public AddressUnitTest()
         {
-            _addressService = new Mock<IAddressService>();
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<Domain.Entities.Address>())).ReturnsAsync(true);
-            _addressService.Setup(m => m.CreateCompleteAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(id);
-            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync(completeAddress);
-            _addressService.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync(address2);
-
-            _addressService.Setup(m => m.UpdateAddress(It.IsAny<Guid>(), It.IsAny<AddressInputModel>())).ReturnsAsync(completeAddress);
-
             _viaCepService = new Mock<IViaCepService>();
-            _viaCepService.Setup(m => m.GetAddressInAPI(It.IsAny<string>())).ReturnsAsync(address);
+            _addressRepository = new Mock<IAddressRepository>();
+            _addressService = new AddressService(_addressRepository.Object, _viaCepService.Object);
+            _addressController = new AddressController(_addressService);
 
-            var upBankApiAddressContext = new Mock<IUpBankApiAddressContext>();
-            _addressController = new AddressController(_addressService.Object, _viaCepService.Object);
         }
 
         [Fact]
         public void CreateAddress_ReturnSucess()
         {
-            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync(completeAddress); 
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<Domain.Entities.Address>())).ReturnsAsync(true);
-            _addressService.Setup(m => m.CreateCompleteAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(id);
+            _viaCepService.Setup(m => m.GetAddressInAPI(It.IsAny<string>())).ReturnsAsync(Mocks.Entities.AddressMock.Address);
+            _addressRepository.Setup(m => m.CreateAddress(It.IsAny<Domain.Entities.Address>())).ReturnsAsync((Mocks.Entities.AddressMock.Address, null));
+            _addressRepository.Setup(m => m.CreateCompleteAddress(It.IsAny<CompleteAddress>())).ReturnsAsync((true, null));
+            _addressRepository.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((Mocks.Entities.AddressMock.CompleteAddress, null));
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((Mocks.Entities.AddressMock.Address, null));
 
-            var result = _addressController.CreateAddress(addressInputModel);
+            var result = _addressController.CreateAddress(Mocks.Entities.AddressMock.AddressInputModel);
+
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public void GetAddress_ReturnSucess()
         {
-            _addressService.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync(address2);
+            _addressRepository.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((Mocks.Entities.AddressMock.CompleteAddress, null));
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((Mocks.Entities.AddressMock.Address2, null));
 
-            var result = _addressController.GetAddressById(id);
+            var result = _addressController.GetAddressById(Mocks.Entities.AddressMock.Id);
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public void UpdateAddress_ReturnSucess()
         {
-            var result = _addressController.UpdateAddress(id, addressInputModel);
-            Assert.IsType<OkObjectResult>(result.Result);
-        }
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((Mocks.Entities.AddressMock.Address, null));
+            _addressRepository.Setup(m => m.UpdateAddress(It.IsAny<Guid>(), It.IsAny<CompleteAddress>())).ReturnsAsync((Mocks.Entities.AddressMock.CompleteAddress, null));
 
-        [Fact]
-        public void DeleteAddress_ReturnSucess()
-        {
-            var result = _addressController.DeleteAddress(id);
-            Assert.IsType<OkResult>(result.Result); 
+            var result = _addressController.UpdateAddress(Mocks.Entities.AddressMock.Id, Mocks.Entities.AddressMock.AddressInputModel);
+            Assert.IsType<OkObjectResult>(result.Result);
         }
         #endregion
 
         #region Testes Negativos
+
+        [Fact]
+        public void CreateAddress_ReturnBadRequest()
+        {
+            _viaCepService.Setup(m => m.GetAddressInAPI(It.IsAny<string>())).ReturnsAsync(Mocks.Entities.AddressMock.Address);
+            _addressRepository.Setup(m => m.CreateAddress(It.IsAny<Domain.Entities.Address>())).ReturnsAsync((null, "Erro"));
+            _addressRepository.Setup(m => m.CreateCompleteAddress(It.IsAny<CompleteAddress>())).ReturnsAsync((false, "Erro"));
+            _addressRepository.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((null, "Erro"));
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((null, "Erro"));
+
+            var result = _addressController.CreateAddress(Mocks.Entities.AddressMock.AddressInputModel);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public void CreateAddress_ReturnBadRequest_WhenViaCepApiDoNotRespond()
+        {
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((null, null));
+
+            var result = _addressController.CreateAddress(Mocks.Entities.AddressMock.AddressInputModel);
+
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Endereço não encontrado", ((BadRequestObjectResult)result.Result).Value);
+        }
+
+        [Fact]
+        public void CreateAddress_ReturnBadRequest_WhenCreateAddressReturnNull()
+        {
+            _viaCepService.Setup(m => m.GetAddressInAPI(It.IsAny<string>())).ReturnsAsync(Mocks.Entities.AddressMock.Address);
+            _addressRepository.Setup(m => m.CreateAddress(It.IsAny<Domain.Entities.Address>())).ReturnsAsync((null, "Erro"));
+
+            var result = _addressController.CreateAddress(Mocks.Entities.AddressMock.AddressInputModel);
+
+            Assert.Equal("erro", ((BadRequestObjectResult)result.Result).Value);
+        }
+
+        [Fact]
+        public void CreateAddress_ReturnBadRequest_WhenCreateCompleteAddressReturnFalse()
+        {
+            _viaCepService.Setup(m => m.GetAddressInAPI(It.IsAny<string>())).ReturnsAsync(Mocks.Entities.AddressMock.Address);
+            _addressRepository.Setup(m => m.CreateAddress(It.IsAny<Domain.Entities.Address>())).ReturnsAsync((Mocks.Entities.AddressMock.Address, null));
+            _addressRepository.Setup(m => m.CreateCompleteAddress(It.IsAny<CompleteAddress>())).ReturnsAsync((false, "erro"));
+            
+
+            var result = _addressController.CreateAddress(Mocks.Entities.AddressMock.AddressInputModel);
+
+            Assert.Equal("erro", ((BadRequestObjectResult)result.Result).Value);
+        }
+
+        [Fact]
+        public void GetAddress_ReturnBadRequest()
+        {
+            _addressRepository.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((null, "Erro"));
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((null, "Erro"));
+
+            var result = _addressController.GetAddressById(Mocks.Entities.AddressMock.Id);
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public void UpdateAddress_ReturnBadRequest()
+        {
+            _addressRepository.Setup(m => m.GetAddressByZipCode(It.IsAny<string>())).ReturnsAsync((null, "Erro"));
+            _addressRepository.Setup(m => m.UpdateAddress(It.IsAny<Guid>(), It.IsAny<CompleteAddress>())).ReturnsAsync((null, "Erro"));
+
+            var result = _addressController.UpdateAddress(Mocks.Entities.AddressMock.Id, Mocks.Entities.AddressMock.AddressInputModel);
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
 
         #endregion
     }

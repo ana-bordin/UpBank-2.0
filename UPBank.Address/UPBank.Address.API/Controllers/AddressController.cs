@@ -31,17 +31,30 @@ namespace UPBank.Address.API.Controllers
         {
             var address = await _addressService.CreateAddress(addressInputModel.ZipCode);
 
-            if (!address.ok)
-                return BadRequest(address.message);
+            if (address.ok)
+            {
+                var completeAddress = await _addressService.CreateCompleteAddress(addressInputModel);
 
-            var completeAddress = await _addressService.CreateCompleteAddress(addressInputModel);
+                if (completeAddress.guid != Guid.Empty)
+                {
+                    var addressOutputModel = await _addressService.GetCompleteAddressById(completeAddress.guid);
 
-            if (completeAddress.guid == Guid.Empty)
-                return BadRequest(completeAddress.message);
+                    return Ok(addressOutputModel.addressOutputModel);
+                }
+                else
+                {
+                    if (address.message != null)
+                        return BadRequest(address.message);
+                    return BadRequest("Não foi possivel criar o endereço, tente novamente mais tarde");
+                }
+            }
+            else
+            {
+                if (address.message != null)
+                    return BadRequest(address.message);
 
-            var addressOutputModel = await _addressService.GetCompleteAddressById(completeAddress.guid);
-
-            return Ok(addressOutputModel.addressOutputModel);
+                return BadRequest("Não foi possivel criar o endereço, tente novamente mais tarde");
+            }
         }
 
         [HttpDelete("api/addresses/{id}")]

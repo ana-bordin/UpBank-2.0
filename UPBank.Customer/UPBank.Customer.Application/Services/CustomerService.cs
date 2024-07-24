@@ -1,11 +1,9 @@
 ﻿using UPBank.Customer.Application.Contracts;
-using UPBank.Customer.Domain.Contracts;
 using UPBank.Customer.Application.Models;
-using UPBank.Utils.Address.Contracts;
 using UPBank.Customer.Application.RabbitMQ;
+using UPBank.Customer.Domain.Contracts;
+using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Person.Contracts;
-using UPBank.Customer.Domain.Entities;
-using System.Runtime.CompilerServices;
 using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Customer.Application.Services
@@ -13,14 +11,12 @@ namespace UPBank.Customer.Application.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly IAddressService _addressService;
         private readonly RabbitMQPublisher _rabbitMQPublisher;
         private readonly IPersonService _personService;
 
-        public CustomerService(ICustomerRepository customerRepository, IAddressService addressService, RabbitMQPublisher rabbitMQPublisher, IPersonService personService)
+        public CustomerService(ICustomerRepository customerRepository, RabbitMQPublisher rabbitMQPublisher, IPersonService personService)
         {
             _customerRepository = customerRepository;
-            _addressService = addressService;
             _rabbitMQPublisher = rabbitMQPublisher;
             _personService = personService;
         }
@@ -113,20 +109,20 @@ namespace UPBank.Customer.Application.Services
                 return (null, "cliente não existe!");
             if (customer.customer.Restriction)
                 return (null, "cliente com restrição!");
-            
+
             var personResult = await _personService.PatchPerson(cpf, personPatchDTO);
             if (personResult.person == null)
-                return (null, personResult.message);          
-            
+                return (null, personResult.message);
+
             return (await CreateCustomerOutputModel(customer.customer), null);
         }
-      
+
         public async Task<CustomerOutputModel> CreateCustomerOutputModel(Domain.Entities.Customer customer)
         {
             if (customer != null)
             {
                 var person = await _personService.GetPersonByCpf(customer.CPF);
-                
+
                 return new CustomerOutputModel
                 {
                     CPF = person.person.CPF,

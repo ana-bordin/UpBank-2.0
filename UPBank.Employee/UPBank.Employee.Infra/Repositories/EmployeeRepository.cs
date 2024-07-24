@@ -19,11 +19,9 @@ namespace UPBank.Employee.Infra.Repositories
             {
                 using (var db = _context.Connection)
                 {
-                    var rows = await db.ExecuteAsync("INSERT INTO Employee (CPF, Manager, RecordNumber) VALUES (@cpf, @manager, @recordNumber)", new { CPF = employee.CPF, Manager = employee.Manager, RecordNumber = employee.RecordNumber});
-                    if (rows > 0)
-                        return await GetEmployeeByCpf(employee.CPF);
-                    else
-                        return (null, null);
+                    var rows = await db.ExecuteAsync("INSERT INTO Employee (CPF, Manager, RecordNumber) VALUES (@cpf, @manager, @recordNumber)", new { CPF = employee.CPF, Manager = employee.Manager, RecordNumber = employee.RecordNumber });
+
+                    return await GetEmployeeByCpf(employee.CPF);
                 }
             }
             catch (Exception e)
@@ -39,10 +37,8 @@ namespace UPBank.Employee.Infra.Repositories
                 using (var db = _context.Connection)
                 {
                     var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
-                    if (rows != null)
-                        return (true, null);
-                    else
-                        return (false, null);
+
+                    return (true, null);
                 }
             }
             catch (Exception e)
@@ -92,10 +88,8 @@ namespace UPBank.Employee.Infra.Repositories
                 using (var db = _context.Connection)
                 {
                     var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Manager = @Manager WHERE CPF = @CPF", new { CPF = cpf, Manager = manager });
-                    if (rows > 0)
-                        return (await GetEmployeeByCpf(cpf));
-                    else
-                        return (null, null);
+
+                    return (await GetEmployeeByCpf(cpf));
                 }
             }
             catch (Exception e)

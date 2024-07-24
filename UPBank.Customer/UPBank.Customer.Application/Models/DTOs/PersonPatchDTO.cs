@@ -1,4 +1,4 @@
-﻿using UPBank.Customer.Application.Models;
+﻿using UPBank.Address.Application.Models;
 
 namespace UPBank.Utils.Person.Models.DTOs
 {

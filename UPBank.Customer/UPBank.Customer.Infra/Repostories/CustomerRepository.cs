@@ -19,11 +19,9 @@ namespace UPBank.Customer.Infra.Repostories
             {
                 using (var db = _context.ConnectionCustomer)
                 {
-                    var rows = await db.ExecuteAsync("INSERT INTO dbo.Customer (CPF) VALUES (@CPF)", new { CPF = cpf });
-                    if (rows > 0)
-                        return await GetCustomerByCpf(cpf);
-                    else
-                        return (null, null);
+                    await db.ExecuteAsync("INSERT INTO dbo.Customer (CPF) VALUES (@CPF)", new { CPF = cpf });
+
+                    return await GetCustomerByCpf(cpf);
                 }
             }
             catch (Exception e)
@@ -39,6 +37,7 @@ namespace UPBank.Customer.Infra.Repostories
                 using (var db = _context.ConnectionCustomer)
                 {
                     var customer = await db.QueryFirstOrDefaultAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE CPF = @CPF", new { CPF = cpf });
+                    
                     return (customer, null);
                 }
             }
@@ -55,6 +54,7 @@ namespace UPBank.Customer.Infra.Repostories
                 using (var db = _context.ConnectionCustomer)
                 {
                     var rows = db.ExecuteAsync("UPDATE dbo.Customer SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
+                    
                     return (true, null);
                 }
             }
@@ -71,6 +71,7 @@ namespace UPBank.Customer.Infra.Repostories
                 using (var db = _context.ConnectionCustomer)
                 {
                     var customers = await db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Active = 0");
+                    
                     return (customers, null);
                 }
             }
@@ -112,6 +113,7 @@ namespace UPBank.Customer.Infra.Repostories
                 using (var db = _context.ConnectionCustomer)
                 {
                     var customers = db.QueryAsync<Domain.Entities.Customer>("SELECT * FROM dbo.Customer WHERE Restriction = 1");
+                    
                     return (await customers, null);
                 }
             }
@@ -130,10 +132,7 @@ namespace UPBank.Customer.Infra.Repostories
                 {
                     var rows = await db.ExecuteAsync("INSERT INTO dbo.CustomerRequest (First, Second) VALUES (@First, @Second)", new { First = cpfs[0], Second = cpfs[1] });
 
-                    if (rows > 0)
-                        return (true, null);
-                    else
-                        return (false, null);
+                    return (true, null);
                 }
             }
             catch (Exception e)

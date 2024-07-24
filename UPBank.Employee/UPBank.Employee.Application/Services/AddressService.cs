@@ -9,7 +9,7 @@ namespace UPBank.Utils.Address.Services
     public class AddressService : IAddressService
     {
         private static readonly HttpClient _client = new HttpClient();
-        public async Task<AddressOutputModel> CreateAddress(AddressInputModel addressInputModel)
+        public async Task<(AddressOutputModel addressOutputModel, string message)> CreateAddress(AddressInputModel addressInputModel)
         {
             try
             {
@@ -19,17 +19,21 @@ namespace UPBank.Utils.Address.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
-                    return JsonConvert.DeserializeObject<AddressOutputModel>(result);
+                    return (JsonConvert.DeserializeObject<AddressOutputModel>(result), null);
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return (null, "Houve um erro ao criar endereço: " + errorMessage);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Error on create address");
+                return (null, "Houve um erro ao criar endereço: " + e);
             }
-            return null;
         }
 
-        public async Task<AddressOutputModel> GetCompleteAddressById(Guid id)
+        public async Task<(AddressOutputModel addressOutputModel, string message)> GetCompleteAddressById(Guid id)
         {
             try
             {
@@ -38,17 +42,22 @@ namespace UPBank.Utils.Address.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
-                    return JsonConvert.DeserializeObject<AddressOutputModel>(result);
+                    return (JsonConvert.DeserializeObject<AddressOutputModel>(result), null);
                 }
-                return null;
+
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return (null, "Houve um erro ao trazer o endereço: " + errorMessage);
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Error on get complete address by id");
+                return (null, "Houve um erro ao trazer o endereço: " + e);               
             }
         }
 
-        public async Task<CompleteAddress> UpdateAddress(Guid id, AddressInputModel addressInputModel)
+        public async Task<(CompleteAddress completeAddress, string message)> UpdateAddress(Guid id, AddressInputModel addressInputModel)
         {
             try
             {
@@ -58,38 +67,18 @@ namespace UPBank.Utils.Address.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
-                    return JsonConvert.DeserializeObject<CompleteAddress>(result);
+                    return (JsonConvert.DeserializeObject<CompleteAddress>(result), null);
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return (null, "Houve um erro ao atualizar o endereço: " + errorMessage);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Error on update address");
+                return (null, "Houve um erro ao atualizar o endereço:" + e);             
             }
-            return null;
         }
-
-
-
-
-        //public async Task<Models.Address> GetAddressByZipCode(string zipCode)
-        //{
-        //    try
-        //    {
-        //        var response = _client.GetAsync($"https://localhost:7148/api/addresses/{zipCode}");
-
-        //        if (response.Result.IsSuccessStatusCode)
-        //        {
-        //            var result = await response.Result.Content.ReadAsStringAsync(); 
-        //            return JsonConvert.DeserializeObject<Models.Address>(result);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw new Exception("Error on get address by zip code");
-        //    }
-        //    return null;
-        //}
-
-
     }
 }

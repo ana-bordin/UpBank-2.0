@@ -1,4 +1,4 @@
-﻿namespace UPBank.Customer.Application.Models
+﻿namespace UPBank.Address.Application.Models
 {
     public class AddressInputModel
     {

@@ -5,7 +5,7 @@ namespace UPBank.Address.Test.Mocks.Entities
 {
     public class AddressMock
     {
-        public readonly Domain.Entities.Address address = new Domain.Entities.Address
+        public static Domain.Entities.Address Address => new Domain.Entities.Address
         {
             ZipCode = "15997088",
             Street = "Rua 1",
@@ -14,7 +14,7 @@ namespace UPBank.Address.Test.Mocks.Entities
             State = "Estado 1"
         };
 
-        public readonly Domain.Entities.Address address2 = new Domain.Entities.Address
+        public static Domain.Entities.Address Address2 => new Domain.Entities.Address
         {
             ZipCode = "15997088",
             Street = "Rua 1",
@@ -23,23 +23,21 @@ namespace UPBank.Address.Test.Mocks.Entities
             State = "Estado 1"
         };
 
-        public readonly AddressInputModel addressInputModel = new AddressInputModel
+        public static AddressInputModel AddressInputModel => new AddressInputModel
         {
             ZipCode = "15997088",
             Number = "123",
             Complement = "Complement"
         };
 
-        public readonly CompleteAddress completeAddress = new CompleteAddress
+        public static CompleteAddress CompleteAddress => new CompleteAddress
         {
-            Id = id,
+            Id = Id,
             ZipCode = "15997088",
             Number = "123",
             Complement = "Complement"
         };
 
-        public readonly Guid id = Guid.NewGuid();
-
-
+        public static Guid Id => Guid.NewGuid();
     }
 }

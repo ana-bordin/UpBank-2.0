@@ -9,6 +9,5 @@ namespace UPBank.Utils.Person.Contracts
         Task<(PersonOutputModel person, string message)> GetPersonByCpf(string cpf);
         Task<(PersonOutputModel person, string message)> PatchPerson(string cpf, PersonPatchDTO personPatchDTO);
         Task<bool> CheckIfExist(string cpf);
-        //Task<PersonInputModel> CreatePersonInputModel<T>(T inputModel) where T : class;
     }
 }
