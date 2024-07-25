@@ -111,6 +111,9 @@ namespace UPBank.Employee.Infra.Repositories
             throw new NotImplementedException();
         }
 
-
+        public Task<Domain.Entities.Employee> AccountOpeningRequests()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

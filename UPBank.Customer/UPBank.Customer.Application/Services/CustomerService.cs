@@ -83,21 +83,24 @@ namespace UPBank.Customer.Application.Services
 
         public async Task<(bool ok, string message)> AccountOpening(List<string> cpfs)
         {
+            List<CustomerOutputModel> customersList = new List<CustomerOutputModel>();
             int majority = 0;
             foreach (var cpf in cpfs)
             {
-                var customer = await _customerRepository.GetCustomerByCpf(cpf);
-                if (customer.customer == null)
+                var customer = GetCustomerByCpf(cpf).Result;
+                if (customer.customerOutputModel == null)
                     return (false, "cliente não existe!");
-                if (customer.customer.Restriction)
+                if (customer.customerOutputModel.Restriction)
                     return (false, "cliente com restrição!");
-                if (customer.customer.BirthDate < DateTime.Now.AddYears(-18))
+                if (customer.customerOutputModel.BirthDate < DateTime.Now.AddYears(-18))
                     majority++;
 
+                customersList.Add(customer.customerOutputModel);
             }
             if (majority == 0)
                 return (false, "nenhum cliente é maior de idade para abrir a conta!");
-            //_rabbitMQPublisher.Publish(GetCustomerByCpf(cpfs[1]);
+
+            _rabbitMQPublisher.Publish(customersList);
 
             return await _customerRepository.AccountOpening(cpfs);
         }

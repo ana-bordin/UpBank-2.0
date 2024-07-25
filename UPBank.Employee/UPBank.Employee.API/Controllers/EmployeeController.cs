@@ -67,16 +67,16 @@ namespace UPBank.Employee.API.Controllers
        
         
         
-        [HttpPatch("api/employees/setProfileAccount")]
-        public async Task<IActionResult> SetProfileAccount([FromBody] SetProfileDTO setProfileDTO)
-        {
-            var ok = await _employeeService.SetProfile(setProfileDTO);
+        //[HttpPatch("api/employees/setProfileAccount")]
+        //public async Task<IActionResult> SetProfileAccount([FromBody] SetProfileDTO setProfileDTO)
+        //{
+        //    var ok = await _employeeService.SetProfile(setProfileDTO);
             
-            if (!ok)
-                return BadRequest();
+        //    if (!ok)
+        //        return BadRequest();
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         //[HttpPatch("api/employees/accountOpeningRequests")]
         //public async Task<IActionResult> AccountOpeningRequests()
@@ -86,15 +86,15 @@ namespace UPBank.Employee.API.Controllers
         //    return Ok(accountOpeningRequests);
         //}
 
-        [HttpPatch("api/employees/approveAccountOpening")]
-        public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)
-        {
-            var ok = await _employeeService.ApproveAccountOpening(approveAccountOpeningDTO);
-            if (!ok)
-                return BadRequest();
+        //[HttpPatch("api/employees/approveAccountOpening")]
+        //public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)
+        //{
+        //    var ok = await _employeeService.ApproveAccountOpening(approveAccountOpeningDTO);
+        //    if (!ok)
+        //        return BadRequest();
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
     }
 }

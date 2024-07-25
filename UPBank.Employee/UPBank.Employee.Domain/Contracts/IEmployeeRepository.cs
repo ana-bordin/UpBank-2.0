@@ -11,6 +11,8 @@
 
         Task<Entities.Employee> SetProfile(string cpf, bool manager);
         Task<Entities.Employee> ApproveAccountOpening(string cpf);
+        Task<Entities.Employee> AccountOpeningRequests();
+
 
     }
 }

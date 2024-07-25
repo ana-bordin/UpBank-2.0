@@ -1,6 +1,7 @@
 ﻿using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
+using UPBank.Customer.Application.Models;
 
 namespace UPBank.Customer.Application.RabbitMQ
 {
@@ -18,9 +19,9 @@ namespace UPBank.Customer.Application.RabbitMQ
             _channel.QueueDeclare(queue: "customer", durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
-        public void Publish(Domain.Entities.Customer customer)
+        public void Publish(List<CustomerOutputModel> customers)
         {
-            var message = JsonSerializer.Serialize(customer);
+            var message = JsonSerializer.Serialize(customers);
             var body = Encoding.UTF8.GetBytes(message);
 
             _channel.BasicPublish(exchange: "", routingKey: "customer", basicProperties: null, body: body);

@@ -1,6 +1,8 @@
-﻿using RabbitMQ.Client;
+﻿using Newtonsoft.Json;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using UPBank.Customer.Application.Models;
 
 namespace UPBank.Employee.Application.RabbitMQ
 {
@@ -29,7 +31,7 @@ namespace UPBank.Employee.Application.RabbitMQ
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine(" [x] Received {0}", message);
                 Console.WriteLine("Done");
-                //var customer = JsonConvert.DeserializeObject<List<Customer.Domain.Entity.Customer>>(message);
+                var customer = JsonConvert.DeserializeObject<List<CustomerOutputModel>>(message);
                 //_employeeService.AddEmployee(employee);
             };
             _channel.BasicConsume(queue: "customer", autoAck: true, consumer: consumer);
