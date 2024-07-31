@@ -13,7 +13,7 @@ namespace UPBank.Employee.Infra.Repositories
             _context = context;
         }
 
-        public async Task<(Domain.Entities.Employee employee, string message)> CreateEmployee(Domain.Entities.Employee employee)
+        public async Task<(Domain.Entities.Employee? entity, string message)> AddAsync(Domain.Entities.Employee employee)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace UPBank.Employee.Infra.Repositories
                 {
                     var rows = await db.ExecuteAsync("INSERT INTO Employee (CPF, Manager, RecordNumber) VALUES (@cpf, @manager, @recordNumber)", new { CPF = employee.CPF, Manager = employee.Manager, RecordNumber = employee.RecordNumber });
 
-                    return await GetEmployeeByCpf(employee.CPF);
+                    return await GetOneAsync(employee.CPF);
                 }
             }
             catch (Exception e)
@@ -29,14 +29,13 @@ namespace UPBank.Employee.Infra.Repositories
                 return (null, "houve um erro ao criar funcionario:" + e);
             }
         }
-
-        public async Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf)
+         public async Task<(bool ok, string message)> DeleteAsync<TKey>(TKey key)
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-                    var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
+                    var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Active = 1 WHERE CPF = @CPF", new { CPF = key });
 
                     return (true, null);
                 }
@@ -48,7 +47,7 @@ namespace UPBank.Employee.Infra.Repositories
 
         }
 
-        public async Task<(IEnumerable<Domain.Entities.Employee> employees, string message)> GetAllEmployees()
+        public async Task<(IEnumerable<Domain.Entities.Employee> entities, string message)> GetAllAsync()
         {
             try
             {
@@ -64,13 +63,13 @@ namespace UPBank.Employee.Infra.Repositories
             }
         }
 
-        public async Task<(Domain.Entities.Employee employee, string message)> GetEmployeeByCpf(string cpf)
+        public async Task<(Domain.Entities.Employee? entity, string message)> GetOneAsync<TKey>(TKey key)
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-                    var employeeResult = await db.QueryFirstOrDefaultAsync<Domain.Entities.Employee>("SELECT * FROM Employee WHERE CPF = @cpf", new { CPF = cpf });
+                    var employeeResult = await db.QueryFirstOrDefaultAsync<Domain.Entities.Employee>("SELECT * FROM Employee WHERE CPF = @cpf", new { CPF = key });
                     return (employeeResult, null);
                 }
             }
@@ -81,15 +80,15 @@ namespace UPBank.Employee.Infra.Repositories
 
         }
 
-        public async Task<(Domain.Entities.Employee employee, string message)> PatchEmployee(string cpf, bool manager)
+        public async Task<(Domain.Entities.Employee? entity, string message)> UpdateAsync(Domain.Entities.Employee entity)
         {
             try
             {
                 using (var db = _context.Connection)
                 {
-                    var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Manager = @Manager WHERE CPF = @CPF", new { CPF = cpf, Manager = manager });
+                    var rows = await db.ExecuteAsync("UPDATE dbo.Employee SET Manager = @Manager WHERE CPF = @CPF", new { CPF = entity.CPF, Manager = entity.Manager });
 
-                    return (await GetEmployeeByCpf(cpf));
+                    return await GetOneAsync(entity.CPF);
                 }
             }
             catch (Exception e)

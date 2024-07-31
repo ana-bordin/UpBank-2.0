@@ -28,7 +28,6 @@ namespace UPBank.Person.API.Controllers
         [HttpGet("api/peoples/{cpf}")]
         public async Task<IActionResult> GetPerson(string cpf)
         {
-            cpf = Domain.Entities.Person.CpfRemoveMask(cpf);
             var person = await _personService.GetPersonByCpf(cpf);
 
             if (person.person == null && person.message == null)
@@ -44,7 +43,7 @@ namespace UPBank.Person.API.Controllers
         public async Task<IActionResult> UpdatePerson(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
         {
             cpf = Domain.Entities.Person.CpfRemoveMask(cpf);
-            (Domain.Entities.Person okResult, string message) getPerson = await _personService.GetPersonByCpf(cpf);
+            (PersonOutputModel okResult, string message) getPerson = await _personService.GetPersonByCpf(cpf);
 
             if (getPerson.okResult == null)
                 return BadRequest(getPerson.message);

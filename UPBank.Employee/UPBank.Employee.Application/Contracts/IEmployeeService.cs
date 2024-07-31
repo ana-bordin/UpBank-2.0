@@ -10,7 +10,7 @@ namespace UPBank.Employee.Application.Contracts
         Task<(EmployeeOutputModel employee, string message)> GetEmployeeByCpf(string cpf);
         Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf);
         Task<EmployeeOutputModel> CreateEmployeeOutputModel(Domain.Entities.Employee employee);
-        Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO);
+        //Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO);
 
 
         Task<bool> SetProfile(SetProfileDTO setProfileDTO);

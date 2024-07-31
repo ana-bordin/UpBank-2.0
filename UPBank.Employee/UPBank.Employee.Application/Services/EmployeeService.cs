@@ -28,17 +28,17 @@ namespace UPBank.Employee.Application.Services
 
             var ok = await _personService.CreatePerson(employeeInputModel);
 
-            if (ok.ok)
+            if (ok.okResult != null)
             {
                 Domain.Entities.Employee employeeEntity = new Domain.Entities.Employee
                 {
-                    CPF = employeeInputModel.CPF,
+                    CPF = employeeInputModel.CPF.Replace(".", "").Replace("-", ""),
                     Manager = employeeInputModel.Manager,
                     RecordNumber = Guid.NewGuid()
                 };
 
-                var employee = await _employeeRepository.CreateEmployee(employeeEntity);
-                return (await CreateEmployeeOutputModel(employee.employee), employee.message);
+                var employee = await _employeeRepository.AddAsync(employeeEntity);
+                return (await CreateEmployeeOutputModel(employee.entity), employee.message);
             }
 
             return (null, ok.message);
@@ -70,18 +70,18 @@ namespace UPBank.Employee.Application.Services
 
         public async Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf)
         {
-            return await _employeeRepository.DeleteEmployeeByCpf(cpf);
+            return await _employeeRepository.DeleteAsync(cpf);
         }
 
         public async Task<(IEnumerable<EmployeeOutputModel> employees, string message)> GetAllEmployees()
         {
-            var employeesList = await _employeeRepository.GetAllEmployees();
+            var employeesList = await _employeeRepository.GetAllAsync();
             if (employeesList.message != null)
                 return (null, employeesList.message);
 
             var employeesOutputList = new List<EmployeeOutputModel>();
 
-            foreach (var employee in employeesList.employees)
+            foreach (var employee in employeesList.entities)
                 employeesOutputList.Add(await CreateEmployeeOutputModel(employee));
 
             return (employeesOutputList, null);
@@ -89,30 +89,30 @@ namespace UPBank.Employee.Application.Services
 
         public async Task<(EmployeeOutputModel employee, string message)> GetEmployeeByCpf(string cpf)
         {
-            var employee = await _employeeRepository.GetEmployeeByCpf(cpf);
-            if (employee.employee == null)
+            var employee = await _employeeRepository.GetOneAsync(cpf);
+            if (employee.entity == null)
                 return (null, "funcionário não existe!");
             else
-                return (await CreateEmployeeOutputModel(employee.employee), null);
+                return (await CreateEmployeeOutputModel(employee.entity), null);
         }
 
-        public async Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO)
-        {
-            var getEmployee = await GetEmployeeByCpf(cpf);
-            if (getEmployee.employee == null)
-                return (null, "funcionário não existe!");
+        //public async Task<(EmployeeOutputModel employee, string message)> PatchEmployee(string cpf, EmployeePatchDTO employeePatchDTO)
+        //{
+        //    var getEmployee = await GetEmployeeByCpf(cpf);
+        //    if (getEmployee.employee == null)
+        //        return (null, "funcionário não existe!");
 
-            var person = await _personService.PatchPerson(cpf, employeePatchDTO);
+        //    var person = await _personService.PatchPerson(cpf, employeePatchDTO);
 
-            if (person.person == null)
-                return (null, person.message);
+        //    if (person.person == null)
+        //        return (null, person.message);
 
-            var employee = await _employeeRepository.PatchEmployee(cpf, employeePatchDTO.Manager);
-            if (employee.employee == null)
-                return (null, employee.message);
+        //    var employee = await _employeeRepository.UpdateAsync(employeePatchDTO);
+        //    if (employee.employee == null)
+        //        return (null, employee.message);
 
-            return (await CreateEmployeeOutputModel(employee.employee), null);
-        }
+        //    return (await CreateEmployeeOutputModel(employee.employee), null);
+        //}
 
 
 

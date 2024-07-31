@@ -1,5 +1,4 @@
-﻿using UPBank.Address.Application.Models;
-using UPBank.Person.Application.Contracts;
+﻿using UPBank.Person.Application.Contracts;
 using UPBank.Person.Application.Models;
 using UPBank.Person.Domain.Contracts;
 using UPBank.Utils.Address.Contracts;
@@ -19,6 +18,7 @@ namespace UPBank.Person.Application.Services
 
         public async Task<(PersonOutputModel okResult, string message)> CreatePerson(PersonInputModel personInputModel)
         {
+            personInputModel.CPF = Domain.Entities.Person.CpfRemoveMask(personInputModel.CPF);
             var personResult = await _personRepository.GetPersonByCpf(personInputModel.CPF);
 
             if (personResult.person != null)
@@ -31,14 +31,13 @@ namespace UPBank.Person.Application.Services
                 CPF = personInputModel.CPF,
                 Name = personInputModel.Name,
                 BirthDate = personInputModel.BirthDate,
-                AddressId = add.Id,
+                AddressId = add.addressOutputModel.Id,
                 Email = personInputModel.Email,
                 Gender = personInputModel.Gender,
                 Phone = personInputModel.Phone,
                 Salary = personInputModel.Salary
             };
 
-            entityPerson.CPF = Domain.Entities.Person.CpfRemoveMask(entityPerson.CPF);
             var validateCPF = entityPerson.Validate(entityPerson);
 
             if (validateCPF != string.Empty)
@@ -51,13 +50,18 @@ namespace UPBank.Person.Application.Services
             return (CreatePersonOutputModel(personResult.person).Result, personResult.message);
         }
 
-        public async Task<(Domain.Entities.Person person, string message)> GetPersonByCpf(string cpf)
+        public async Task<(PersonOutputModel person, string message)> GetPersonByCpf(string cpf)
         {
+            cpf = Domain.Entities.Person.CpfRemoveMask(cpf);
+            
             var person = await _personRepository.GetPersonByCpf(cpf);
-            if (person.person != null)
-                person.person.CPF = person.person.CpfAddMask(person.person.CPF);
+            
+            if (person.person == null)
+                return (null, person.message);
 
-            return person;
+            var personResult = CreatePersonOutputModel(person.person).Result;
+
+            return (personResult, null);
         }
 
         public async Task<(Domain.Entities.Person person, string message)> PatchPerson(string cpf, Models.DTOs.PersonPatchDTO personPatchDTO)
@@ -80,7 +84,7 @@ namespace UPBank.Person.Application.Services
                 personResult.person.Phone = personPatchDTO.Phone;
 
             if (personPatchDTO.Address.Number != "" || personPatchDTO.Address.Complement != "" || personPatchDTO.Address.ZipCode != "")
-                    await _addressService.UpdateAddress(personResult.person.AddressId, personPatchDTO.Address);
+                await _addressService.UpdateAddress(personResult.person.AddressId, personPatchDTO.Address);
 
             return await _personRepository.PatchPerson(cpf, personResult.person);
         }
@@ -94,17 +98,7 @@ namespace UPBank.Person.Application.Services
                 CPF = person.CpfAddMask(person.CPF),
                 Email = person.Email,
                 Name = person.Name,
-                Address = new AddressOutputModel
-                {
-                    Id = address.Id,
-                    ZipCode = address.ZipCode,
-                    Number = address.Number,
-                    Complement = address.Complement,
-                    Street = address.Street,
-                    City = address.City,
-                    State = address.State,
-                    Neighborhood = address.Neighborhood
-                },
+                Address = address.addressOutputModel,
                 BirthDate = person.BirthDate,
                 Gender = person.Gender,
                 Phone = person.Phone,

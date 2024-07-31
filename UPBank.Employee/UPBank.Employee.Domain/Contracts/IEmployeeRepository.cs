@@ -1,18 +1,18 @@
-﻿namespace UPBank.Employee.Domain.Contracts
+﻿using UPBank.Utils.CommonsFiles;
+
+namespace UPBank.Employee.Domain.Contracts
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository : IRepository<Entities.Employee>
     {
-        Task<(Entities.Employee employee, string message)> CreateEmployee(Entities.Employee employee);
-        Task<(Entities.Employee employee, string message)> GetEmployeeByCpf(string cpf);
-        Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf);
-        Task<(IEnumerable<Entities.Employee> employees, string message)> GetAllEmployees();
-        Task<(Entities.Employee employee, string message)> PatchEmployee(string cpf, bool manager);
+        //Task<(Entities.Employee employee, string message)> CreateEmployee(Entities.Employee employee);
+        //Task<(Entities.Employee employee, string message)> GetEmployeeByCpf(string cpf);
+        //Task<(bool ok, string message)> DeleteEmployeeByCpf(string cpf);
+        //Task<(IEnumerable<Entities.Employee> employees, string message)> GetAllEmployees();
+        //Task<(Entities.Employee employee, string message)> PatchEmployee(string cpf, bool manager);
 
 
         Task<Entities.Employee> SetProfile(string cpf, bool manager);
         Task<Entities.Employee> ApproveAccountOpening(string cpf);
         Task<Entities.Employee> AccountOpeningRequests();
-
-
     }
 }

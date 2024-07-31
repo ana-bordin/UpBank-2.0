@@ -1,4 +1,5 @@
-﻿using UPBank.Address.Application.Models;
+﻿using Newtonsoft.Json;
+using UPBank.Address.Application.Models;
 
 namespace UPBank.Person.Application.Models
 {

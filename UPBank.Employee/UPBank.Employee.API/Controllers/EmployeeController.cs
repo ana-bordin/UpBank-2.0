@@ -37,15 +37,15 @@ namespace UPBank.Employee.API.Controllers
             return Ok(employee);
         }
 
-        [HttpPatch("api/employees/{cpf}")]
-        public async Task<IActionResult> UpdateEmployee(string cpf, [FromBody] EmployeePatchDTO employeePatchDTO)
-        {
-            var employee = await _employeeService.PatchEmployee(cpf, employeePatchDTO);
-            if (employee.employee == null)
-                return BadRequest(employee.message);
+        //[HttpPatch("api/employees/{cpf}")]
+        //public async Task<IActionResult> UpdateEmployee(string cpf, [FromBody] EmployeePatchDTO employeePatchDTO)
+        //{
+        //    var employee = await _employeeService.PatchEmployee(cpf, employeePatchDTO);
+        //    if (employee.employee == null)
+        //        return BadRequest(employee.message);
 
-            return Ok(employee);
-        }
+        //    return Ok(employee);
+        //}
 
         [HttpDelete("api/employees/{cpf}")]
         public async Task<IActionResult> DeleteEmployee(string cpf)

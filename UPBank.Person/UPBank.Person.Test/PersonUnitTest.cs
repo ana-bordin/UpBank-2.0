@@ -32,8 +32,9 @@ namespace UPBank.Person.Test
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
             _personRepository.Setup(m => m.CreatePerson(It.IsAny<Domain.Entities.Person>())).ReturnsAsync((PersonMock.Person, null));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
-            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync(AddressMock.AddressOutputModel);
+
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
+            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.PersonInputModel);
             
@@ -91,8 +92,8 @@ namespace UPBank.Person.Test
         public void CreatePerson_ReturnBadRequest()
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, "error"));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
-            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
+            _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.PersonInputModel);
 
@@ -103,7 +104,7 @@ namespace UPBank.Person.Test
         public void CreatePersonWithInvalidDocument_ReturnBadRequest()
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonCPF);
 
@@ -115,7 +116,7 @@ namespace UPBank.Person.Test
         public void CreatePersonWithInvalidName_ReturnBadRequest()
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonName);
 
@@ -127,7 +128,7 @@ namespace UPBank.Person.Test
         public void CreatePersonWithInvalidEmail_ReturnBadRequest()
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonEmail);
             
@@ -139,13 +140,12 @@ namespace UPBank.Person.Test
         public void CreatePersonWithInvalidPhone_ReturnBadRequest()
         {
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonPhone);
             
             Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Telefone inválido", ((BadRequestObjectResult)result.Result).Value);
-
         }
 
         [Fact]
@@ -153,8 +153,8 @@ namespace UPBank.Person.Test
         {
 
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
-            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync(AddressMock.AddressOutputModel);
-            
+            _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
+
             var result = _personController.CreatePerson(PersonMock.InvalidPersonSalary);
             
             Assert.IsType<BadRequestObjectResult>(result.Result);

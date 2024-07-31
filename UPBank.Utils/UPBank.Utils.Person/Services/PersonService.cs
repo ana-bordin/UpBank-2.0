@@ -8,18 +8,21 @@ namespace UPBank.Utils.Person.Services
     public class PersonService : IPersonService
     {
         private static readonly HttpClient _client = new HttpClient();
-        public async Task<(bool ok, string message)> CreatePerson(PersonInputModel person)
+        public async Task<(PersonOutputModel okResult, string message)> CreatePerson(PersonInputModel person)
         {
 
             var content = new StringContent(JsonConvert.SerializeObject(person), Encoding.UTF8, "application/json");
             var response = await _client.PostAsync("https://localhost:7048/api/peoples", content);
 
             if (response.IsSuccessStatusCode)
-                return (true, null);
+            { 
+                return (JsonConvert.DeserializeObject<PersonOutputModel>(response.Content.ReadAsStringAsync().Result), null);
+            }
+               
             else
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                return (false, "houve um erro ao criar a pessoa: " + errorMessage);
+                return (null, "houve um erro ao criar a pessoa: " + errorMessage);
             }
 
         }
