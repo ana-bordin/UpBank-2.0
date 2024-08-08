@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UPBank.Employee.Application.Contracts;
-using UPBank.Employee.Application.Models;
-using UPBank.Employee.Application.Models.DTOs;
+using UPBank.Employee.Domain.Models;
 
 namespace UPBank.Employee.API.Controllers
 {
@@ -64,14 +63,14 @@ namespace UPBank.Employee.API.Controllers
             return Ok(employees);
         }
 
-       
-        
-        
+
+
+
         //[HttpPatch("api/employees/setProfileAccount")]
         //public async Task<IActionResult> SetProfileAccount([FromBody] SetProfileDTO setProfileDTO)
         //{
         //    var ok = await _employeeService.SetProfile(setProfileDTO);
-            
+
         //    if (!ok)
         //        return BadRequest();
 
@@ -82,7 +81,7 @@ namespace UPBank.Employee.API.Controllers
         //public async Task<IActionResult> AccountOpeningRequests()
         //{
         //    var accountOpeningRequests = await _customerService.GetAccountOpeningRequests();
-            
+
         //    return Ok(accountOpeningRequests);
         //}
 

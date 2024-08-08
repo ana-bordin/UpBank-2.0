@@ -2,14 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using UPBank.Employee.API.Controllers;
 using UPBank.Employee.Application.Contracts;
-using UPBank.Employee.Application.Models;
-using UPBank.Employee.Application.Services;
 using UPBank.Employee.Domain.Contracts;
 using UPBank.Employee.Test.Mock.Entities;
 using UPBank.Person.Test.Mocks.Entities;
 using UPBank.Utils.Address.Contracts;
-using UPBank.Utils.Person.Contracts;
-using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Employee.Test
 {

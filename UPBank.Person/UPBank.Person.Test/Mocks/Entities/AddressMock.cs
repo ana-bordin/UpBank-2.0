@@ -1,4 +1,4 @@
-﻿using UPBank.Address.Application.Models;
+﻿using UPBank.Address.Domain.Models;
 
 namespace UPBank.Person.Test.Mocks.Entities
 {

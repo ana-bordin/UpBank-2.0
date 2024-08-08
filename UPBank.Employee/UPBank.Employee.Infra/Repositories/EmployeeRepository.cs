@@ -29,7 +29,7 @@ namespace UPBank.Employee.Infra.Repositories
                 return (null, "houve um erro ao criar funcionario:" + e);
             }
         }
-         public async Task<(bool ok, string message)> DeleteAsync<TKey>(TKey key)
+        public async Task<(bool ok, string message)> DeleteAsync<TKey>(TKey key)
         {
             try
             {

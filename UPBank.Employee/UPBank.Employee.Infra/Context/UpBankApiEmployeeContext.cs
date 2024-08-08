@@ -15,7 +15,7 @@ namespace UPBank.Employee.Infra.Context
 
         IDbConnection IUpBankApiEmployeeContext.Connection
         {
-            get 
+            get
             {
                 var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiEmployeeContext").Value;
                 return new SqlConnection(connectionString);

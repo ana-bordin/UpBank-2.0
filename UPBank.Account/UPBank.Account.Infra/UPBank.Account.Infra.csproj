@@ -11,8 +11,4 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\UPBank.Account.Domain\UPBank.Account.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

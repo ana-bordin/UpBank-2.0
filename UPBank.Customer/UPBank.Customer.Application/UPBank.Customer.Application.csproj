@@ -11,8 +11,4 @@
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\UPBank.Customer.Domain\UPBank.Customer.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\UPBank.Employee.API\UPBank.Employee.API.csproj" />
     <ProjectReference Include="..\UPBank.Employee.Application\UPBank.Employee.Application.csproj" />
-    <ProjectReference Include="..\UPBank.Employee.Domain\UPBank.Employee.Domain.csproj" />
     <ProjectReference Include="..\UPBank.Employee.Infra\UPBank.Employee.Infra.csproj" />
   </ItemGroup>
 

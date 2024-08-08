@@ -1,6 +1,4 @@
-﻿using UPBank.Employee.Application.Models;
-using UPBank.Employee.Application.Models.DTOs;
-using UPBank.Person.Test.Mocks.Entities;
+﻿using UPBank.Person.Test.Mocks.Entities;
 
 namespace UPBank.Employee.Test.Mock.Entities
 {

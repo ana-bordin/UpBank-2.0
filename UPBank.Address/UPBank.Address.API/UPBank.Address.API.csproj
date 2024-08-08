@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UPBank.Address.Application\UPBank.Address.Application.csproj" />
     <ProjectReference Include="..\UPBank.Address.Domain\UPBank.Address.Domain.csproj" />
     <ProjectReference Include="..\UPBank.Address.Infra\UPBank.Address.Infra.csproj" />
   </ItemGroup>

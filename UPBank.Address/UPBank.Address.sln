@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Domain", "UPBank.Address.Domain\UPBank.Address.Domain.csproj", "{BCAC9278-021F-4D88-8F16-C0D404523605}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Infra", "UPBank.Address.Infra\UPBank.Address.Infra.csproj", "{C894B93A-7464-4579-B028-F8E28551A401}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Application", "UPBank.Address.Application\UPBank.Address.Application.csproj", "{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.API", "UPBank.Address.API\UPBank.Address.API.csproj", "{DE568D40-D122-4C2B-936D-C45461303D71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Address.Test", "UPBank.Address.Test\UPBank.Address.Test.csproj", "{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Address.Test", "UPBank.Address.Test\UPBank.Address.Test.csproj", "{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Address.Domain", "UPBank.Address.Domain\UPBank.Address.Domain.csproj", "{E1417235-1891-424A-AC8B-BF5538B54CC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,18 +17,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BCAC9278-021F-4D88-8F16-C0D404523605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCAC9278-021F-4D88-8F16-C0D404523605}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCAC9278-021F-4D88-8F16-C0D404523605}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCAC9278-021F-4D88-8F16-C0D404523605}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C894B93A-7464-4579-B028-F8E28551A401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C894B93A-7464-4579-B028-F8E28551A401}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C894B93A-7464-4579-B028-F8E28551A401}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C894B93A-7464-4579-B028-F8E28551A401}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4CD0C0F-1143-4A95-8F0A-47FFE9CA76F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE568D40-D122-4C2B-936D-C45461303D71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE568D40-D122-4C2B-936D-C45461303D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE568D40-D122-4C2B-936D-C45461303D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +29,10 @@ Global
 		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FF8D1D2-6791-4E35-9F4E-EF27E4FB296B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1417235-1891-424A-AC8B-BF5538B54CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1417235-1891-424A-AC8B-BF5538B54CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1417235-1891-424A-AC8B-BF5538B54CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1417235-1891-424A-AC8B-BF5538B54CC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

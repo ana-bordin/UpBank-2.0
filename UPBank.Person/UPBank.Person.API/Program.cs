@@ -1,8 +1,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
-using UPBank.Person.Application.Contracts;
-using UPBank.Person.Application.Services;
 using UPBank.Person.Domain.Contracts;
+using UPBank.Person.Domain.Services;
 using UPBank.Person.Infra.Context;
 using UPBank.Person.Infra.Repositories;
 using UPBank.Utils.Address.Contracts;

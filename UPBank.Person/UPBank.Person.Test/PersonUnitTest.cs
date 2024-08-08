@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using UPBank.Address.Application.Models;
+using UPBank.Address.Domain.Models;
 using UPBank.Person.API.Controllers;
-using UPBank.Person.Application.Contracts;
-using UPBank.Person.Application.Services;
 using UPBank.Person.Domain.Contracts;
+using UPBank.Person.Domain.Services;
 using UPBank.Person.Test.Mocks.Entities;
 using UPBank.Utils.Address.Contracts;
 
@@ -37,7 +36,7 @@ namespace UPBank.Person.Test
             _addressService.Setup(m => m.GetCompleteAddressById(It.IsAny<Guid>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.PersonInputModel);
-            
+
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
@@ -47,7 +46,7 @@ namespace UPBank.Person.Test
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((PersonMock.PersonGet, null));
 
             var result = _personController.GetPerson("96649661007");
-            
+
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
@@ -59,7 +58,7 @@ namespace UPBank.Person.Test
             _personRepository.Setup(m => m.PatchPerson(It.IsAny<string>(), It.IsAny<Domain.Entities.Person>())).ReturnsAsync((PersonMock.Person, null));
 
             var result = _personController.UpdatePerson("12345678901", PersonMock.PersonPatchDTO);
-            
+
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
@@ -73,7 +72,7 @@ namespace UPBank.Person.Test
             _personRepository.Setup(m => m.PatchPerson(It.IsAny<string>(), It.IsAny<Domain.Entities.Person>())).ReturnsAsync((null, "erro"));
 
             var result = _personController.UpdatePerson("96649661007", PersonMock.PersonPatchDTO);
-            
+
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
@@ -83,7 +82,7 @@ namespace UPBank.Person.Test
             _personRepository.Setup(m => m.GetPersonByCpf(It.IsAny<string>())).ReturnsAsync((null, null));
 
             var result = _personController.GetPerson("12345678901");
-            
+
             Assert.IsType<NotFoundObjectResult>(result.Result);
             Assert.Equal("Pessoa não encontrada", ((NotFoundObjectResult)result.Result).Value);
         }
@@ -131,7 +130,7 @@ namespace UPBank.Person.Test
             _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonEmail);
-            
+
             Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Email inválido", ((BadRequestObjectResult)result.Result).Value);
         }
@@ -143,7 +142,7 @@ namespace UPBank.Person.Test
             _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonPhone);
-            
+
             Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Telefone inválido", ((BadRequestObjectResult)result.Result).Value);
         }
@@ -156,7 +155,7 @@ namespace UPBank.Person.Test
             _addressService.Setup(m => m.CreateAddress(It.IsAny<AddressInputModel>())).ReturnsAsync((AddressMock.AddressOutputModel, null));
 
             var result = _personController.CreatePerson(PersonMock.InvalidPersonSalary);
-            
+
             Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Salário inválido", ((BadRequestObjectResult)result.Result).Value);
         }

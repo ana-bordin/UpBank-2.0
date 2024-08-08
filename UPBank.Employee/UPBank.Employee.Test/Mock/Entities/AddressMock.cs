@@ -1,6 +1,4 @@
-﻿using UPBank.Address.Application.Models;
-
-namespace UPBank.Person.Test.Mocks.Entities
+﻿namespace UPBank.Person.Test.Mocks.Entities
 {
     public class AddressMock
     {

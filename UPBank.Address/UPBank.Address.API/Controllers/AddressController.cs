@@ -1,87 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UPBank.Address.Application.Contracts;
-using UPBank.Address.Application.Models;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.Domain.Commands.DeleteAddress;
+using UPBank.Address.Domain.Commands.UpdateAddress;
+using UPBank.Address.Domain.Queries.GetAddressById;
 
 namespace UPBank.Address.API.Controllers
 {
     public class AddressController : Controller
     {
-        private readonly IAddressService _addressService;
+        private readonly IMediator _bus;
 
-        public AddressController(IAddressService addressService)
+        public AddressController(IMediator bus)
         {
-            _addressService = addressService;
+            _bus = bus;
         }
 
-        [HttpGet("api/addresses/{id}")]
-        public async Task<IActionResult> GetAddressById(Guid id)
+        [HttpGet("api/addresses/{getAddressByIdQuery.Id}")]
+        public async Task<IActionResult> GetAddressById(GetAddressByIdQuery getAddressByIdQuery, CancellationToken cancellationToken)
         {
-            var addressOutputModel = await _addressService.GetCompleteAddressById(id);
+            var response = await _bus.Send(getAddressByIdQuery, cancellationToken);
 
-            if (addressOutputModel.addressOutputModel == null && addressOutputModel.message == null)
-                return NotFound();
-            else if (addressOutputModel.message != null)
-                return BadRequest(addressOutputModel.message);
+            if (response.Errors.Count() != 0)
+                return NotFound(response.Errors);
 
-            return Ok(addressOutputModel.addressOutputModel);
+            return Ok(response);
         }
 
         [HttpPost("api/addresses")]
-        public async Task<IActionResult> CreateAddress([FromBody] AddressInputModel addressInputModel)
+        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressCommand createAddressModel, CancellationToken cancellationToken)
         {
-            var address = await _addressService.CreateAddress(addressInputModel.ZipCode);
+            var response = await _bus.Send(createAddressModel, cancellationToken);
 
-            if (address.ok)
-            {
-                var completeAddress = await _addressService.CreateCompleteAddress(addressInputModel);
+            if (response.Errors != null)
+                return BadRequest(response.Errors);
 
-                if (completeAddress.guid != Guid.Empty)
-                {
-                    var addressOutputModel = await _addressService.GetCompleteAddressById(completeAddress.guid);
-
-                    return Ok(addressOutputModel.addressOutputModel);
-                }
-                else
-                {
-                    if (address.message != null)
-                        return BadRequest(address.message);
-                    return BadRequest("Não foi possivel criar o endereço, tente novamente mais tarde");
-                }
-            }
-            else
-            {
-                if (address.message != null)
-                    return BadRequest(address.message);
-
-                return BadRequest("Não foi possivel criar o endereço, tente novamente mais tarde");
-            }
-        }
-
-        [HttpDelete("api/addresses/{id}")]
-        public async Task<IActionResult> DeleteAddress(Guid id)
-        {
-            var address = await _addressService.DeleteAddressById(id);
-
-            if (!address.ok)
-            {
-                if (address.message == "Endereço não encontrado")
-                    return NotFound(address.message);
-
-                return BadRequest(address.message);
-            }
-            return Ok();
+            return Ok(response);
         }
 
         [HttpPatch("api/addresses/{id}")]
-        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressInputModel addressInputModel)
+        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] UpdateAddressCommand updateAddressModel, CancellationToken cancellationToken)
         {
-            var address = await _addressService.UpdateAddress(id, addressInputModel);
+            updateAddressModel.Id = id;
+            var response = await _bus.Send(updateAddressModel, cancellationToken);
 
-            if (address.addressOutputModel == null)
-                return BadRequest(address.message);
+            if (response.Errors.Count() != 0)
+                return BadRequest(response.Errors);
 
-            return Ok(address.addressOutputModel);
+            return Ok(response);
         }
 
+        [HttpDelete("api/addresses/{deleteAddressCommand.Id}")]
+        public async Task<IActionResult> DeleteAddress(DeleteAddressCommand deleteAddressCommand, CancellationToken cancellationToken)
+        {
+            var response = await _bus.Send(deleteAddressCommand, cancellationToken);
+
+            if (response.HasNotification)
+                return BadRequest(response.Get());
+
+            return Ok("Endereço excluido com sucesso!");
+        }
     }
 }

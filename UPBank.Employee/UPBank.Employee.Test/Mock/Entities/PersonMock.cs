@@ -1,7 +1,4 @@
-﻿using UPBank.Person.Application.Models;
-using UPBank.Utils.Person.Models.DTOs;
-
-namespace UPBank.Person.Test.Mocks.Entities
+﻿namespace UPBank.Person.Test.Mocks.Entities
 {
     public class PersonMock
     {

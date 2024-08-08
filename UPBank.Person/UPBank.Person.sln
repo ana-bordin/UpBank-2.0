@@ -5,13 +5,11 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.API", "UPBank.Person.API\UPBank.Person.API.csproj", "{A16F4331-7540-42A6-A820-6CC36282D6C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Application", "UPBank.Person.Application\UPBank.Person.Application.csproj", "{34D7E211-82BC-42D2-8588-F8C4A9235F54}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Domain", "UPBank.Person.Domain\UPBank.Person.Domain.csproj", "{B20B5E74-173E-4E70-BE8D-02E855F38765}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Infra", "UPBank.Person.Infra\UPBank.Person.Infra.csproj", "{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Person.Test", "UPBank.Person.Test\UPBank.Person.Test.csproj", "{3B21851E-9948-4113-A9C8-D3E097D2DF88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Test", "UPBank.Person.Test\UPBank.Person.Test.csproj", "{3B21851E-9948-4113-A9C8-D3E097D2DF88}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Domain", "UPBank.Person.Domain\UPBank.Person.Domain.csproj", "{E06E48B1-8019-4C68-B57D-8B579066EE7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +21,6 @@ Global
 		{A16F4331-7540-42A6-A820-6CC36282D6C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A16F4331-7540-42A6-A820-6CC36282D6C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A16F4331-7540-42A6-A820-6CC36282D6C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34D7E211-82BC-42D2-8588-F8C4A9235F54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34D7E211-82BC-42D2-8588-F8C4A9235F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34D7E211-82BC-42D2-8588-F8C4A9235F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34D7E211-82BC-42D2-8588-F8C4A9235F54}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B20B5E74-173E-4E70-BE8D-02E855F38765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B20B5E74-173E-4E70-BE8D-02E855F38765}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B20B5E74-173E-4E70-BE8D-02E855F38765}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B20B5E74-173E-4E70-BE8D-02E855F38765}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6F85AE1-2E1B-4382-8F11-DA5C8D137BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +29,10 @@ Global
 		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B21851E-9948-4113-A9C8-D3E097D2DF88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

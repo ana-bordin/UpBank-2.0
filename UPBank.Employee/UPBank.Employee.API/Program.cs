@@ -1,16 +1,11 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using UPBank.Employee.Application.Contracts;
-using UPBank.Employee.Application.RabbitMQ;
-using UPBank.Employee.Application.Services;
 using UPBank.Employee.Domain.Contracts;
 using UPBank.Employee.Infra.Context;
 using UPBank.Employee.Infra.Repositories;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Address.Services;
-using UPBank.Utils.CommonsFiles;
-using UPBank.Utils.Person.Contracts;
-using UPBank.Utils.Person.Services;
 
 namespace UPBank.Employee.API
 {
@@ -19,7 +14,7 @@ namespace UPBank.Employee.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
             builder.Services.AddSingleton<IDbConnection>(db => new SqlConnection(builder.Configuration.GetConnectionString("UpBankApiEmployeeContext")));
 
             // Add services to the container.
@@ -42,10 +37,10 @@ namespace UPBank.Employee.API
 
 
             app.MapControllers();
-            
+
             var consumer = app.Services.GetService<RabbitMQConsumer>();
             consumer.StartListening();
-            
+
             app.Run();
         }
     }

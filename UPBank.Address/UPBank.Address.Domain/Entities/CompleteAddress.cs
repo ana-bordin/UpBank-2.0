@@ -12,6 +12,6 @@ namespace UPBank.Address.Domain.Entities
         public string Complement { get; set; }
 
         [NotMapped]
-        public Address? Address { get; set; }
+        public Address Address { get; set; }
     }
 }
