@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using UPBank.Person.Domain.Commands.CreatePerson;
+using UPBank.Person.Domain.Commands.UpdatePerson;
 using UPBank.Utils.Address.Contracts;
 using UPBank.Utils.Address.Services;
 using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Pipes;
 using UPBank.Utils.CommonsFiles.Services;
 
 namespace UPBank.Person.Domain
@@ -15,30 +17,24 @@ namespace UPBank.Person.Domain
         {
             return services
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(Bootstrapper)))
-                //.AddTransient(typeof(IPipelineBehavior<,>), typeof(FailFastValidation<,>))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(FailFastValidation<,>))
                 .AddValidators()
                 .AddAutoMapper(typeof(Bootstrapper))
                 .AddScoped<IDomainNotificationService, DomainNotificationServiceHandler>()
                 .AddCommands()
-                .AddQueries()
                 .AddServices();
         }
 
         private static IServiceCollection AddValidators(this IServiceCollection services)
         {
-            services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidation>();
-            return services;
+             services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
         }
 
         private static IServiceCollection AddCommands(this IServiceCollection services)
         {
-            services.AddTransient<CreatePersonCommandHandler>();
-            return services;
-        }
-
-        private static IServiceCollection AddQueries(this IServiceCollection services)
-        {
-            return services;
+            return services
+                .AddTransient<CreatePersonCommandHandler>()
+                .AddTransient<UpdatePersonCommandHandler>();
         }
 
         private static IServiceCollection AddServices(this IServiceCollection services)

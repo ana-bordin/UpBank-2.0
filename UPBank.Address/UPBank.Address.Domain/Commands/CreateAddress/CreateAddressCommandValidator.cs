@@ -2,9 +2,9 @@
 
 namespace UPBank.Address.Domain.Commands.CreateAddress
 {
-    public class CreateAddressCommandValidation : AbstractValidator<CreateAddressCommand>
+    public class CreateAddressCommandValidator : AbstractValidator<CreateAddressCommand>
     {
-        public CreateAddressCommandValidation()
+        public CreateAddressCommandValidator()
         {
             RuleFor(command => command.ZipCode)
                 .NotEmpty()

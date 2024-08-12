@@ -18,9 +18,12 @@ namespace UPBank.Address.Infra.Context
         {
             get
             {
-                var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiAddressContext").Value;
-                _connection = new SqlConnection(connectionString);
-                _connection.Open();
+                if (_connection == null || _connection.State == ConnectionState.Closed)
+                {
+                    var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiAddressContext").Value;
+                    _connection = new SqlConnection(connectionString);
+                    _connection.Open();
+                }
                 return _connection;
             }
         }

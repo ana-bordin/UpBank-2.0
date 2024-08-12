@@ -38,7 +38,6 @@ namespace UPBank.Address.Domain.Commands.UpdateAddress
             var result = _mapper.Map<CreateAddressCommandResponse>(address);
             _mapper.Map(completeAddress, result);
 
-            result.Errors = _domainNotificationService.Get().ToList();
             return result;
         }
     }

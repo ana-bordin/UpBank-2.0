@@ -3,7 +3,7 @@ using UPBank.Utils.CommonsFiles.DTOs;
 
 namespace UPBank.Person.Domain.Commands.CreatePerson
 {
-    public class CreatePersonCommandResponse : ResponseDTO
+    public class CreatePersonCommandResponse
     {
         public string CPF { get; set; }
         public string Name { get; set; }

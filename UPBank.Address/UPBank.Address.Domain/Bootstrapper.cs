@@ -44,7 +44,7 @@ namespace UPBank.Address.Domain
 
         private static IServiceCollection AddValidators(this IServiceCollection services)
         {
-            services.AddScoped<IValidator<CreateAddressCommand>, CreateAddressCommandValidation>();
+            services.AddScoped<IValidator<CreateAddressCommand>, CreateAddressCommandValidator>();
             return services;
         }
     }

@@ -2,7 +2,7 @@
 
 namespace UPBank.Address.Domain.Commands.CreateAddress
 {
-    public class CreateAddressCommandResponse : ResponseDTO
+    public class CreateAddressCommandResponse
     {
         public Guid Id { get; set; }
         public string ZipCode { get; set; }

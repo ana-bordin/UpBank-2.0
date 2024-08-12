@@ -60,9 +60,6 @@ namespace UPBank.Person.Infra.Repositories
                 _domainNotificationService.Add("Houve um erro ao atualizar pessoa:" + e.Message);
                 return null;
             }
-        }
-
-        _context.Connection.Dispose();
-        
+        }       
     }
 }

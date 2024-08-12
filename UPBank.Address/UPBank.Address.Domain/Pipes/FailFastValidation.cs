@@ -2,13 +2,12 @@
 using FluentValidation.Results;
 using MediatR;
 using UPBank.Utils.CommonsFiles.Contracts;
-using UPBank.Utils.CommonsFiles.DTOs;
 
 namespace UPBank.Utils.CommonsFiles.Pipes
 {
     public class FailFastValidation<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : ResponseDTO, new()
+        where TResponse : class
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
         private readonly IDomainNotificationService _domainNotificationService;
@@ -39,9 +38,7 @@ namespace UPBank.Utils.CommonsFiles.Pipes
         {
             _domainNotificationService.AddRange(failures.Select(x => $"{x.ErrorMessage}"));
 
-            var result = new TResponse();
-            result.Errors = _domainNotificationService.Get().ToList();
-            return (TResponse)(object)result;
+            return Task.FromResult(default(TResponse)).Result;
         }
     }
 }

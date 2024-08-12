@@ -4,25 +4,28 @@ using UPBank.Address.Domain.Commands.CreateAddress;
 using UPBank.Address.Domain.Commands.DeleteAddress;
 using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Address.Domain.Queries.GetAddressById;
+using UPBank.Utils.CommonsFiles.Contracts;
 
 namespace UPBank.Address.API.Controllers
 {
     public class AddressController : Controller
     {
         private readonly IMediator _bus;
+        private readonly IDomainNotificationService _domainNotificationService;
 
-        public AddressController(IMediator bus)
+        public AddressController(IMediator bus, IDomainNotificationService domainNotificationService)
         {
             _bus = bus;
+            _domainNotificationService = domainNotificationService;
         }
 
-        [HttpGet("api/addresses/{getAddressByIdQuery.Id}")]
-        public async Task<IActionResult> GetAddressById(GetAddressByIdQuery getAddressByIdQuery, CancellationToken cancellationToken)
+        [HttpGet("api/addresses/{id}")]
+        public async Task<IActionResult> GetAddressById(string id, CancellationToken cancellationToken)
         {
-            var response = await _bus.Send(getAddressByIdQuery, cancellationToken);
+            var response = await _bus.Send(new GetAddressByIdQuery(Guid.Parse(id)), cancellationToken);
 
-            if (response.Errors.Count() != 0)
-                return NotFound(response.Errors);
+            if (_domainNotificationService.HasNotification)
+                return NotFound(_domainNotificationService.Get);
 
             return Ok(response);
         }
@@ -32,8 +35,8 @@ namespace UPBank.Address.API.Controllers
         {
             var response = await _bus.Send(createAddressModel, cancellationToken);
 
-            if (response.Errors.Count() != 0)
-                return BadRequest(response.Errors);
+            if (_domainNotificationService.HasNotification)
+                return NotFound(_domainNotificationService.Get);
 
             return Ok(response);
         }
@@ -44,8 +47,8 @@ namespace UPBank.Address.API.Controllers
             updateAddressModel.Id = id;
             var response = await _bus.Send(updateAddressModel, cancellationToken);
 
-            if (response.Errors.Count() != 0)
-                return BadRequest(response.Errors);
+            if (_domainNotificationService.HasNotification)
+                return NotFound(_domainNotificationService.Get);
 
             return Ok(response);
         }

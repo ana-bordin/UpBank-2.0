@@ -2,39 +2,47 @@
 
 namespace UPBank.Person.Domain.Commands.CreatePerson
 {
-    public class CreatePersonCommandValidation : AbstractValidator<CreatePersonCommand>
+    public class CreatePersonCommandValidator : AbstractValidator<CreatePersonCommand>
     {
-        public CreatePersonCommandValidation()
+        public CreatePersonCommandValidator()
         {
             RuleFor(x => x.CPF)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .WithMessage("É necessário informar o CPF")
-                .Length(11)
-                .WithMessage("CPF deve conter 11 caracteres")
+                .WithMessage("É necessário informar o Documento")
                 .Must(Validate)
                 .WithMessage("CPF inválido");
 
             RuleFor(x => x.Name)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("É necessário informar o nome")
                 .MinimumLength(3)
                 .WithMessage("Nome deve conter no mínimo 3 caracteres");
 
             RuleFor(x => x.BirthDate)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Data de nascimento inválida")
                 .LessThan(DateTime.Now)
                 .WithMessage("Data de nascimento não pode ser maior ou igual o dia atual");
+
             RuleFor(x => x.Gender)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .WithMessage("É necessário informar o gênero");
+                .WithMessage("É necessário informar o gênero")
+                .Must(x => char.ToUpper(x) == 'M' || char.ToUpper(x) == 'F')
+                .WithMessage("Gênero inválido");
+
             RuleFor(x => x.Email)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("É necessário informar o email")
                 .EmailAddress()
                 .WithMessage("Email inválido");
 
             RuleFor(x => x.Phone)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("É necessário informar o telefone")
                 .MinimumLength(11)
@@ -42,6 +50,7 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
                 .WithMessage("Telefone inválido");
 
             RuleFor(x => x.Salary)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("É necessário informar o salário")
                 .GreaterThan(0)
@@ -54,6 +63,7 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
         }
         private bool Validate(string cpf)
         {
+            cpf = CreatePersonCommand.CpfRemoveMask(cpf);
             return CreatePersonCommand.CpfValidate(cpf);
         }
     }

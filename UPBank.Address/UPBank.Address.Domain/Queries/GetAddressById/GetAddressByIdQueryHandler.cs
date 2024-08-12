@@ -34,7 +34,6 @@ namespace UPBank.Address.Domain.Queries.GetAddressById
 
             var result = _mapper.Map<CreateAddressCommandResponse>(address);
             _mapper.Map(completeAddress, result);
-            result.Errors = _domainNotificationService.Get().ToList();
 
             return result;
         }

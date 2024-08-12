@@ -5,14 +5,14 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
 {
     public class CreatePersonCommand : IRequest<CreatePersonCommandResponse>
     {
-        public string CPF { get; set; }
-        public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-        public char Gender { get; set; }
-        public double Salary { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public CreateAddressCommand Address { get; set; }
+        public string CPF { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public DateTime BirthDate { get; set; } = DateTime.MinValue;
+        public char Gender { get; set; } = ' ';
+        public double Salary { get; set; } = 0;
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public CreateAddressCommand Address { get; set; } = new CreateAddressCommand();
 
         public static string CpfRemoveMask(string cpf)
         {
@@ -25,6 +25,9 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
 
         public static bool CpfValidate(string cpf)
         {
+            if (string.IsNullOrEmpty(cpf) || cpf.Length < 11)
+                return false;
+
             string tempCpf = cpf.Substring(0, 9);
 
             int sum = 0;

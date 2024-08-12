@@ -23,7 +23,7 @@ namespace UPBank.Address.Test
             _viaCepService = new Mock<IViaCepService>();
             _addressRepository = new Mock<IAddressRepository>();
             _completeAddressRepository = new Mock<IRepository<CompleteAddress>>();
-            _addressController = new AddressController(_mediator);
+            //_addressController = new AddressController(_mediator);
             _domainNotificationService = new Mock<IDomainNotificationService>();
         }
         

@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Models\**" />
+    <Compile Remove="Queries\**" />
     <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Queries\**" />
     <None Remove="Models\**" />
+    <None Remove="Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,11 +22,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\UpdatePerson\" />
-    <Folder Include="Queries\" />
   </ItemGroup>
 
 </Project>

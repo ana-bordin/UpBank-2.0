@@ -21,7 +21,7 @@ namespace UPBank.Person.Infra.Context
                 if (_connection == null || _connection.State == ConnectionState.Closed)
                 {
                     var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiPersonContext").Value;
-                    var _connection = new SqlConnection(connectionString);
+                    _connection = new SqlConnection(connectionString);
                     _connection.Open();
 
                 }

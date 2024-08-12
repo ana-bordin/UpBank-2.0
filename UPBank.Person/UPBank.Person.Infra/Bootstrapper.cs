@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 using UPBank.Person.Domain.Contracts;
 using UPBank.Person.Infra.Context;
+using UPBank.Person.Infra.Queries.GetPersonByCPF;
 using UPBank.Person.Infra.Repositories;
 
 namespace UPBank.Person.Infra
@@ -12,7 +12,15 @@ namespace UPBank.Person.Infra
         {
             return services
                 .AddSingleton<IUpBankApiPersonContext, UpBankApiPersonContext>()
-                .AddScoped<IPersonRepository, PersonRepository>();
+                .AddScoped<IPersonRepository, PersonRepository>()
+                .AddQueries()
+                .AddAutoMapper(typeof(Bootstrapper))
+                .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(Bootstrapper)));
+        }
+
+        private static IServiceCollection AddQueries(this IServiceCollection services)
+        {
+            return services.AddTransient<GetPersonByCPFQueryHandler>();
         }
     }
 }

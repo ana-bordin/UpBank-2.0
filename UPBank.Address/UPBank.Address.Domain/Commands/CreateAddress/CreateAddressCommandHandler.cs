@@ -2,7 +2,6 @@
 using MediatR;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Entities;
-using UPBank.Utils.CommonsFiles;
 using UPBank.Utils.CommonsFiles.Contracts;
 
 namespace UPBank.Address.Domain.Commands.CreateAddress
@@ -31,8 +30,7 @@ namespace UPBank.Address.Domain.Commands.CreateAddress
                 completeAddress = await HandleCompleteAddress(request);
 
             var result = _mapper.Map<CreateAddressCommandResponse>(address);
-            _mapper.Map(completeAddress, result);
-            result.Errors = _domainNotificationService.Get();
+            _mapper.Map(completeAddress, result); 
             return result;
         }
 
