@@ -1,6 +1,4 @@
-﻿using UPBank.Address.Application.Models;
-
-namespace UPBank.Person.Application.Models
+﻿namespace UPBank.Person.Application.Models
 {
     public class PersonInputModel
     {

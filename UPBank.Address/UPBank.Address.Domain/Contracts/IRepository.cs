@@ -1,4 +1,4 @@
-﻿namespace UPBank.Utils.CommonsFiles
+﻿namespace UPBank.Utils.CommonsFiles.Contracts
 {
     public interface IRepository<TEntity> where TEntity : class
     {

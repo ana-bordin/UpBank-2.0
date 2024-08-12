@@ -32,7 +32,7 @@ namespace UPBank.Address.API.Controllers
         {
             var response = await _bus.Send(createAddressModel, cancellationToken);
 
-            if (response.Errors != null)
+            if (response.Errors.Count() != 0)
                 return BadRequest(response.Errors);
 
             return Ok(response);

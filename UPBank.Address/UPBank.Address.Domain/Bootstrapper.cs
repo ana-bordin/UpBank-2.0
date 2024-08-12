@@ -5,9 +5,11 @@ using UPBank.Address.Domain.Commands.CreateAddress;
 using UPBank.Address.Domain.Commands.DeleteAddress;
 using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Address.Domain.Contracts;
-using UPBank.Address.Domain.Pipes;
 using UPBank.Address.Domain.Queries.GetAddressById;
 using UPBank.Address.Domain.Services;
+using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Pipes;
+using UPBank.Utils.CommonsFiles.Services;
 
 namespace UPBank.Address.Domain
 {

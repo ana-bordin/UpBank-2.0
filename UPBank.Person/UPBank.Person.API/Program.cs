@@ -1,11 +1,5 @@
-using Microsoft.Data.SqlClient;
-using System.Data;
-using UPBank.Person.Domain.Contracts;
-using UPBank.Person.Domain.Services;
-using UPBank.Person.Infra.Context;
-using UPBank.Person.Infra.Repositories;
-using UPBank.Utils.Address.Contracts;
-using UPBank.Utils.Address.Services;
+using UPBank.Person.Domain;
+using UPBank.Person.Infra;
 
 namespace UPBank.Person.API
 {
@@ -14,13 +8,11 @@ namespace UPBank.Person.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddSingleton<IDbConnection>(db => new SqlConnection(builder.Configuration.GetConnectionString("UpBankApiPersonContext")));
+
 
             // Add services to the container.
-            builder.Services.AddSingleton<IUpBankApiPersonContext, UpBankApiPersonContext>();
-            builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-            builder.Services.AddScoped<IPersonService, PersonService>();
-            builder.Services.AddScoped<IAddressService, AddressService>();
+            builder.Services.AddDomainContext();
+            builder.Services.AddInfraContext();
 
             // Add services to the container.
 

@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using UPBank.Address.Domain.Commands.CreateAddress;
-using UPBank.Address.Domain.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.DTOs;
 
-namespace UPBank.Address.Domain.Pipes
+namespace UPBank.Utils.CommonsFiles.Pipes
 {
     public class FailFastValidation<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : class, new()
+        where TResponse : ResponseDTO, new()
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
         private readonly IDomainNotificationService _domainNotificationService;
@@ -39,9 +39,9 @@ namespace UPBank.Address.Domain.Pipes
         {
             _domainNotificationService.AddRange(failures.Select(x => $"{x.ErrorMessage}"));
 
-            var addressResult = new CreateAddressCommandResponse();
-            addressResult.Errors = _domainNotificationService.Get().ToList();
-            return (TResponse)(object)addressResult;
+            var result = new TResponse();
+            result.Errors = _domainNotificationService.Get().ToList();
+            return (TResponse)(object)result;
         }
     }
 }

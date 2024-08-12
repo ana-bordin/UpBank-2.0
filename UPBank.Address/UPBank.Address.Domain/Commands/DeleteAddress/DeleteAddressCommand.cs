@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using UPBank.Address.Domain.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts;
 
 namespace UPBank.Address.Domain.Commands.DeleteAddress
 {

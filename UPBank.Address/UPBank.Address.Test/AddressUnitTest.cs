@@ -4,6 +4,7 @@ using UPBank.Address.API.Controllers;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Entities;
 using UPBank.Utils.CommonsFiles;
+using UPBank.Utils.CommonsFiles.Contracts;
 
 namespace UPBank.Address.Test
 {

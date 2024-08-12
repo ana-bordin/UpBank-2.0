@@ -1,12 +1,13 @@
-﻿using UPBank.Address.Application.Models;
-using UPBank.Address.Domain.Entities;
+﻿using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.Domain.Commands.UpdateAddress;
+using UPBank.Address.Domain.Queries.GetAddressById;
 
 namespace UPBank.Utils.Address.Contracts
 {
     public interface IAddressService
     {
-        Task<(AddressOutputModel addressOutputModel, string message)> CreateAddress(AddressInputModel addressInputModel);
-        Task<(CompleteAddress completeAddress, string message)> UpdateAddress(Guid Id, AddressInputModel addressInputModel);
-        Task<(AddressOutputModel addressOutputModel, string message)> GetCompleteAddressById(Guid id);
+        Task<CreateAddressCommandResponse> CreateAddress(CreateAddressCommand createAddressCommand, CancellationToken cancellationToken);
+        Task<CreateAddressCommandResponse> UpdateAddress(Guid Id, UpdateAddressCommand updateAddressCommand, CancellationToken cancellationToken);
+        Task<CreateAddressCommandResponse> GetCompleteAddressById(GetAddressByIdQuery getAddressByIdQuery, CancellationToken cancellationToken);
     }
 }

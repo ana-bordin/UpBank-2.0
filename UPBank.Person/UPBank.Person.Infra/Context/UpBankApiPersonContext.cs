@@ -7,6 +7,7 @@ namespace UPBank.Person.Infra.Context
     public class UpBankApiPersonContext : IUpBankApiPersonContext
     {
         private readonly IConfiguration _configuration;
+        private IDbConnection _connection;
 
         public UpBankApiPersonContext(IConfiguration configuration)
         {
@@ -17,9 +18,20 @@ namespace UPBank.Person.Infra.Context
         {
             get
             {
-                var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiPersonContext").Value;
-                return new SqlConnection(connectionString);
+                if (_connection == null || _connection.State == ConnectionState.Closed)
+                {
+                    var connectionString = _configuration.GetSection("ConnectionStrings:UpBankApiPersonContext").Value;
+                    var _connection = new SqlConnection(connectionString);
+                    _connection.Open();
+
+                }
+                return _connection;
             }
+        }
+
+        public void Dispose()
+        {
+            _connection.Dispose();
         }
     }
 }

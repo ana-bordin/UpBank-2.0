@@ -2,7 +2,7 @@
 
 namespace UPBank.Person.Infra.Context
 {
-    public interface IUpBankApiPersonContext
+    public interface IUpBankApiPersonContext : IDisposable
     {
         public IDbConnection Connection { get; }
     }

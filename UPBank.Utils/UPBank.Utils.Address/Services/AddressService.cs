@@ -1,84 +1,81 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
-using UPBank.Address.Application.Models;
+using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Address.Domain.Entities;
+using UPBank.Address.Domain.Queries.GetAddressById;
 using UPBank.Utils.Address.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts.Services;
 
 namespace UPBank.Utils.Address.Services
 {
     public class AddressService : IAddressService
     {
         private static readonly HttpClient _client = new HttpClient();
-        public async Task<(AddressOutputModel addressOutputModel, string message)> CreateAddress(AddressInputModel addressInputModel)
+        private readonly IDomainNotificationService _domainNotificationService;
+
+        public async Task<T?> ExecuteTryCatchAsync<T>(Func<Task<T>> func, string type)
         {
             try
             {
-                var content = new StringContent(JsonConvert.SerializeObject(addressInputModel), Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync("https://localhost:7082/api/addresses", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    return (JsonConvert.DeserializeObject<AddressOutputModel>(result), null);
-                }
-                else
-                {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
-                    return (null, "Houve um erro ao criar endereço: " + errorMessage);
-                }
+                return await func();
             }
             catch (Exception e)
             {
-                return (null, "Houve um erro ao criar endereço: " + e);
+                _domainNotificationService.Add("Houve um erro ao conectar com a API de" + type + ": " + e);
+
+                return default;
             }
         }
 
-        public async Task<(AddressOutputModel addressOutputModel, string message)> GetCompleteAddressById(Guid id)
+        public async Task<CreateAddressCommandResponse?> CreateAddress(CreateAddressCommand createAddressCommand, CancellationToken cancellationToken)
         {
-            try
-            {
-                var response = await _client.GetAsync($"https://localhost:7082/api/addresses/{id}");
-
-                if (response.IsSuccessStatusCode)
+            return await ExecuteTryCatchAsync(async () =>
                 {
+                    var content = new StringContent(JsonConvert.SerializeObject(createAddressCommand), Encoding.UTF8, "application/json");
+                    var response = await _client.PostAsync("https://localhost:7082/api/addresses", content);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var errorMessage = await response.Content.ReadAsStringAsync();
+                        _domainNotificationService.Add("Houve um erro ao criar endereço: " + errorMessage);
+                    }
+
                     var result = response.Content.ReadAsStringAsync().Result;
-                    return (JsonConvert.DeserializeObject<AddressOutputModel>(result), null);
-                }
-
-                else
-                {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
-                    return (null, "Houve um erro ao trazer o endereço: " + errorMessage);
-                }
-            }
-            catch (Exception e)
-            {
-                return (null, "Houve um erro ao trazer o endereço: " + e);               
-            }
+                    return JsonConvert.DeserializeObject<CreateAddressCommandResponse>(result);
+                }, "Address");
         }
 
-        public async Task<(CompleteAddress completeAddress, string message)> UpdateAddress(Guid id, AddressInputModel addressInputModel)
+        public async Task<CreateAddressCommandResponse?> GetCompleteAddressById(GetAddressByIdQuery getAddressByIdQuery, CancellationToken cancellationToken)
         {
-            try
+            return await ExecuteTryCatchAsync(async () =>
             {
-                var content = new StringContent(JsonConvert.SerializeObject(addressInputModel), Encoding.UTF8, "application/json");
-                var response = await _client.PatchAsync($"https://localhost:7082/api/addresses/{id}", content);
+                var content = new StringContent(JsonConvert.SerializeObject(getAddressByIdQuery), Encoding.UTF8, "application/json");
+                var response = await _client.GetAsync($"https://localhost:7082/api/addresses/{getAddressByIdQuery}");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    return (JsonConvert.DeserializeObject<CompleteAddress>(result), null);
-                }
-                else
-                {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
-                    return (null, "Houve um erro ao atualizar o endereço: " + errorMessage);
-                }
-            }
-            catch (Exception e)
+                if (!response.IsSuccessStatusCode)
+                    _domainNotificationService.Add("Houve um erro ao trazer o endereço: " + response.Content.ReadAsStringAsync());
+
+                var result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<CreateAddressCommandResponse>(result);
+            }, "Address");
+        }
+
+        public async Task<CreateAddressCommandResponse?> UpdateAddress(Guid Id, UpdateAddressCommand updateAddressCommand, CancellationToken cancellationToken)
+        {
+            return await ExecuteTryCatchAsync(async () =>
             {
-                return (null, "Houve um erro ao atualizar o endereço:" + e);             
-            }
+                var content = new StringContent(JsonConvert.SerializeObject(updateAddressCommand), Encoding.UTF8, "application/json");
+                var response = await _client.PatchAsync($"https://localhost:7082/api/addresses/{updateAddressCommand.Id}", content);
+
+                if (!response.IsSuccessStatusCode)
+                { 
+                    _domainNotificationService.Add("Houve um erro ao atualizar o endereço: " + response.Content.ReadAsStringAsync());
+                }
+                
+                var result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<CreateAddressCommandResponse>(result);
+            }, "Address");
         }
     }
 }

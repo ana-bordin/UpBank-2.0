@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Infra.Context;
+using UPBank.Utils.CommonsFiles.Contracts;
 
 namespace UPBank.Address.Infra.Repositories
 {

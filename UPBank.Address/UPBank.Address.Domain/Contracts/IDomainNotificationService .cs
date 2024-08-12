@@ -1,4 +1,4 @@
-﻿namespace UPBank.Address.Domain.Contracts
+﻿namespace UPBank.Utils.CommonsFiles.Contracts
 {
     public interface IDomainNotificationService : IDisposable
     {

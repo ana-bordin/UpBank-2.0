@@ -1,63 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UPBank.Person.Domain.Contracts;
-using UPBank.Person.Domain.Models.DTOs;
-using UPBank.Person.Models;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using UPBank.Person.Domain.Commands.CreatePerson;
 
 namespace UPBank.Person.API.Controllers
 {
     public class PersonController : Controller
     {
-        private readonly IPersonService _personService;
+        private readonly IMediator _bus;
 
-        public PersonController(IPersonService personService)
+        public PersonController(IMediator mediator)
         {
-            _personService = personService;
+            _bus = mediator;
         }
 
         [HttpPost("api/peoples")]
-        public async Task<IActionResult> CreatePerson([FromBody] PersonInputModel person)
+        public async Task<IActionResult> CreatePerson([FromBody] CreatePersonCommand person)
         {
-            var personResult = await _personService.CreatePerson(person);
+            var response = await _bus.Send(person);
 
-            if (personResult.okResult != null)
-                return Ok(personResult.okResult);
-            else
-                return BadRequest(personResult.message);
+            if (response.Errors.Count() != 0)
+                return BadRequest(response.ErrorsResponse);
+            
+            return Ok(response);
         }
 
-        [HttpGet("api/peoples/{cpf}")]
-        public async Task<IActionResult> GetPerson(string cpf)
-        {
-            var person = await _personService.GetPersonByCpf(cpf);
+        //[HttpGet("api/peoples/{cpf}")]
+        //public async Task<IActionResult> GetPerson(string cpf)
+        //{
+        //    var response = await _bus.Send(new GetPersonByCpfQuery(cpf));
+        //    //var person = await _personService.GetPersonByCpf(cpf);
 
-            if (person.person == null && person.message == null)
-                return NotFound("Pessoa não encontrada");
+        //    //if (person.person == null && person.message == null)
+        //    //    return NotFound("Pessoa não encontrada");
 
-            if (person.message != null)
-                return BadRequest(person.message);
+        //    //if (person.message != null)
+        //    //    return BadRequest(person.message);
 
-            return Ok(person.person);
-        }
+        //    //return Ok(person.person);
+        //}
 
-        [HttpPatch("api/peoples/{cpf}")]
-        public async Task<IActionResult> UpdatePerson(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
-        {
-            cpf = Domain.Entities.Person.CpfRemoveMask(cpf);
-            (PersonOutputModel okResult, string message) getPerson = await _personService.GetPersonByCpf(cpf);
+        //[HttpPatch("api/peoples/{cpf}")]
+        //public async Task<IActionResult> UpdatePerson(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        //{
+        //    var response = await _bus.Send(new UpdatePersonCommand(cpf, personPatchDTO));
+        //    //cpf = Domain.Entities.Person.CpfRemoveMask(cpf);
+        //    //(PersonOutputModel okResult, string message) getPerson = await _personService.GetPersonByCpf(cpf);
 
-            if (getPerson.okResult == null)
-                return BadRequest(getPerson.message);
+        //    //if (getPerson.okResult == null)
+        //    //    return BadRequest(getPerson.message);
 
-            var ok = await _personService.PatchPerson(cpf, personPatchDTO);
+        //    //var ok = await _personService.PatchPerson(cpf, personPatchDTO);
 
-            if (ok.person == null && ok.message == null)
-                return NotFound("Pessoa não encontrada");
+        //    //if (ok.person == null && ok.message == null)
+        //    //    return NotFound("Pessoa não encontrada");
 
-            else if (ok.message != null)
-                return BadRequest(ok.message);
+        //    //else if (ok.message != null)
+        //    //    return BadRequest(ok.message);
 
-            else
-                return Ok(ok.person);
-        }
+        //    //else
+        //    //    return Ok(ok.person);
+        ////}
     }
 }

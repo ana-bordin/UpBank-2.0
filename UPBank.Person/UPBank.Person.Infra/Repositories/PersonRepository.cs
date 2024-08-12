@@ -1,70 +1,68 @@
 ﻿using Dapper;
 using UPBank.Person.Domain.Contracts;
 using UPBank.Person.Infra.Context;
+using UPBank.Utils.CommonsFiles.Contracts;
 
 namespace UPBank.Person.Infra.Repositories
 {
     public class PersonRepository : IPersonRepository
     {
         private readonly IUpBankApiPersonContext _context;
+        private readonly IDomainNotificationService _domainNotificationService;
 
-        public PersonRepository(IUpBankApiPersonContext context)
+        public PersonRepository(IUpBankApiPersonContext context, IDomainNotificationService domainNotificationService)
         {
+            _domainNotificationService = domainNotificationService;
             _context = context;
         }
 
-        public async Task<(Domain.Entities.Person okResult, string message)> CreatePerson(Domain.Entities.Person person)
+        public async Task<Domain.Entities.Person> CreatePerson(Domain.Entities.Person person)
         {
             try
             {
-                using (var db = _context.Connection)
-                {
-                    var rows = await db.ExecuteAsync("INSERT INTO dbo.Person (Name, BirthDate, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @BirthDate, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, BirthDate = person.BirthDate, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
+                var rows = await _context.Connection.ExecuteAsync("INSERT INTO dbo.Person (Name, BirthDate, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @BirthDate, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, BirthDate = person.BirthDate, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
 
-                    var getPerson = GetPersonByCpf(person.CPF);
-                    return (getPerson.Result.person, null);
-                }
+                return await GetPersonByCpf(person.CPF);
             }
             catch (Exception e)
             {
-                return (null, "Houve um erro:" + e.Message);
+                _domainNotificationService.Add("Houve um erro ao adicionar pessoa:" + e.Message);
+                return null;
             }
         }
 
-        public async Task<(Domain.Entities.Person person, string message)> GetPersonByCpf(string cpf)
+        public async Task<Domain.Entities.Person> GetPersonByCpf(string cpf)
         {
             try
             {
-                using (var db = _context.Connection)
-                {
-                    var person = await db.QueryFirstOrDefaultAsync<Domain.Entities.Person>("SELECT * FROM dbo.Person WHERE CPF = @CPF", new { CPF = cpf });
-                    return (person, null);
-                }
+                var person = await _context.Connection.QueryFirstOrDefaultAsync<Domain.Entities.Person>("SELECT * FROM dbo.Person WHERE CPF = @CPF", new { CPF = cpf });
+                return person;
             }
             catch (Exception e)
             {
-                return (null, "Houve um erro:" + e.Message);
+                _domainNotificationService.Add("Houve um erro ao buscar pessoa:" + e.Message);
+                return null;
             }
         }
-        public async Task<(Domain.Entities.Person personResult, string message)> PatchPerson(string cpf, Domain.Entities.Person person)
+        public async Task<Domain.Entities.Person> PatchPerson(string cpf, Domain.Entities.Person person)
         {
-            (Domain.Entities.Person personResult, string message) personResult;
             try
             {
-                using (var db = _context.Connection)
-                {
-                    var rows = await db.ExecuteAsync("UPDATE dbo.Person SET Name = @Name, Email = @Email, Phone = @Phone, Gender = @Gender, Salary = @Salary WHERE CPF = @CPF", new { Name = person.Name, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, CPF = cpf });
+                var rows = await _context.Connection.ExecuteAsync("UPDATE dbo.Person SET Name = @Name, Email = @Email, Phone = @Phone, Gender = @Gender, Salary = @Salary WHERE CPF = @CPF", new { Name = person.Name, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, CPF = cpf });
 
-                    if (rows > 0)
-                        return await GetPersonByCpf(person.CPF);
-                    else
-                        return (null, null);
-                }
+                if (rows > 0)
+                    return await GetPersonByCpf(person.CPF);
+                else
+                    return null;
             }
             catch (Exception e)
             {
-                return (null, "Houve um erro:" + e.Message);
+                _domainNotificationService.Add("Houve um erro ao atualizar pessoa:" + e.Message);
+                return null;
             }
         }
+
+        _context.Connection.Dispose();
+        
     }
 }
