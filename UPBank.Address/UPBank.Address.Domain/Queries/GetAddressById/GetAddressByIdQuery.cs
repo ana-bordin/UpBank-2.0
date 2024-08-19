@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using UPBank.Address.Domain.Commands.CreateAddress;
-using UPBank.Utils.CommonsFiles.DTOs;
 
 namespace UPBank.Address.Domain.Queries.GetAddressById
 {

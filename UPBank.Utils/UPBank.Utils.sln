@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Address", "UPBank.Utils.Address\UPBank.Utils.Address.csproj", "{C25FF3C2-B68D-4811-B684-86A94761FB63}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Person", "UPBank.Utils.Person\UPBank.Utils.Person.csproj", "{C1339FFC-478A-4A5A-ADAC-D6F67A13D56A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Customer", "UPBank.Utils.Customer\UPBank.Utils.Customer.csproj", "{C1DEB5DD-86DF-487C-86EF-656E5B147226}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Enums", "UPBank.Utils.Enums\UPBank.Utils.Enums.csproj", "{2CBD0130-1F98-428A-A264-1E3DD8413538}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Utils.CommonsFiles", "UPBank.Utils.CommonsFiles\UPBank.Utils.CommonsFiles.csproj", "{8BF0C78E-628A-48FC-B473-A6ED9A760654}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.CommonsFiles", "UPBank.Utils.CommonsFiles\UPBank.Utils.CommonsFiles.csproj", "{8BF0C78E-628A-48FC-B473-A6ED9A760654}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.CrossCutting.Exception", "UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj", "{FCE45E50-0342-4ADB-B9D9-3C3FDD5DE2B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Integration.Person", "UPBank.Utils.Integration.Person\UPBank.Utils.Integration.Person.csproj", "{2B048B06-4D3B-49A1-957E-C3CD2A232D74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Integration.Address", "UPBank.Utils.Integration.Address\UPBank.Utils.Integration.Address.csproj", "{70E6885D-B428-4D0A-9602-CC8B6C4BBF24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C25FF3C2-B68D-4811-B684-86A94761FB63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1339FFC-478A-4A5A-ADAC-D6F67A13D56A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1339FFC-478A-4A5A-ADAC-D6F67A13D56A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1339FFC-478A-4A5A-ADAC-D6F67A13D56A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1339FFC-478A-4A5A-ADAC-D6F67A13D56A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1DEB5DD-86DF-487C-86EF-656E5B147226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1DEB5DD-86DF-487C-86EF-656E5B147226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1DEB5DD-86DF-487C-86EF-656E5B147226}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +33,18 @@ Global
 		{8BF0C78E-628A-48FC-B473-A6ED9A760654}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BF0C78E-628A-48FC-B473-A6ED9A760654}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BF0C78E-628A-48FC-B473-A6ED9A760654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCE45E50-0342-4ADB-B9D9-3C3FDD5DE2B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCE45E50-0342-4ADB-B9D9-3C3FDD5DE2B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCE45E50-0342-4ADB-B9D9-3C3FDD5DE2B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCE45E50-0342-4ADB-B9D9-3C3FDD5DE2B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B048B06-4D3B-49A1-957E-C3CD2A232D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B048B06-4D3B-49A1-957E-C3CD2A232D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B048B06-4D3B-49A1-957E-C3CD2A232D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B048B06-4D3B-49A1-957E-C3CD2A232D74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70E6885D-B428-4D0A-9602-CC8B6C4BBF24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70E6885D-B428-4D0A-9602-CC8B6C4BBF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70E6885D-B428-4D0A-9602-CC8B6C4BBF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70E6885D-B428-4D0A-9602-CC8B6C4BBF24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

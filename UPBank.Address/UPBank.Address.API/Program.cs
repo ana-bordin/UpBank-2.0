@@ -12,6 +12,7 @@ namespace UPBank.Address.API
             builder.Services.AddDomainContext();
             builder.Services.AddInfraContext();
             builder.Services.AddControllers();
+            builder.Services.AddAPIContext();
 
             var app = builder.Build();
 

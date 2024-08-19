@@ -3,7 +3,8 @@ using MediatR;
 using UPBank.Address.Domain.Commands.CreateAddress;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Entities;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts.Repositories;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Address.Domain.Queries.GetAddressById
 {

@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Test", "UPBan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Person.Domain", "UPBank.Person.Domain\UPBank.Person.Domain.csproj", "{E06E48B1-8019-4C68-B57D-8B579066EE7E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.CrossCutting.Exception", "..\UPBank.Utils\UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj", "{BA2391DA-8478-42A9-9F9C-DED7FFE72C08}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Integration.Address", "..\UPBank.Utils\UPBank.Utils.Integration.Address\UPBank.Utils.Integration.Address.csproj", "{439CF42E-5741-4973-B4B5-5D0D0A134F8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E06E48B1-8019-4C68-B57D-8B579066EE7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA2391DA-8478-42A9-9F9C-DED7FFE72C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA2391DA-8478-42A9-9F9C-DED7FFE72C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA2391DA-8478-42A9-9F9C-DED7FFE72C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA2391DA-8478-42A9-9F9C-DED7FFE72C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{439CF42E-5741-4973-B4B5-5D0D0A134F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439CF42E-5741-4973-B4B5-5D0D0A134F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439CF42E-5741-4973-B4B5-5D0D0A134F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439CF42E-5741-4973-B4B5-5D0D0A134F8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using UPBank.Person.Domain.Contracts;
 using UPBank.Person.Infra.Context;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Person.Infra.Repositories
 {
@@ -20,7 +20,7 @@ namespace UPBank.Person.Infra.Repositories
         {
             try
             {
-                var rows = await _context.Connection.ExecuteAsync("INSERT INTO dbo.Person (Name, BirthDate, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @BirthDate, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, BirthDate = person.BirthDate, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
+                var rows = await _context.Connection.ExecuteAsync("INSERT INTO dbo.Person (Name, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
 
                 return await GetPersonByCpf(person.CPF);
             }
@@ -60,6 +60,6 @@ namespace UPBank.Person.Infra.Repositories
                 _domainNotificationService.Add("Houve um erro ao atualizar pessoa:" + e.Message);
                 return null;
             }
-        }       
+        }
     }
 }

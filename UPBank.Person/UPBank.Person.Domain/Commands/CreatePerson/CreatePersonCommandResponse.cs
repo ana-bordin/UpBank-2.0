@@ -1,5 +1,4 @@
-﻿using UPBank.Address.Domain.Commands.CreateAddress;
-using UPBank.Utils.CommonsFiles.DTOs;
+﻿using UPBank.Address.API.Models;
 
 namespace UPBank.Person.Domain.Commands.CreatePerson
 {
@@ -12,6 +11,11 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
         public double Salary { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public CreateAddressCommandResponse Address { get; set; }
+        public OutputAddressModel Address { get; set; }
+
+        public static string CpfAddMask(string cpf)
+        {
+            return $"{cpf.Substring(0, 3)}.{cpf.Substring(3, 3)}.{cpf.Substring(6, 3)}-{cpf.Substring(9, 2)}";
+        }
     }
 }

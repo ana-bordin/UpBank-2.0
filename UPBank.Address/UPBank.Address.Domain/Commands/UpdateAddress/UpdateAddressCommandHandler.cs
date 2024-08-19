@@ -3,7 +3,8 @@ using MediatR;
 using UPBank.Address.Domain.Commands.CreateAddress;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Entities;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts.Repositories;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Address.Domain.Commands.UpdateAddress
 {
@@ -29,7 +30,7 @@ namespace UPBank.Address.Domain.Commands.UpdateAddress
             var completeAddress = _mapper.Map<UpdateAddressCommand, CompleteAddress>(request);
 
             var address = await _createAddressQueryHandler.HandleAddress(request);
-            completeAddress.ZipCode = CreateAddressCommandProfile.GetOnlyNumbers(completeAddress.ZipCode);
+            completeAddress.ZipCode = CreateAddressCommand.GetOnlyNumbers(completeAddress.ZipCode);
             completeAddress = await _completeAddressRepository.UpdateAsync(completeAddress);
 
             if (completeAddress == null && _domainNotificationService.Get().Count() == 0)

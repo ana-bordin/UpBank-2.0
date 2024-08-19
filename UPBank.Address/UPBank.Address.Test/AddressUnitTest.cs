@@ -3,8 +3,8 @@ using Moq;
 using UPBank.Address.API.Controllers;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Entities;
-using UPBank.Utils.CommonsFiles;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts.Repositories;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Address.Test
 {
@@ -26,7 +26,7 @@ namespace UPBank.Address.Test
             //_addressController = new AddressController(_mediator);
             _domainNotificationService = new Mock<IDomainNotificationService>();
         }
-        
+
         #region Testes Positivos
         //[Fact]
         //public void CreateAddress_ReturnSucess()

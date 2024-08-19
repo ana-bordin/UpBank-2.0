@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using UPBank.Address.API.Models;
 using UPBank.Address.Domain.Commands.CreateAddress;
 using UPBank.Address.Domain.Commands.DeleteAddress;
 using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Address.Domain.Queries.GetAddressById;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Address.API.Controllers
 {
@@ -12,11 +14,13 @@ namespace UPBank.Address.API.Controllers
     {
         private readonly IMediator _bus;
         private readonly IDomainNotificationService _domainNotificationService;
+        private readonly IMapper _mapper;
 
-        public AddressController(IMediator bus, IDomainNotificationService domainNotificationService)
+        public AddressController(IMediator bus, IDomainNotificationService domainNotificationService, IMapper mapper)
         {
             _bus = bus;
             _domainNotificationService = domainNotificationService;
+            _mapper = mapper;
         }
 
         [HttpGet("api/addresses/{id}")]
@@ -25,38 +29,40 @@ namespace UPBank.Address.API.Controllers
             var response = await _bus.Send(new GetAddressByIdQuery(Guid.Parse(id)), cancellationToken);
 
             if (_domainNotificationService.HasNotification)
-                return NotFound(_domainNotificationService.Get);
+                return NotFound(_domainNotificationService.Get());
 
             return Ok(response);
         }
 
         [HttpPost("api/addresses")]
-        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressCommand createAddressModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateAddress([FromBody] InputAddressModel inputAddressModel, CancellationToken cancellationToken)
         {
-            var response = await _bus.Send(createAddressModel, cancellationToken);
+            var response = await _bus.Send(_mapper.Map<CreateAddressCommand>(inputAddressModel), cancellationToken);
 
             if (_domainNotificationService.HasNotification)
-                return NotFound(_domainNotificationService.Get);
-
-            return Ok(response);
+                return NotFound(_domainNotificationService.Get());
+            
+            return Ok(_mapper.Map<CreateAddressCommandResponse, OutputAddressModel>(response));
         }
 
         [HttpPatch("api/addresses/{id}")]
-        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] UpdateAddressCommand updateAddressModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAddress(string id, [FromBody] InputAddressModel inputAddressModel, CancellationToken cancellationToken)
         {
-            updateAddressModel.Id = id;
-            var response = await _bus.Send(updateAddressModel, cancellationToken);
+            var commandAddress = _mapper.Map<UpdateAddressCommand>(inputAddressModel);
+            commandAddress.Id = Guid.Parse(id);
+
+            var response = await _bus.Send(commandAddress, cancellationToken);
 
             if (_domainNotificationService.HasNotification)
-                return NotFound(_domainNotificationService.Get);
+                return NotFound(_domainNotificationService.Get());
 
-            return Ok(response);
+            return Ok(_mapper.Map<CreateAddressCommandResponse, OutputAddressModel>(response));
         }
 
-        [HttpDelete("api/addresses/{deleteAddressCommand.Id}")]
-        public async Task<IActionResult> DeleteAddress(DeleteAddressCommand deleteAddressCommand, CancellationToken cancellationToken)
+        [HttpDelete("api/addresses/{id}")]
+        public async Task<IActionResult> DeleteAddress(string id, CancellationToken cancellationToken)
         {
-            var response = await _bus.Send(deleteAddressCommand, cancellationToken);
+            var response = await _bus.Send(new DeleteAddressCommand(Guid.Parse(id)), cancellationToken);
 
             if (response.HasNotification)
                 return BadRequest(response.Get());

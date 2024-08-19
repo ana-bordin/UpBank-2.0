@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using UPBank.Person.Domain.Contracts;
-using UPBank.Utils.Address.Contracts;
+using UPBank.Utils.Integration.Address.Contracts;
 
 namespace UPBank.Person.Domain.Commands.CreatePerson
 {
@@ -20,7 +20,7 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
 
         public async Task<CreatePersonCommandResponse> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
         {
-            var addressResponse = await _addressService.CreateAddress(request.Address, cancellationToken);
+            var addressResponse = await _addressService.CreateAddress(request.Address);
 
             var person = _mapper.Map<Entities.Person>(request);
             person.AddressId = addressResponse.Id;

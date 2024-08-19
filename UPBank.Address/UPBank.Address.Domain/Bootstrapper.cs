@@ -7,9 +7,9 @@ using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Queries.GetAddressById;
 using UPBank.Address.Domain.Services;
-using UPBank.Utils.CommonsFiles.Contracts;
-using UPBank.Utils.CommonsFiles.Pipes;
-using UPBank.Utils.CommonsFiles.Services;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
+using UPBank.Utils.CrossCutting.Exception.Pipes;
+using UPBank.Utils.CrossCutting.Exception.Services;
 
 namespace UPBank.Address.Domain
 {

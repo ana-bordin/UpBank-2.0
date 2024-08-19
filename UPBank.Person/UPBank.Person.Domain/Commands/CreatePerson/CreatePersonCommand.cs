@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.API.Models;
 
 namespace UPBank.Person.Domain.Commands.CreatePerson
 {
@@ -12,15 +12,11 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
         public double Salary { get; set; } = 0;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public CreateAddressCommand Address { get; set; } = new CreateAddressCommand();
+        public InputAddressModel Address { get; set; } = new InputAddressModel();
 
         public static string CpfRemoveMask(string cpf)
         {
             return cpf.Replace(".", "").Replace("-", "");
-        }
-        public string CpfAddMask(string cpf)
-        {
-            return Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00");
         }
 
         public static bool CpfValidate(string cpf)

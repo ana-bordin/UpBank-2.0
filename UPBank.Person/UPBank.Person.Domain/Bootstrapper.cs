@@ -3,11 +3,12 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using UPBank.Person.Domain.Commands.CreatePerson;
 using UPBank.Person.Domain.Commands.UpdatePerson;
-using UPBank.Utils.Address.Contracts;
-using UPBank.Utils.Address.Services;
-using UPBank.Utils.CommonsFiles.Contracts;
-using UPBank.Utils.CommonsFiles.Pipes;
-using UPBank.Utils.CommonsFiles.Services;
+using UPBank.Person.Domain.Queries.GetPersonByCPF;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
+using UPBank.Utils.CrossCutting.Exception.Pipes;
+using UPBank.Utils.CrossCutting.Exception.Services;
+using UPBank.Utils.Integration.Address.Contracts;
+using UPBank.Utils.Integration.Address.Services;
 
 namespace UPBank.Person.Domain
 {
@@ -22,12 +23,14 @@ namespace UPBank.Person.Domain
                 .AddAutoMapper(typeof(Bootstrapper))
                 .AddScoped<IDomainNotificationService, DomainNotificationServiceHandler>()
                 .AddCommands()
-                .AddServices();
+                .AddServices()
+                .AddQueries();
         }
 
         private static IServiceCollection AddValidators(this IServiceCollection services)
         {
-             services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
+            return
+               services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
         }
 
         private static IServiceCollection AddCommands(this IServiceCollection services)
@@ -41,6 +44,12 @@ namespace UPBank.Person.Domain
         {
             return services
                 .AddTransient<IAddressService, AddressService>();
+        }
+
+        private static IServiceCollection AddQueries(this IServiceCollection services)
+        {
+            return
+                services.AddTransient<GetPersonByCPFQueryHandler>();
         }
     }
 }

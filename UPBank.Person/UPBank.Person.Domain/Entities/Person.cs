@@ -12,6 +12,6 @@ namespace UPBank.Person.Domain.Entities
         public double Salary { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public Guid AddressId { get; set; }        
+        public Guid AddressId { get; set; }
     }
 }

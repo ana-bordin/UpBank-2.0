@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UPBank.Customer.Application.Contracts;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using UPBank.Person.Application.Models;
-using UPBank.Utils.Address.Contracts;
-using UPBank.Utils.Person.Contracts;
 using UPBank.Utils.Person.Models.DTOs;
 
 namespace UPBank.Customer.API.Controllers
@@ -12,6 +10,7 @@ namespace UPBank.Customer.API.Controllers
         private readonly ICustomerService _customerService;
         //private readonly ILogger<CustomerController> _logger;
         private readonly IPersonService _personService;
+        private readonly IMediator _bus;
 
         public CustomerController(ICustomerService customerService, IPersonService personService)
         {

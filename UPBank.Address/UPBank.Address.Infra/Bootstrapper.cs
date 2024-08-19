@@ -2,7 +2,7 @@
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Infra.Context;
 using UPBank.Address.Infra.Repositories;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts.Repositories;
 
 namespace UPBank.Address.Infra
 {

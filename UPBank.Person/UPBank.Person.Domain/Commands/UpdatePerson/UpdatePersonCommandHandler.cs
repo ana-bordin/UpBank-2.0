@@ -2,7 +2,7 @@
 using MediatR;
 using UPBank.Person.Domain.Commands.CreatePerson;
 using UPBank.Person.Domain.Contracts;
-using UPBank.Utils.Address.Contracts;
+using UPBank.Utils.Integration.Address.Contracts;
 
 namespace UPBank.Person.Domain.Commands.UpdatePerson
 {
@@ -28,7 +28,7 @@ namespace UPBank.Person.Domain.Commands.UpdatePerson
 
             else
             {
-                var addressResponse = await _addressService.UpdateAddress(person.AddressId.ToString(), request.Address, cancellationToken);
+                var addressResponse = await _addressService.UpdateAddress(person.AddressId.ToString(), request.Address);
 
                 person = _mapper.Map<Entities.Person>(request);
                 person.AddressId = addressResponse.Id;

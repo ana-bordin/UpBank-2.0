@@ -2,7 +2,8 @@
 using MediatR;
 using UPBank.Address.Domain.Contracts;
 using UPBank.Address.Domain.Entities;
-using UPBank.Utils.CommonsFiles.Contracts;
+using UPBank.Utils.CommonsFiles.Contracts.Repositories;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Address.Domain.Commands.CreateAddress
 {
@@ -30,13 +31,13 @@ namespace UPBank.Address.Domain.Commands.CreateAddress
                 completeAddress = await HandleCompleteAddress(request);
 
             var result = _mapper.Map<CreateAddressCommandResponse>(address);
-            _mapper.Map(completeAddress, result); 
+            _mapper.Map(completeAddress, result);
             return result;
         }
 
         public async Task<Entities.Address> HandleAddress(CreateAddressCommand createAddressCommand)
         {
-            createAddressCommand.ZipCode = CreateAddressCommandProfile.GetOnlyNumbers(createAddressCommand.ZipCode);
+            createAddressCommand.ZipCode = CreateAddressCommand.GetOnlyNumbers(createAddressCommand.ZipCode);
             var getAddress = await _addressRepository.GetOneAsync(createAddressCommand.ZipCode);
 
             if (getAddress != null)
@@ -44,7 +45,7 @@ namespace UPBank.Address.Domain.Commands.CreateAddress
 
             getAddress = await _iViaCepService.GetAddressByZipCode(createAddressCommand.ZipCode);
 
-            getAddress.ZipCode = CreateAddressCommandProfile.GetOnlyNumbers(getAddress.ZipCode);
+            getAddress.ZipCode = CreateAddressCommand.GetOnlyNumbers(getAddress.ZipCode);
             var okAddress = await _addressRepository.AddAsync(getAddress);
 
             return okAddress;

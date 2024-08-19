@@ -1,5 +1,7 @@
+using MediatR;
 using UPBank.Person.Domain;
 using UPBank.Person.Infra;
+using UPBank.Utils.CrossCutting.Exception.Pipes;
 
 namespace UPBank.Person.API
 {
@@ -13,6 +15,7 @@ namespace UPBank.Person.API
             // Add services to the container.
             builder.Services.AddDomainContext();
             builder.Services.AddInfraContext();
+            builder.Services.AddAutoMapper(typeof(Program));
 
             // Add services to the container.
 
