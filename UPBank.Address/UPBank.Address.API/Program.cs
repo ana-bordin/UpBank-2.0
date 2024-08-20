@@ -1,5 +1,6 @@
 using UPBank.Address.Domain;
 using UPBank.Address.Infra;
+using UPBank.Utils.CrossCutting.Exception;
 
 namespace UPBank.Address.API
 {
@@ -11,8 +12,8 @@ namespace UPBank.Address.API
 
             builder.Services.AddDomainContext();
             builder.Services.AddInfraContext();
+            builder.Services.AddCrossCuttingContext();
             builder.Services.AddControllers();
-            builder.Services.AddAPIContext();
 
             var app = builder.Build();
 

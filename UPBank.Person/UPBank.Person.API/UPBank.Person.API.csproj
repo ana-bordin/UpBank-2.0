@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj" />
+    <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.Integration.Address\UPBank.Utils.Integration.Address.csproj" />
     <ProjectReference Include="..\UPBank.Person.Domain\UPBank.Person.Domain.csproj" />
     <ProjectReference Include="..\UPBank.Person.Infra\UPBank.Person.Infra.csproj" />
   </ItemGroup>

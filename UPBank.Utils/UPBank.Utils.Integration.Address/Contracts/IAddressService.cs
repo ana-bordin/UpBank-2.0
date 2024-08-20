@@ -1,11 +1,12 @@
-﻿using UPBank.Address.API.Models;
+﻿using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.Domain.Commands.UpdateAddress;
 
 namespace UPBank.Utils.Integration.Address.Contracts
-{ 
+{
     public interface IAddressService
     {
-        Task<OutputAddressModel?> CreateAddress(InputAddressModel createAddress);
-        Task<OutputAddressModel?> UpdateAddress(string id, InputAddressModel updateAddress);
-        Task<OutputAddressModel?> GetCompleteAddressById(string id);
+        Task<CreateAddressCommandResponse?> CreateAddress(CreateAddressCommand createAddress);
+        Task<CreateAddressCommandResponse?> UpdateAddress(string id, UpdateAddressCommand updateAddress);
+        Task<CreateAddressCommandResponse?> GetCompleteAddressById(string id);
     }
 }

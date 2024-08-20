@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UPBank.Address.API.Models;
 using UPBank.Address.Domain.Commands.CreateAddress;
 using UPBank.Address.Domain.Commands.DeleteAddress;
 using UPBank.Address.Domain.Commands.UpdateAddress;
@@ -14,13 +13,11 @@ namespace UPBank.Address.API.Controllers
     {
         private readonly IMediator _bus;
         private readonly IDomainNotificationService _domainNotificationService;
-        private readonly IMapper _mapper;
 
-        public AddressController(IMediator bus, IDomainNotificationService domainNotificationService, IMapper mapper)
+        public AddressController(IMediator bus, IDomainNotificationService domainNotificationService)
         {
             _bus = bus;
             _domainNotificationService = domainNotificationService;
-            _mapper = mapper;
         }
 
         [HttpGet("api/addresses/{id}")]
@@ -35,28 +32,26 @@ namespace UPBank.Address.API.Controllers
         }
 
         [HttpPost("api/addresses")]
-        public async Task<IActionResult> CreateAddress([FromBody] InputAddressModel inputAddressModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressCommand createAddressCommand, CancellationToken cancellationToken)
         {
-            var response = await _bus.Send(_mapper.Map<CreateAddressCommand>(inputAddressModel), cancellationToken);
+            var response = await _bus.Send(createAddressCommand, cancellationToken);
 
             if (_domainNotificationService.HasNotification)
                 return NotFound(_domainNotificationService.Get());
-            
-            return Ok(_mapper.Map<CreateAddressCommandResponse, OutputAddressModel>(response));
+
+            return Ok(response);
         }
 
         [HttpPatch("api/addresses/{id}")]
-        public async Task<IActionResult> UpdateAddress(string id, [FromBody] InputAddressModel inputAddressModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAddress(string id, [FromBody] UpdateAddressCommand updateAddressCommand, CancellationToken cancellationToken)
         {
-            var commandAddress = _mapper.Map<UpdateAddressCommand>(inputAddressModel);
-            commandAddress.Id = Guid.Parse(id);
-
-            var response = await _bus.Send(commandAddress, cancellationToken);
+            updateAddressCommand.Id = Guid.Parse(id);
+            var response = await _bus.Send(updateAddressCommand, cancellationToken);
 
             if (_domainNotificationService.HasNotification)
                 return NotFound(_domainNotificationService.Get());
 
-            return Ok(_mapper.Map<CreateAddressCommandResponse, OutputAddressModel>(response));
+            return Ok(response);
         }
 
         [HttpDelete("api/addresses/{id}")]

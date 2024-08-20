@@ -1,12 +1,8 @@
 ﻿using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using UPBank.Person.Domain.Commands.CreatePerson;
 using UPBank.Person.Domain.Commands.UpdatePerson;
 using UPBank.Person.Domain.Queries.GetPersonByCPF;
-using UPBank.Utils.CrossCutting.Exception.Contracts;
-using UPBank.Utils.CrossCutting.Exception.Pipes;
-using UPBank.Utils.CrossCutting.Exception.Services;
 using UPBank.Utils.Integration.Address.Contracts;
 using UPBank.Utils.Integration.Address.Services;
 
@@ -18,10 +14,8 @@ namespace UPBank.Person.Domain
         {
             return services
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(Bootstrapper)))
-                .AddTransient(typeof(IPipelineBehavior<,>), typeof(FailFastValidation<,>))
                 .AddValidators()
                 .AddAutoMapper(typeof(Bootstrapper))
-                .AddScoped<IDomainNotificationService, DomainNotificationServiceHandler>()
                 .AddCommands()
                 .AddServices()
                 .AddQueries();

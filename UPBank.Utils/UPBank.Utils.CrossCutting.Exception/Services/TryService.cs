@@ -5,6 +5,11 @@ namespace UPBank.Utils.CrossCutting.Exception.Services
     public class TryService
     {
         private readonly IDomainNotificationService _domainNotificationService;
+        public TryService(IDomainNotificationService domainNotificationService)
+        {
+            _domainNotificationService = domainNotificationService;
+        }
+
         public async Task<T?> ExecuteTryCatchAsync<T>(Func<Task<T>> func, string type)
         {
             try

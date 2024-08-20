@@ -13,7 +13,6 @@ namespace UPBank.Customer.Infra.Context
             _configuration = configuration;
         }
 
-
         IDbConnection IUpBankApiCustomerContext.Connection
         {
             get

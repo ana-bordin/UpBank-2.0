@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UPBank.Customer.Application\UPBank.Customer.Application.csproj" />
+    <ProjectReference Include="..\UPBank.Customer.Domain\UPBank.Customer.Domain.csproj" />
     <ProjectReference Include="..\UPBank.Customer.Infra\UPBank.Customer.Infra.csproj" />
   </ItemGroup>
 

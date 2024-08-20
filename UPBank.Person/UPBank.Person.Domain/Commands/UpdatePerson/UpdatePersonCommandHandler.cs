@@ -22,7 +22,7 @@ namespace UPBank.Person.Domain.Commands.UpdatePerson
         {
             request.CPF = CreatePersonCommand.CpfRemoveMask(request.CPF);
             var person = await _personRepository.GetPersonByCpf(request.CPF);
-            
+
             if (person == null)
                 return null;
 
@@ -31,7 +31,7 @@ namespace UPBank.Person.Domain.Commands.UpdatePerson
                 var addressResponse = await _addressService.UpdateAddress(person.AddressId.ToString(), request.Address);
 
                 person = _mapper.Map<Entities.Person>(request);
-                person.AddressId = addressResponse.Id;
+
 
                 person = await _personRepository.PatchPerson(person.CPF, person);
 

@@ -12,5 +12,10 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
         public string Email { get; set; }
         public string Phone { get; set; }
         public CreateAddressCommandResponse Address { get; set; }
+
+        public static string CpfAddMask(string cpf)
+        {
+            return $"{cpf.Substring(0, 3)}.{cpf.Substring(3, 3)}.{cpf.Substring(6, 3)}-{cpf.Substring(9, 2)}";
+        }
     }
 }

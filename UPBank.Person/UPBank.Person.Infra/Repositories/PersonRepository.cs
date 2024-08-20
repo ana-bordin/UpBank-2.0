@@ -20,7 +20,7 @@ namespace UPBank.Person.Infra.Repositories
         {
             try
             {
-                var rows = await _context.Connection.ExecuteAsync("INSERT INTO dbo.Person (Name, CPF, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @CPF, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, CPF = person.CPF, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
+                var rows = await _context.Connection.ExecuteAsync("INSERT INTO dbo.Person (Name, CPF, BirthDate, Email, Phone, Gender, Salary, AddressId) VALUES (@Name, @CPF, @BirthDate, @Email, @Phone, @Gender, @Salary, @AddressId)", new { Name = person.Name, CPF = person.CPF, BirthDate = person.BirthDate, Email = person.Email, Phone = person.Phone, Gender = person.Gender, Salary = person.Salary, AddressId = person.AddressId });
 
                 return await GetPersonByCpf(person.CPF);
             }

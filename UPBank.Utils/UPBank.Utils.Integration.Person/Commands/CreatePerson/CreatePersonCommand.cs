@@ -18,10 +18,6 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
         {
             return cpf.Replace(".", "").Replace("-", "");
         }
-        public string CpfAddMask(string cpf)
-        {
-            return Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00");
-        }
 
         public static bool CpfValidate(string cpf)
         {

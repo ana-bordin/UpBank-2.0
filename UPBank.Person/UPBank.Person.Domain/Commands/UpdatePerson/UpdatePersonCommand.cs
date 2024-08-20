@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using UPBank.Address.API.Models;
+using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Person.Domain.Commands.CreatePerson;
 
 namespace UPBank.Person.Domain.Commands.UpdatePerson
@@ -12,6 +12,6 @@ namespace UPBank.Person.Domain.Commands.UpdatePerson
         public double Salary { get; set; } = 0;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public InputAddressModel Address { get; set; } = new InputAddressModel();
+        public UpdateAddressCommand Address { get; set; } = new UpdateAddressCommand();
     }
 }

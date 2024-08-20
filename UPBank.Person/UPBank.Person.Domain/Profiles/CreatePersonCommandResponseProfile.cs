@@ -8,7 +8,7 @@ namespace UPBank.Person.Domain.Profiles
         public CreatePersonCommandResponseProfile()
         {
             CreateMap<Entities.Person, CreatePersonCommandResponse>()
-                .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => src.CPF))
+                .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => CreatePersonCommandResponse.CpfAddMask(src.CPF)))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))

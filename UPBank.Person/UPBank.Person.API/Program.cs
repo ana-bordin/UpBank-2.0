@@ -1,7 +1,7 @@
-using MediatR;
 using UPBank.Person.Domain;
 using UPBank.Person.Infra;
-using UPBank.Utils.CrossCutting.Exception.Pipes;
+using UPBank.Utils.CrossCutting.Exception;
+using UPBank.Utils.Integration.Address;
 
 namespace UPBank.Person.API
 {
@@ -11,11 +11,11 @@ namespace UPBank.Person.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             // Add services to the container.
             builder.Services.AddDomainContext();
             builder.Services.AddInfraContext();
-            builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddIntegrationAddressContext();
+            builder.Services.AddCrossCuttingContext();
 
             // Add services to the container.
 

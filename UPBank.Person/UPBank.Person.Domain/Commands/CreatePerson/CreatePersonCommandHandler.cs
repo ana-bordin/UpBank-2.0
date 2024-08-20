@@ -20,22 +20,30 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
 
         public async Task<CreatePersonCommandResponse> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
         {
-            var addressResponse = await _addressService.CreateAddress(request.Address);
-
-            var person = _mapper.Map<Entities.Person>(request);
-            person.AddressId = addressResponse.Id;
-
-            person = await _personRepository.CreatePerson(person);
-
-            var mapperPerson = new CreatePersonCommandResponse();
-
-            if (person != null)
+            var personExists = await _personRepository.GetPersonByCpf(request.CPF);
+            if (personExists == null)
             {
-                mapperPerson = _mapper.Map<CreatePersonCommandResponse>(person);
-                mapperPerson.Address = addressResponse;
-            }
+                var addressResponse = await _addressService.CreateAddress(request.Address);
 
-            return mapperPerson;
+                var person = _mapper.Map<Entities.Person>(request);
+                person.AddressId = addressResponse.Id;
+
+                person = await _personRepository.CreatePerson(person);
+
+                var mapperPerson = new CreatePersonCommandResponse();
+
+                if (person != null)
+                {
+                    mapperPerson = _mapper.Map<CreatePersonCommandResponse>(person);
+                    mapperPerson.Address = addressResponse;
+                }
+
+                return mapperPerson;
+            }
+            else
+            {
+               return _mapper.Map<CreatePersonCommandResponse>(personExists);
+            }
         }
     }
 }

@@ -12,8 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UPBank.Utils.Address\UPBank.Utils.Integration.Address.csproj" />
-    <ProjectReference Include="..\UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj" />
+    <ProjectReference Include="..\UPBank.Utils.Integration.Address\UPBank.Utils.Integration.Address.csproj" />
   </ItemGroup>
 
 </Project>

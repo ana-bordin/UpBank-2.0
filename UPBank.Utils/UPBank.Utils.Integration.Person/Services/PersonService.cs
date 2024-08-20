@@ -14,6 +14,12 @@ namespace UPBank.Utils.Person.Services
         private readonly IDomainNotificationService _domainNotificationService;
         private readonly TryService _tryService;
 
+        public PersonService(IDomainNotificationService domainNotificationService, TryService tryService)
+        {
+            _domainNotificationService = domainNotificationService;
+            _tryService = tryService;
+        }
+
         public async Task<CreatePersonCommandResponse?> CreatePersonAsync(CreatePersonCommand createPersonCommand)
         {
             return await _tryService.ExecuteTryCatchAsync(async () =>

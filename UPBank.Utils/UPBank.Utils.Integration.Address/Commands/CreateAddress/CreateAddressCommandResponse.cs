@@ -1,6 +1,6 @@
-﻿namespace UPBank.Address.API.Models
+﻿namespace UPBank.Address.Domain.Commands.CreateAddress
 {
-    public class OutputAddressModel
+    public class CreateAddressCommandResponse
     {
         public Guid Id { get; set; }
         public string ZipCode { get; set; }

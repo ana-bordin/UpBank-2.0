@@ -1,13 +1,7 @@
-﻿using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-using UPBank.Address.Domain.Commands.CreateAddress;
-using UPBank.Address.Domain.Commands.DeleteAddress;
-using UPBank.Address.Domain.Commands.UpdateAddress;
-using UPBank.Address.Domain.Contracts;
-using UPBank.Address.Domain.Queries.GetAddressById;
-using UPBank.Address.Domain.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using UPBank.Customer.Domain.Commands.CreateCustomer;
 
-namespace UPBank.Address.Domain
+namespace UPBank.Customer.Domain
 {
     public static class Bootstrapper
     {
@@ -17,28 +11,27 @@ namespace UPBank.Address.Domain
             .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(typeof(Bootstrapper)))
             .AddValidators()
             .AddAutoMapper(typeof(Bootstrapper))
-            .AddScoped<IViaCepService, ViaCepService>()
             .AddCommands()
             .AddQueries();
         }
 
         private static IServiceCollection AddCommands(this IServiceCollection services)
         {
-            services.AddTransient<CreateAddressCommandHandler>();
-            services.AddTransient<UpdateAddressCommandHandler>();
-            services.AddTransient<DeleteAddressCommandHandler>();
+            services.AddTransient<CreateCustomerCommandHandler>();
+            //services.AddTransient<UpdateCustomerCommandHandler>();
+            //services.AddTransient<DeleteCustomerCommandHandler>();
             return services;
         }
 
         private static IServiceCollection AddQueries(this IServiceCollection services)
         {
-            services.AddTransient<GetAddressByIdQueryHandler>();
+            //services.AddTransient<GetCustomerByCPFQueryHandler>();
             return services;
         }
 
         private static IServiceCollection AddValidators(this IServiceCollection services)
         {
-            services.AddScoped<IValidator<CreateAddressCommand>, CreateAddressCommandValidator>();
+            //services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
             return services;
         }
     }

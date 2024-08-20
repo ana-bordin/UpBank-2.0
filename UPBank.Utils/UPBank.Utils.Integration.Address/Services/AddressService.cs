@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
-using UPBank.Address.API.Models;
+using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.Domain.Commands.UpdateAddress;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
+using UPBank.Utils.CrossCutting.Exception.Services;
 using UPBank.Utils.Integration.Address.Contracts;
 
 namespace UPBank.Utils.Integration.Address.Services
@@ -10,24 +12,17 @@ namespace UPBank.Utils.Integration.Address.Services
     {
         private static readonly HttpClient _client = new HttpClient();
         private readonly IDomainNotificationService _domainNotificationService;
+        private readonly TryService _tryService;
 
-        public async Task<T?> ExecuteTryCatchAsync<T>(Func<Task<T>> func, string type)
+        public AddressService(IDomainNotificationService domainNotificationService, TryService tryService)
         {
-            try
-            {
-                return await func();
-            }
-            catch (Exception e)
-            {
-                _domainNotificationService.Add("Houve um erro ao conectar com a API de" + type + ": " + e);
-
-                return default;
-            }
+            _domainNotificationService = domainNotificationService;
+            _tryService = tryService;
         }
 
-        public async Task<OutputAddressModel?> CreateAddress(InputAddressModel createAddress)
+        public async Task<CreateAddressCommandResponse?> CreateAddress(CreateAddressCommand createAddress)
         {
-            return await ExecuteTryCatchAsync(async () =>
+            return await _tryService.ExecuteTryCatchAsync(async () =>
                 {
                     var content = new StringContent(JsonConvert.SerializeObject(createAddress), Encoding.UTF8, "application/json");
                     var response = await _client.PostAsync("https://localhost:7082/api/addresses", content);
@@ -39,13 +34,13 @@ namespace UPBank.Utils.Integration.Address.Services
                     }
 
                     var result = response.Content.ReadAsStringAsync().Result;
-                    return JsonConvert.DeserializeObject<OutputAddressModel>(result);
+                    return JsonConvert.DeserializeObject<CreateAddressCommandResponse>(result);
                 }, "Address");
         }
 
-        public async Task<OutputAddressModel?> GetCompleteAddressById(string id)
+        public async Task<CreateAddressCommandResponse?> GetCompleteAddressById(string id)
         {
-            return await ExecuteTryCatchAsync(async () =>
+            return await _tryService.ExecuteTryCatchAsync(async () =>
             {
                 var response = await _client.GetAsync($"https://localhost:7082/api/addresses/{id}");
 
@@ -53,13 +48,13 @@ namespace UPBank.Utils.Integration.Address.Services
                     _domainNotificationService.Add("Houve um erro ao trazer o endereço: " + response.Content.ReadAsStringAsync());
 
                 var result = response.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<OutputAddressModel>(result);
+                return JsonConvert.DeserializeObject<CreateAddressCommandResponse>(result);
             }, "Address");
         }
 
-        public async Task<OutputAddressModel?> UpdateAddress(string id, InputAddressModel updateAddress)
+        public async Task<CreateAddressCommandResponse?> UpdateAddress(string id, UpdateAddressCommand updateAddress)
         {
-            return await ExecuteTryCatchAsync(async () =>
+            return await _tryService.ExecuteTryCatchAsync(async () =>
             {
                 var content = new StringContent(JsonConvert.SerializeObject(updateAddress), Encoding.UTF8, "application/json");
                 var response = await _client.PatchAsync($"https://localhost:7082/api/addresses/{id}", content);
@@ -70,7 +65,7 @@ namespace UPBank.Utils.Integration.Address.Services
                 }
 
                 var result = response.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<OutputAddressModel>(result);
+                return JsonConvert.DeserializeObject<CreateAddressCommandResponse>(result);
             }, "Address");
         }
     }
