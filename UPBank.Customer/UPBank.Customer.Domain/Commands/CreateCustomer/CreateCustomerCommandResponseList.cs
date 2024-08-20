@@ -2,6 +2,6 @@
 {
     public class CreateCustomerCommandResponseList
     {
-        public List<CreateCustomerCommandResponse> CreatePersonCommandResponseList { get; set; }
+        public List<CreateCustomerCommandResponse> Customers { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace UPBank.Customer.Domain.Commands.CreateCustomer
 {
-    public class CreateCustomerCommandResponse : CreatePersonCommand
+    public class CreateCustomerCommandResponse : CreatePersonCommandResponse
     {
         public bool Restriction { get; set; }
         public bool Active { get; set; }

@@ -25,8 +25,9 @@ namespace UPBank.Customer.Domain.Commands.CreateCustomer
         async Task<CreateCustomerCommandResponseList> IRequestHandler<CreateCustomerCommand, CreateCustomerCommandResponseList>.Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
             var createCustomerCommandResponseList = new CreateCustomerCommandResponseList();
+            createCustomerCommandResponseList.Customers = new List<CreateCustomerCommandResponse>();
 
-            foreach (var person in request.CreateCustomerCommandList)
+            foreach (var person in request.Customers)
             {
                 var personResponse = await _personService.CreatePersonAsync(person);
                 if (personResponse == null)
@@ -35,10 +36,11 @@ namespace UPBank.Customer.Domain.Commands.CreateCustomer
                 var customer = _mapper.Map<CreatePersonCommandResponse, Entities.Customer>(personResponse);
                 customer = await _customerRepository.AddAsync(customer);
 
-                var createCustomerCommandResponse = _mapper.Map<CreatePersonCommandResponse, CreateCustomerCommandResponse>(personResponse);
-                _mapper.Map(customer, createCustomerCommandResponse);
+                var createCustomerCommandResponse = _mapper.Map<Entities.Customer, CreateCustomerCommandResponse>(customer);
+                    
+                _mapper.Map(personResponse, createCustomerCommandResponse);
                 
-                createCustomerCommandResponseList.CreatePersonCommandResponseList.Add(createCustomerCommandResponse);
+                createCustomerCommandResponseList.Customers.Add(createCustomerCommandResponse);
             }
             return createCustomerCommandResponseList;
         }
