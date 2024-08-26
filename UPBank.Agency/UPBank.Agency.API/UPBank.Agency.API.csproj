@@ -16,4 +16,10 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj" />
+    <ProjectReference Include="..\UPBank.Agency.Domain\UPBank.Agency.Domain.csproj" />
+    <ProjectReference Include="..\UPBank.Agency.Infra\UPBank.Agency.Infra.csproj" />
+  </ItemGroup>
+
 </Project>

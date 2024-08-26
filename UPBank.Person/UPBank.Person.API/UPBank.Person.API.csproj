@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,11 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UPBank.Person.Application\UPBank.Person.Application.csproj" />
+    <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.Integration.Address\UPBank.Utils.Integration.Address.csproj" />
+    <ProjectReference Include="..\UPBank.Person.Domain\UPBank.Person.Domain.csproj" />
     <ProjectReference Include="..\UPBank.Person.Infra\UPBank.Person.Infra.csproj" />
   </ItemGroup>
 

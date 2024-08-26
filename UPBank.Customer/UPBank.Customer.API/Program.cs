@@ -1,15 +1,10 @@
 using System.Data;
 using System.Data.SqlClient;
-using UPBank.Customer.Application.Contracts;
 using UPBank.Customer.Application.RabbitMQ;
-using UPBank.Customer.Application.Services;
-using UPBank.Customer.Domain.Contracts;
-using UPBank.Customer.Infra.Context;
-using UPBank.Customer.Infra.Repostories;
-using UPBank.Utils.Address.Contracts;
-using UPBank.Utils.Address.Services;
-using UPBank.Utils.Person.Contracts;
-using UPBank.Utils.Person.Services;
+using UPBank.Customer.Domain;
+using UPBank.Customer.Infra;
+using UPBank.Utils.CrossCutting.Exception;
+using UPBank.Utils.Integration.Person;
 
 namespace UPBank.Customer.API
 {
@@ -21,11 +16,12 @@ namespace UPBank.Customer.API
             builder.Services.AddSingleton<IDbConnection>(db => new SqlConnection(builder.Configuration.GetConnectionString("UpBankApiCustomerContext")));
 
             // Add services to the container.
-            builder.Services.AddSingleton<IUpBankApiCustomerContext, UpBankApiCustomerContext>();
-            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-            builder.Services.AddScoped<ICustomerService, CustomerService>();
-            builder.Services.AddScoped<IPersonService, PersonService>();
-            builder.Services.AddScoped<IAddressService, AddressService>();
+
+            builder.Services.AddDomainContext();
+            builder.Services.AddInfraContext();
+            builder.Services.AddCrossCuttingContext();
+            builder.Services.AddIntegrationPersonContext();
+
             builder.Services.AddSingleton<RabbitMQPublisher>();
 
             // Add services to the container.

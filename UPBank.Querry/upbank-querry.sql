@@ -5,7 +5,7 @@ USE UpBankApiAddress;
 GO
 
 CREATE TABLE Address (
-    ZipCode NVARCHAR(9) NOT NULL,
+    ZipCode NVARCHAR(8) NOT NULL,
     Street NVARCHAR(255) NOT NULL,
     City NVARCHAR(100) NOT NULL,
     State NVARCHAR(2) NOT NULL,
@@ -17,7 +17,7 @@ GO
 
 CREATE TABLE CompleteAddress (
 	Id UNIQUEIDENTIFIER NOT NULL,
-    ZipCode NVARCHAR(9) NOT NULL,
+    ZipCode NVARCHAR(8) NOT NULL,
 	Complement NVARCHAR(255),
 	Number NVARCHAR(10) NOT NULL,
 
@@ -25,8 +25,11 @@ CREATE TABLE CompleteAddress (
 	CONSTRAINT Complete_Address_ForeignKey FOREIGN KEY (ZipCode) REFERENCES Address(ZipCode)
 );
 GO
+
 Select * From Address
 Select * From CompleteAddress
+
+
 
 CREATE DATABASE UpBankApiPerson;
 GO

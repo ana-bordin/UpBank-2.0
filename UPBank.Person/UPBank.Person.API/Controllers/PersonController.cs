@@ -1,63 +1,56 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UPBank.Person.Application.Contracts;
-using UPBank.Person.Application.Models;
-using UPBank.Person.Application.Models.DTOs;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using UPBank.Person.Domain.Commands.CreatePerson;
+using UPBank.Person.Domain.Commands.UpdatePerson;
+using UPBank.Person.Domain.Queries.GetPersonByCPF;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Person.API.Controllers
 {
     public class PersonController : Controller
     {
-        private readonly IPersonService _personService;
+        private readonly IMediator _bus;
+        private readonly IDomainNotificationService _domainNotifications;
 
-        public PersonController(IPersonService personService)
+        public PersonController(IMediator mediator, IDomainNotificationService domainNotificationService)
         {
-            _personService = personService;
+            _bus = mediator;
+            _domainNotifications = domainNotificationService;
         }
 
         [HttpPost("api/peoples")]
-        public async Task<IActionResult> CreatePerson([FromBody] PersonInputModel person)
+        public async Task<IActionResult> CreatePerson([FromBody] CreatePersonCommand createPersonCommand, CancellationToken cancellationToken)
         {
-            var personResult = await _personService.CreatePerson(person);
+            var response = await _bus.Send(createPersonCommand, cancellationToken);
 
-            if (personResult.okResult != null)
-                return Ok(personResult.okResult);
-            else
-                return BadRequest(personResult.message);
+            if (_domainNotifications.HasNotification)
+                return BadRequest(_domainNotifications.Get());
+
+            return Ok(response);
         }
 
         [HttpGet("api/peoples/{cpf}")]
         public async Task<IActionResult> GetPerson(string cpf)
         {
-            var person = await _personService.GetPersonByCpf(cpf);
+            var response = await _bus.Send(new GetPersonByCPFQuery(cpf));
 
-            if (person.person == null && person.message == null)
-                return NotFound("Pessoa não encontrada");
+            if (_domainNotifications.HasNotification)
+                return BadRequest(_domainNotifications.Get());
 
-            if (person.message != null)
-                return BadRequest(person.message);
-
-            return Ok(person.person);
+            return Ok(response);
         }
 
         [HttpPatch("api/peoples/{cpf}")]
-        public async Task<IActionResult> UpdatePerson(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        public async Task<IActionResult> UpdatePerson(string cpf, [FromBody] UpdatePersonCommand updatePersonCommand, CancellationToken cancellationToken)
         {
-            cpf = Domain.Entities.Person.CpfRemoveMask(cpf);
-            (PersonOutputModel okResult, string message) getPerson = await _personService.GetPersonByCpf(cpf);
+            updatePersonCommand.CPF = cpf;
+            var response = await _bus.Send(updatePersonCommand, cancellationToken);
 
-            if (getPerson.okResult == null)
-                return BadRequest(getPerson.message);
+            if (_domainNotifications.HasNotification)
+                return BadRequest(_domainNotifications.Get());
 
-            var ok = await _personService.PatchPerson(cpf, personPatchDTO);
-
-            if (ok.person == null && ok.message == null)
-                return NotFound("Pessoa não encontrada");
-
-            else if (ok.message != null)
-                return BadRequest(ok.message);
-
-            else
-                return Ok(ok.person);
+            return Ok(response);
         }
     }
 }

@@ -8,8 +8,5 @@
         public List<Employee.Domain.Entities.Employee> Employees { get; set; }
         public bool Active { get; set; }
         public bool Restricted { get; set; }
-
-
-
     }
 }

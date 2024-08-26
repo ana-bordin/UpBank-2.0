@@ -2,8 +2,8 @@
 {
     public interface IPersonRepository
     {
-        Task<(Entities.Person okResult, string message)> CreatePerson(Entities.Person person);
-        Task<(Entities.Person person, string message)> GetPersonByCpf(string cpf);
-        Task<(Entities.Person personResult, string message)> PatchPerson(string cpf, Entities.Person person);
+        Task<Entities.Person> CreatePerson(Entities.Person person);
+        Task<Entities.Person> GetPersonByCpf(string cpf);
+        Task<Entities.Person> PatchPerson(string cpf, Entities.Person person);
     }
 }

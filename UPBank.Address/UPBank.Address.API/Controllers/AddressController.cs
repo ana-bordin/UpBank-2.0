@@ -1,87 +1,68 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UPBank.Address.Application.Contracts;
-using UPBank.Address.Application.Models;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using UPBank.Address.Domain.Commands.CreateAddress;
+using UPBank.Address.Domain.Commands.DeleteAddress;
+using UPBank.Address.Domain.Commands.UpdateAddress;
+using UPBank.Address.Domain.Queries.GetAddressById;
+using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Address.API.Controllers
 {
     public class AddressController : Controller
     {
-        private readonly IAddressService _addressService;
+        private readonly IMediator _bus;
+        private readonly IDomainNotificationService _domainNotificationService;
 
-        public AddressController(IAddressService addressService)
+        public AddressController(IMediator bus, IDomainNotificationService domainNotificationService)
         {
-            _addressService = addressService;
+            _bus = bus;
+            _domainNotificationService = domainNotificationService;
         }
 
         [HttpGet("api/addresses/{id}")]
-        public async Task<IActionResult> GetAddressById(Guid id)
+        public async Task<IActionResult> GetAddressById(string id, CancellationToken cancellationToken)
         {
-            var addressOutputModel = await _addressService.GetCompleteAddressById(id);
+            var response = await _bus.Send(new GetAddressByIdQuery(Guid.Parse(id)), cancellationToken);
 
-            if (addressOutputModel.addressOutputModel == null && addressOutputModel.message == null)
-                return NotFound();
-            else if (addressOutputModel.message != null)
-                return BadRequest(addressOutputModel.message);
+            if (_domainNotificationService.HasNotification)
+                return NotFound(_domainNotificationService.Get());
 
-            return Ok(addressOutputModel.addressOutputModel);
+            return Ok(response);
         }
 
         [HttpPost("api/addresses")]
-        public async Task<IActionResult> CreateAddress([FromBody] AddressInputModel addressInputModel)
+        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressCommand createAddressCommand, CancellationToken cancellationToken)
         {
-            var address = await _addressService.CreateAddress(addressInputModel.ZipCode);
+            var response = await _bus.Send(createAddressCommand, cancellationToken);
 
-            if (address.ok)
-            {
-                var completeAddress = await _addressService.CreateCompleteAddress(addressInputModel);
+            if (_domainNotificationService.HasNotification)
+                return NotFound(_domainNotificationService.Get());
 
-                if (completeAddress.guid != Guid.Empty)
-                {
-                    var addressOutputModel = await _addressService.GetCompleteAddressById(completeAddress.guid);
-
-                    return Ok(addressOutputModel.addressOutputModel);
-                }
-                else
-                {
-                    if (address.message != null)
-                        return BadRequest(address.message);
-                    return BadRequest("Não foi possivel criar o endereço, tente novamente mais tarde");
-                }
-            }
-            else
-            {
-                if (address.message != null)
-                    return BadRequest(address.message);
-
-                return BadRequest("Não foi possivel criar o endereço, tente novamente mais tarde");
-            }
-        }
-
-        [HttpDelete("api/addresses/{id}")]
-        public async Task<IActionResult> DeleteAddress(Guid id)
-        {
-            var address = await _addressService.DeleteAddressById(id);
-
-            if (!address.ok)
-            {
-                if (address.message == "Endereço não encontrado")
-                    return NotFound(address.message);
-
-                return BadRequest(address.message);
-            }
-            return Ok();
+            return Ok(response);
         }
 
         [HttpPatch("api/addresses/{id}")]
-        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressInputModel addressInputModel)
+        public async Task<IActionResult> UpdateAddress(string id, [FromBody] UpdateAddressCommand updateAddressCommand, CancellationToken cancellationToken)
         {
-            var address = await _addressService.UpdateAddress(id, addressInputModel);
+            updateAddressCommand.Id = Guid.Parse(id);
+            var response = await _bus.Send(updateAddressCommand, cancellationToken);
 
-            if (address.addressOutputModel == null)
-                return BadRequest(address.message);
+            if (_domainNotificationService.HasNotification)
+                return NotFound(_domainNotificationService.Get());
 
-            return Ok(address.addressOutputModel);
+            return Ok(response);
         }
 
+        [HttpDelete("api/addresses/{id}")]
+        public async Task<IActionResult> DeleteAddress(string id, CancellationToken cancellationToken)
+        {
+            var response = await _bus.Send(new DeleteAddressCommand(Guid.Parse(id)), cancellationToken);
+
+            if (response.HasNotification)
+                return BadRequest(response.Get());
+
+            return Ok("Endereço excluido com sucesso!");
+        }
     }
 }

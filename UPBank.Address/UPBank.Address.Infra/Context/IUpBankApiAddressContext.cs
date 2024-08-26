@@ -2,7 +2,7 @@
 
 namespace UPBank.Address.Infra.Context
 {
-    public interface IUpBankApiAddressContext
+    public interface IUpBankApiAddressContext : IDisposable
     {
         public IDbConnection Connection { get; }
     }

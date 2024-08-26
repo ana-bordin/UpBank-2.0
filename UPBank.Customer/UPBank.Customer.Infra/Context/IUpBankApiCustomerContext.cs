@@ -2,8 +2,8 @@
 
 namespace UPBank.Customer.Infra.Context
 {
-    public interface IUpBankApiCustomerContext
+    public interface IUpBankApiCustomerContext : IDisposable
     {
-        public IDbConnection ConnectionCustomer { get; }
+        public IDbConnection Connection{ get; }
     }
 }
