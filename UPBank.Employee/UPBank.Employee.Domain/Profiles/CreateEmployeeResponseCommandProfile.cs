@@ -1,19 +1,14 @@
 ﻿using AutoMapper;
-using UPBank.Address.Domain.Commands.CreateAddress;
-using UPBank.Customer.Domain.Commands.CreateCustomer;
+using UPBank.Employee.Domain.Commands.CreateEmployee;
 using UPBank.Person.Domain.Commands.CreatePerson;
 
-namespace UPBank.Customer.Domain.Profiles
+namespace UPBank.Employee.Domain.Profiles
 {
-    public class CreateCustomerCommandResponseProfile : Profile
+    public class CreateEmployeeResponseCommandProfile : Profile
     {
-        public CreateCustomerCommandResponseProfile()
+        public CreateEmployeeResponseCommandProfile()
         {
-            CreateMap<Entities.Customer, CreateCustomerCommandResponse>()
-                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active))
-                .ForMember(dest => dest.Restriction, opt => opt.MapFrom(src => src.Restriction));
-
-            CreateMap<CreatePersonCommandResponse, CreateCustomerCommandResponse>()
+            CreateMap<CreatePersonCommandResponse, CreateEmployeeCommandResponse>()
                 .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => src.CPF))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
@@ -22,6 +17,11 @@ namespace UPBank.Customer.Domain.Profiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+
+            CreateMap<Entities.Employee, CreateEmployeeCommandResponse>()
+                .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.Manager))
+                .ForMember(dest => dest.RecordNumber, opt => opt.MapFrom(src => src.RecordNumber))
+                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active));
         }
     }
 }

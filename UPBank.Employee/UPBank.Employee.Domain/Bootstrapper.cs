@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UPBank.Employee.Domain.Commands.CreateEmployee;
 
 namespace UPBank.Employee.Domain
 {
@@ -16,7 +17,7 @@ namespace UPBank.Employee.Domain
 
         private static IServiceCollection AddCommands(this IServiceCollection services)
         {
-            //services.AddTransient<CreateCustomerCommandHandler>();
+            services.AddTransient<CreateEmployeeCommandHandler>();
             //services.AddTransient<UpdateCustomerCommandHandler>();
             //services.AddTransient<DeleteCustomerCommandHandler>();
             return services;

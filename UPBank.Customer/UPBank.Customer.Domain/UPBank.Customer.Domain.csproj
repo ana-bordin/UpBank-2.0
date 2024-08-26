@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ValuesObjects\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.Integration.Person\UPBank.Utils.Integration.Person.csproj" />
   </ItemGroup>
 

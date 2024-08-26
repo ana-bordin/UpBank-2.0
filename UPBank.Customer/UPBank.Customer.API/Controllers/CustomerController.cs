@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UPBank.Customer.Domain.Commands.CreateCustomer;
+using UPBank.Customer.Domain.Commands.DeleteCustomer;
+using UPBank.Customer.Domain.Queries.GetAllCustomers;
+using UPBank.Customer.Domain.Queries.GetCustomerByCPF;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Customer.API.Controllers
@@ -28,39 +31,59 @@ namespace UPBank.Customer.API.Controllers
             return Ok(customer);
         }
 
-        //[HttpGet("api/customers/{cpf}")]
-        //public async Task<IActionResult> GetCustomer(string cpf)
-        //{
-        //    var customer = await _customerService.GetCustomerByCpf(cpf);
+        [HttpGet("api/customers/{cpf}")]
+        public async Task<IActionResult> GetCustomer(string cpf)
+        {
+            var response = await _bus.Send(new GetCustomerByCPFQuery(cpf));
 
-        //    if (customer.customerOutputModel == null)
-        //        return NotFound();
+            if (_domainNotificationService.HasNotification)
+                return BadRequest(_domainNotificationService.Get());
 
-        //    return Ok(customer);
-        //}
+            return Ok(response);
+        }
 
-        //[HttpDelete("api/customers/{cpf}")]
-        //public async Task<IActionResult> DeleteCustomer(string cpf)
-        //{
-        //    var ok = await _customerService.DeleteCustomerByCpf(cpf);
-        //    if (!ok.ok)
-        //        return BadRequest(ok.message);
+        [HttpDelete("api/customers/{cpf}")]
+        public async Task<IActionResult> DeleteCustomer(string cpf)
+        {
+            var ok = await _bus.Send(new DeleteCustomerCommand(cpf));
+            if (_domainNotificationService.HasNotification)
+                return BadRequest(_domainNotificationService.Get());
 
-        //    return Ok();
-        //}
+            return Ok("Cliente deletado com sucesso!");
+        }
 
-        //[HttpGet("api/customers")]
-        //public async Task<IActionResult> GetAllCustomers()
-        //{
-        //    var customers = await _customerService.GetAllCustomers();
+        [HttpGet("api/customers")]
+        public async Task<IActionResult> GetAllCustomers()
+        {
+            var response = await _bus.Send(new GetAllCustomerQuery());
 
-        //    if (customers.message != null)
-        //        return BadRequest(customers.message);
-        //    else if (customers.customers == null)
-        //        return NoContent();
-        //    else
-        //        return Ok(customers);
-        //}
+            if (_domainNotificationService.HasNotification)
+            {
+                var notifications = _domainNotificationService.Get();
+                if (notifications.Equals("Não há clientes para mostrar"))
+                    return Ok(notifications);
+                else
+                    return BadRequest(notifications);
+            }
+
+            return Ok(response);
+
+        }
+
+        [HttpPatch("api/customers/{cpf}")]
+        public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        {
+            var customer = await _customerService.UpdateCustomer(cpf, personPatchDTO);
+
+            if (customer.message == "cliente com restrição!")
+                return Forbid(customer.message);
+
+            if (customer.message != null)
+                return BadRequest(customer.message);
+
+            return Ok(customer);
+        }
+
 
         //[HttpPatch("api/customers/patchRestriction/{cpf}")]
         //public async Task<IActionResult> CustomerPatchRestriction(string cpf)
@@ -100,18 +123,6 @@ namespace UPBank.Customer.API.Controllers
         //    return Ok("Conta solicitada com sucesso! Aguarde para ter mais informações");
         //}
 
-        //[HttpPatch("api/customers/{cpf}")]
-        //public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
-        //{
-        //    var customer = await _customerService.UpdateCustomer(cpf, personPatchDTO);
 
-        //    if (customer.message == "cliente com restrição!")
-        //        return Forbid(customer.message);
-
-        //    if (customer.message != null)
-        //        return BadRequest(customer.message);
-
-        //    return Ok(customer);
-        //}
     }
 }

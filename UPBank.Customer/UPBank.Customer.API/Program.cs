@@ -1,6 +1,5 @@
 using System.Data;
 using System.Data.SqlClient;
-using UPBank.Customer.Application.RabbitMQ;
 using UPBank.Customer.Domain;
 using UPBank.Customer.Infra;
 using UPBank.Utils.CrossCutting.Exception;
@@ -22,7 +21,7 @@ namespace UPBank.Customer.API
             builder.Services.AddCrossCuttingContext();
             builder.Services.AddIntegrationPersonContext();
 
-            builder.Services.AddSingleton<RabbitMQPublisher>();
+            //builder.Services.AddSingleton<RabbitMQPublisher>();
 
             // Add services to the container.
 
@@ -38,7 +37,7 @@ namespace UPBank.Customer.API
 
 
             app.MapControllers();
-            var publisher = new RabbitMQPublisher();
+            //var publisher = new RabbitMQPublisher();
 
             app.Run();
         }
