@@ -2,7 +2,7 @@
 
 namespace UPBank.Employee.Infra.Context
 {
-    public interface IUpBankApiEmployeeContext
+    public interface IUpBankApiEmployeeContext : IDisposable
     {
         public IDbConnection Connection { get; }
     }

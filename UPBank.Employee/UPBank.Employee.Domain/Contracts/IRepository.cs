@@ -1,11 +1,11 @@
-﻿namespace UPBank.Utils.CommonsFiles
+﻿namespace UPBank.Utils.CommonsFiles.Contracts.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<(TEntity? entity, string message)> AddAsync(TEntity entity);
-        Task<(bool ok, string message)> DeleteAsync<TKey>(TKey key);
-        Task<(TEntity? entity, string message)> UpdateAsync(TEntity entity);
-        Task<(TEntity? entity, string message)> GetOneAsync<TKey>(TKey key);
-        Task<(IEnumerable<TEntity>? entities, string message)> GetAllAsync();
+        Task<TEntity?> AddAsync(TEntity entity);
+        Task<bool> DeleteAsync(string key);
+        Task<TEntity?> UpdateAsync(TEntity entity);
+        Task<TEntity?> GetOneAsync(string key);
+        Task<IEnumerable<TEntity>?> GetAllAsync();
     }
 }
