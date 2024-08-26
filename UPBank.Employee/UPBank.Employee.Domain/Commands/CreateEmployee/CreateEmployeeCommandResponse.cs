@@ -1,6 +1,6 @@
 ﻿using UPBank.Person.Domain.Commands.CreatePerson;
 
-namespace UPBank.Employee.Domain.Commands
+namespace UPBank.Employee.Domain.Commands.CreateEmployee
 {
     public class CreateEmployeeCommandResponse : CreatePersonCommandResponse   
     {

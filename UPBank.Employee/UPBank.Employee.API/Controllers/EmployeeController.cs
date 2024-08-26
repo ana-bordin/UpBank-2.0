@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UPBank.Employee.Domain.Commands;
+using UPBank.Employee.Domain.Commands.CreateEmployee;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Employee.API.Controllers
