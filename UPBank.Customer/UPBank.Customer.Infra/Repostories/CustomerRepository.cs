@@ -50,12 +50,8 @@ namespace UPBank.Customer.Infra.Repostories
         {
             try
             {
-                using (var db = _context.Connection)
-                {
-                    var rows = db.ExecuteAsync("UPDATE dbo.Customer SET Active = 1 WHERE CPF = @CPF", new { CPF = cpf });
-
-                    return true;
-                }
+                var rows = await _context.Connection.ExecuteAsync("UPDATE dbo.Customer SET Active = 0 WHERE CPF = @CPF", new { CPF = cpf });
+                return true;
             }
             catch (Exception e)
             {

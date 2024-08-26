@@ -20,6 +20,7 @@ namespace UPBank.Employee.API.Controllers
         public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeCommand createEmployeeCommand, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(createEmployeeCommand, cancellationToken);
+            
             if (_domainNotificationService.HasNotification)
                 return BadRequest(_domainNotificationService.Get());
 
