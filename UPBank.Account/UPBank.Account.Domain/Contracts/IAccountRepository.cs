@@ -1,13 +1,10 @@
-﻿namespace UPBank.Account.Domain.Contracts
+﻿using UPBank.Utils.CommonsFiles.Contracts.Repositories;
+
+namespace UPBank.Account.Domain.Contracts
 {
-    public interface IAccountRepository
+    public interface IAccountRepository : IRepository<Entities.Account>
     {
-        public Task<Entities.Account> GetAccount();
-        public Task<Entities.Account> CreateAccount();
-        public Task<Entities.Account> UpdateAccount();
-        public Task<Entities.Account> DeleteAccount();
         public Task<IEnumerable<Entities.Account>> GetAccountsByAgency();
         public Task<IEnumerable<Entities.Account>> GetAccountsByOwner();
     }
-
 }

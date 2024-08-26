@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.API", "UPBa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.Infra", "UPBank.Customer.Infra\UPBank.Customer.Infra.csproj", "{84F65B56-FA74-457B-810C-6D03CB337A89}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.Application", "UPBank.Customer.Application\UPBank.Customer.Application.csproj", "{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Customer.Domain", "UPBank.Customer.Domain\UPBank.Customer.Domain.csproj", "{F43A19B8-754C-47D1-A61E-2ACF97F02018}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.Integration.Person", "..\UPBank.Utils\UPBank.Utils.Integration.Person\UPBank.Utils.Integration.Person.csproj", "{5ED73C4C-192F-4438-BBEE-11566C3036F8}"
@@ -29,10 +27,6 @@ Global
 		{84F65B56-FA74-457B-810C-6D03CB337A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84F65B56-FA74-457B-810C-6D03CB337A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84F65B56-FA74-457B-810C-6D03CB337A89}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D440E2B-B71A-4E03-92AA-D11EEC63FE02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F43A19B8-754C-47D1-A61E-2ACF97F02018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F43A19B8-754C-47D1-A61E-2ACF97F02018}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F43A19B8-754C-47D1-A61E-2ACF97F02018}.Release|Any CPU.ActiveCfg = Release|Any CPU

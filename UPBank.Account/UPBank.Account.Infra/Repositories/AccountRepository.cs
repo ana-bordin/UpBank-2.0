@@ -4,17 +4,12 @@ namespace UPBank.Account.Infra.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        public Task<Domain.Entities.Account> CreateAccount()
+        public Task<Domain.Entities.Account?> AddAsync(Domain.Entities.Account entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Domain.Entities.Account> DeleteAccount()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Domain.Entities.Account> GetAccount()
+        public Task<bool> DeleteAsync(string key)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +24,17 @@ namespace UPBank.Account.Infra.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Domain.Entities.Account> UpdateAccount()
+        public Task<IEnumerable<Domain.Entities.Account>?> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Domain.Entities.Account?> GetOneAsync(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Domain.Entities.Account?> UpdateAsync(Domain.Entities.Account entity)
         {
             throw new NotImplementedException();
         }

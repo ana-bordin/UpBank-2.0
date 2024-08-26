@@ -12,4 +12,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj" />
+    <ProjectReference Include="..\UPBank.Account.Domain\UPBank.Account.Domain.csproj" />
+    <ProjectReference Include="..\UPBank.Account.Infra\UPBank.Account.Infra.csproj" />
+  </ItemGroup>
+
 </Project>
