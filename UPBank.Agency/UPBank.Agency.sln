@@ -5,11 +5,13 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Agency.API", "UPBank.Agency.API\UPBank.Agency.API.csproj", "{83E63C17-6C29-4F3B-BFCC-37DD1DF32297}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Agency.Application", "UPBank.Agency.Application\UPBank.Agency.Application.csproj", "{2DA5AC6D-1E90-424B-A560-F7A72BF34391}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Agency.Infra", "UPBank.Agency.Infra\UPBank.Agency.Infra.csproj", "{1F31C21F-2902-48FC-B937-729E3542FFE1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Agency.Test", "UPBank.Agency.Test\UPBank.Agency.Test.csproj", "{574BEB20-17FA-4BFB-BD93-B3D2DCC09A87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPBank.Agency.Domain", "UPBank.Agency.Domain\UPBank.Agency.Domain.csproj", "{96F3BE72-E1C2-446B-A17B-883F376138FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UPBank.Utils.CrossCutting.Exception", "..\UPBank.Utils\UPBank.Utils.CrossCutting.Exception\UPBank.Utils.CrossCutting.Exception.csproj", "{76C3AB3A-EF30-4799-92B5-2C9ADF68D8C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +23,6 @@ Global
 		{83E63C17-6C29-4F3B-BFCC-37DD1DF32297}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83E63C17-6C29-4F3B-BFCC-37DD1DF32297}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83E63C17-6C29-4F3B-BFCC-37DD1DF32297}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DA5AC6D-1E90-424B-A560-F7A72BF34391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DA5AC6D-1E90-424B-A560-F7A72BF34391}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DA5AC6D-1E90-424B-A560-F7A72BF34391}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DA5AC6D-1E90-424B-A560-F7A72BF34391}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F31C21F-2902-48FC-B937-729E3542FFE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F31C21F-2902-48FC-B937-729E3542FFE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F31C21F-2902-48FC-B937-729E3542FFE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{574BEB20-17FA-4BFB-BD93-B3D2DCC09A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{574BEB20-17FA-4BFB-BD93-B3D2DCC09A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{574BEB20-17FA-4BFB-BD93-B3D2DCC09A87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96F3BE72-E1C2-446B-A17B-883F376138FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F3BE72-E1C2-446B-A17B-883F376138FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F3BE72-E1C2-446B-A17B-883F376138FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F3BE72-E1C2-446B-A17B-883F376138FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76C3AB3A-EF30-4799-92B5-2C9ADF68D8C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76C3AB3A-EF30-4799-92B5-2C9ADF68D8C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76C3AB3A-EF30-4799-92B5-2C9ADF68D8C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76C3AB3A-EF30-4799-92B5-2C9ADF68D8C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

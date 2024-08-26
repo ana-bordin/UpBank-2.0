@@ -1,3 +1,7 @@
+using UPBank.Agency.Domain;
+using UPBank.Agency.Infra;
+using UPBank.Utils.CrossCutting.Exception;
+
 namespace UPBank.Agency.API
 {
     public class Program
@@ -7,6 +11,9 @@ namespace UPBank.Agency.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDomainContext();
+            builder.Services.AddInfraContext();
+            builder.Services.AddCrossCuttingContext();
 
             builder.Services.AddControllers();
 
