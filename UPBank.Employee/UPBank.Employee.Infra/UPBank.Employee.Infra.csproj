@@ -18,4 +18,8 @@
     <ProjectReference Include="..\UPBank.Employee.Domain\UPBank.Employee.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Context\RequestAccount\" />
+  </ItemGroup>
+
 </Project>

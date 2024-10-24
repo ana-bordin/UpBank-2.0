@@ -1,10 +1,9 @@
-﻿using UPBank.Person.Domain.Commands.CreatePerson;
+﻿using UPBank.Customer.Domain.Commands.CreateCustomer.Models.Customer;
 
 namespace UPBank.Customer.Domain.Commands.CreateCustomer
 {
-    public class CreateCustomerCommandResponse : CreatePersonCommandResponse
+    public class CreateCustomerCommandResponse
     {
-        public bool Restriction { get; set; }
-        public bool Active { get; set; }
+        public List<CustomerResponse> Customers { get; set; }
     }
 }

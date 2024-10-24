@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UPBank.Customer.Domain.Commands.CreateCustomer;
 using UPBank.Customer.Domain.Commands.DeleteCustomer;
+using UPBank.Customer.Domain.Commands.UpdateCustomer;
 using UPBank.Customer.Domain.Queries.GetAllCustomers;
 using UPBank.Customer.Domain.Queries.GetCustomerByCPF;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
@@ -71,15 +72,16 @@ namespace UPBank.Customer.API.Controllers
         }
 
         [HttpPatch("api/customers/{cpf}")]
-        public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] PersonPatchDTO personPatchDTO)
+        public async Task<IActionResult> UpdateCustomer(string cpf, [FromBody] UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var customer = await _customerService.UpdateCustomer(cpf, personPatchDTO);
+            request.CPF = cpf;
+            var customer = await _bus.Send(request, cancellationToken);
 
-            if (customer.message == "cliente com restrição!")
-                return Forbid(customer.message);
+            //if (customer.message == "cliente com restrição!")
+            //    return Forbid(customer.message);
 
-            if (customer.message != null)
-                return BadRequest(customer.message);
+            //if (customer.message != null)
+            //    return BadRequest(customer.message);
 
             return Ok(customer);
         }

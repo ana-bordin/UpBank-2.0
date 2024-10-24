@@ -1,27 +1,27 @@
 ﻿using AutoMapper;
 using MediatR;
-using UPBank.Customer.Domain.Commands.CreateCustomer;
+using UPBank.Customer.Domain.Commands.CreateCustomer.Models.Customer;
+using UPBank.Customer.Domain.Contracts.Services;
 using UPBank.Customer.Domain.Contracts.UPBank.Customer.Domain.Contracts;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
-using UPBank.Utils.Integration.Person.Contracts;
 
 namespace UPBank.Customer.Domain.Queries.GetCustomerByCPF
 {
-    public class GetCustomerByCPFQueryHandler : IRequestHandler<GetCustomerByCPFQuery, CreateCustomerCommandResponse>
+    public class GetCustomerByCPFQueryHandler : IRequestHandler<GetCustomerByCPFQuery, CustomerResponse>
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IMapper _mapper;
-        private readonly IPersonService _personService;
+        private readonly IPersonServiceClient _personServiceClient;
         private readonly IDomainNotificationService _domainNotificationService;
 
-        public GetCustomerByCPFQueryHandler(ICustomerRepository customerRepository, IMapper mapper, IDomainNotificationService domainNotificationService, IPersonService personService)
+        public GetCustomerByCPFQueryHandler(ICustomerRepository customerRepository, IMapper mapper, IDomainNotificationService domainNotificationService, IPersonServiceClient personServiceClient)
         {
             _customerRepository = customerRepository;
             _mapper = mapper;
-            _personService = personService;
+            _personServiceClient = personServiceClient;
             _domainNotificationService = domainNotificationService;
         }
-        public async Task<CreateCustomerCommandResponse> Handle(GetCustomerByCPFQuery request, CancellationToken cancellationToken)
+        public async Task<CustomerResponse> Handle(GetCustomerByCPFQuery request, CancellationToken cancellationToken)
         {
             var customer = await _customerRepository.GetOneAsync(request.CPF);
 
@@ -33,9 +33,9 @@ namespace UPBank.Customer.Domain.Queries.GetCustomerByCPF
                 return null;
             }
 
-            var person = await _personService.GetPersonByCPFAsync(request.CPF);
+            var person = await _personServiceClient.GetPersonByCPFAsync(request.CPF);
 
-            var result = _mapper.Map<Entities.Customer, CreateCustomerCommandResponse>(customer);
+            var result = _mapper.Map<Entities.Customer, CustomerResponse>(customer);
             _mapper.Map(person, result);
 
             return result;

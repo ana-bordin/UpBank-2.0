@@ -8,7 +8,7 @@ namespace UPBank.Person.Domain.Profiles
     {
         public CreatePerson()
         {
-            CreateMap<CreatePersonCommand, Entities.Person>()
+            CreateMap<CreatePersonCommand, Entities.Person.Person>()
                 .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => CreatePersonCommand.CpfRemoveMask(src.CPF)))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
@@ -17,7 +17,7 @@ namespace UPBank.Person.Domain.Profiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone));
 
-            CreateMap<UpdatePersonCommand, Entities.Person>()
+            CreateMap<UpdatePersonCommand, Entities.Person.Person>()
                  .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => CreatePersonCommand.CpfRemoveMask(src.CPF)))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))

@@ -1,33 +1,33 @@
 ﻿using AutoMapper;
 using MediatR;
-using UPBank.Customer.Domain.Commands.CreateCustomer;
+using UPBank.Customer.Domain.Commands.CreateCustomer.Models.Customer;
+using UPBank.Customer.Domain.Contracts.Services;
 using UPBank.Customer.Domain.Contracts.UPBank.Customer.Domain.Contracts;
-using UPBank.Person.Domain.Commands.CreatePerson;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
-using UPBank.Utils.Integration.Person.Contracts;
 
 namespace UPBank.Customer.Domain.Commands.UpdateCustomer
 {
-    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, CreateCustomerCommandResponse>
+    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, CustomerResponse>
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IMapper _mapper;
         private readonly IDomainNotificationService _domainNotificationService;
-        private readonly IPersonService _personService;
+        private readonly IPersonServiceClient _personServiceClient;
 
-        public UpdateCustomerCommandHandler(ICustomerRepository customerRepository, IMapper mapper, IDomainNotificationService domainNotificationService, IPersonService personService)
+        public UpdateCustomerCommandHandler(ICustomerRepository customerRepository, IMapper mapper, IDomainNotificationService domainNotificationService, IPersonServiceClient personServiceClient)
         {
             _customerRepository = customerRepository;
             _mapper = mapper;
             _domainNotificationService = domainNotificationService;
-            _personService = personService;
+            _personServiceClient = personServiceClient;
         }
 
-        public async Task<CreateCustomerCommandResponse> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+        public async Task<CustomerResponse> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            var result = await _personService.UpdatePersonAsync(request.CPF, request);
-            
-            return _mapper.Map<CreatePersonCommandResponse, CreateCustomerCommandResponse>(result);
+            return null;
+            //var result = await _personServiceClient.UpdatePersonAsync(request.CPF, request);
+
+            //return _mapper.Map<CreatePersonCommandResponse, CustomerResponse>(result);
         }
     }
 }

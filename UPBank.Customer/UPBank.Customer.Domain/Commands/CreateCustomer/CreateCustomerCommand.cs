@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using UPBank.Person.Domain.Commands.CreatePerson;
+using UPBank.Customer.Domain.Commands.CreateCustomer.Models.Customer;
 
 namespace UPBank.Customer.Domain.Commands.CreateCustomer
 {
-    public class CreateCustomerCommand : IRequest<CreateCustomerCommandResponseList>
-    { 
-        public List<CreatePersonCommand> Customers { get; set; } = new List<CreatePersonCommand>();
+    public class CreateCustomerCommand : IRequest<CreateCustomerCommandResponse>
+    {
+        public List<CustomerRequest> Customers { get; set; } = new List<CustomerRequest>();
 
-    }   
+    }
 }

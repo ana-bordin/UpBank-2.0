@@ -1,7 +1,4 @@
-using UPBank.Person.Domain;
-using UPBank.Person.Infra;
 using UPBank.Utils.CrossCutting.Exception;
-using UPBank.Utils.Integration.Address;
 
 namespace UPBank.Person.API
 {
@@ -14,7 +11,6 @@ namespace UPBank.Person.API
             // Add services to the container.
             builder.Services.AddDomainContext();
             builder.Services.AddInfraContext();
-            builder.Services.AddIntegrationAddressContext();
             builder.Services.AddCrossCuttingContext();
 
             // Add services to the container.

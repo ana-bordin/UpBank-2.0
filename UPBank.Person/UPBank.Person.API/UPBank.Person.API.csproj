@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UPBank.Utils\UPBank.Utils.Integration.Address\UPBank.Utils.Integration.Address.csproj" />
     <ProjectReference Include="..\UPBank.Person.Domain\UPBank.Person.Domain.csproj" />
     <ProjectReference Include="..\UPBank.Person.Infra\UPBank.Person.Infra.csproj" />
   </ItemGroup>

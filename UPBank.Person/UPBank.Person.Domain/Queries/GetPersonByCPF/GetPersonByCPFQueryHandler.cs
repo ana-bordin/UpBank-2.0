@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using UPBank.Person.Domain.Commands.CreatePerson;
-using UPBank.Person.Domain.Contracts;
-using UPBank.Utils.Integration.Address.Contracts;
+using UPBank.Person.Domain.Contracts.Repositories;
+using UPBank.Person.Domain.Contracts.Services;
 
 namespace UPBank.Person.Domain.Queries.GetPersonByCPF
 {
@@ -10,13 +10,13 @@ namespace UPBank.Person.Domain.Queries.GetPersonByCPF
     {
         private readonly IPersonRepository _personRepository;
         private readonly IMapper _mapper;
-        private readonly IAddressService _addressService;
+        private readonly IAddressServiceClient _addressServiceClient;
 
-        public GetPersonByCPFQueryHandler(IPersonRepository personRepository, IMapper mapper, IAddressService addressService)
+        public GetPersonByCPFQueryHandler(IPersonRepository personRepository, IMapper mapper, IAddressServiceClient addressServiceClient)
         {
             _personRepository = personRepository;
             _mapper = mapper;
-            _addressService = addressService;
+            _addressServiceClient = addressServiceClient;
         }
         public async Task<CreatePersonCommandResponse> Handle(GetPersonByCPFQuery request, CancellationToken cancellationToken)
         {
@@ -25,7 +25,7 @@ namespace UPBank.Person.Domain.Queries.GetPersonByCPF
             if (person == null)
                 return await Task.FromResult<CreatePersonCommandResponse>(null);
 
-            var address = await _addressService.GetCompleteAddressById(person.AddressId.ToString());
+            var address = await _addressServiceClient.GetCompleteAddressById(person.AddressId.ToString());
 
             var response = _mapper.Map<CreatePersonCommandResponse>(person);
             response.Address = address;

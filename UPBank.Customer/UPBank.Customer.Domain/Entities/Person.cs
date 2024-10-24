@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UPBank.Person.Domain.Entities
+namespace UPBank.Customer.Domain.Entities
 {
     public class Person
     {

@@ -1,4 +1,4 @@
-﻿using UPBank.Address.Domain.Commands.CreateAddress;
+﻿using UPBank.Person.Domain.Commands.CreatePerson.Models.Address;
 
 namespace UPBank.Person.Domain.Commands.CreatePerson
 {
@@ -11,7 +11,7 @@ namespace UPBank.Person.Domain.Commands.CreatePerson
         public double Salary { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public CreateAddressCommandResponse Address { get; set; }
+        public AddressResponse Address { get; set; }
 
         public static string CpfAddMask(string cpf)
         {

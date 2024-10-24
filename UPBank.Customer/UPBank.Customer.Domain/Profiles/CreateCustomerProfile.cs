@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UPBank.Person.Domain.Commands.CreatePerson;
+using UPBank.Customer.Domain.Commands.CreateCustomer.Models.Customer;
 
 namespace UPBank.Customer.Domain.Profiles
 {
@@ -8,8 +8,8 @@ namespace UPBank.Customer.Domain.Profiles
 
         public CreateCustomerProfile()
         {
-            CreateMap<CreatePersonCommandResponse, Entities.Customer>()
-               .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => CreatePersonCommand.CpfRemoveMask(src.CPF)))
+            CreateMap<CustomerRequest, Entities.Customer>()
+               .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => CustomerRequest.CpfRemoveMask(src.CPF)))
                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))

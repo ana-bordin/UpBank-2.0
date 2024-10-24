@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UPBank.Employee.Domain.Contracts;
-using UPBank.Employee.Infra.Context;
-using UPBank.Employee.Infra.Repositories;
+using UPBank.Employee.Infra.Data.Context.Employee;
+using UPBank.Employee.Infra.Data.Repositories;
 
 namespace UPBank.Employee.Infra
 {

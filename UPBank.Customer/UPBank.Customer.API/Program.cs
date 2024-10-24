@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using UPBank.Customer.Domain;
 using UPBank.Customer.Infra;
 using UPBank.Utils.CrossCutting.Exception;
-using UPBank.Utils.Integration.Person;
 
 namespace UPBank.Customer.API
 {
@@ -19,7 +18,7 @@ namespace UPBank.Customer.API
             builder.Services.AddDomainContext();
             builder.Services.AddInfraContext();
             builder.Services.AddCrossCuttingContext();
-            builder.Services.AddIntegrationPersonContext();
+            //builder.Services.AddIntegrationPersonContext();
 
             //builder.Services.AddSingleton<RabbitMQPublisher>();
 

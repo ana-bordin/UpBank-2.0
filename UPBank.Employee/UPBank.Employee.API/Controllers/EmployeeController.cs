@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using UPBank.Employee.Domain.Commands.CreateEmployee;
+using UPBank.Employee.Domain.Queries.AccountOpeningRequests;
 using UPBank.Utils.CrossCutting.Exception.Contracts;
 
 namespace UPBank.Employee.API.Controllers
@@ -79,13 +81,13 @@ namespace UPBank.Employee.API.Controllers
         //    return Ok();
         //}
 
-        //[HttpPatch("api/employees/accountOpeningRequests")]
-        //public async Task<IActionResult> AccountOpeningRequests()
-        //{
-        //    var accountOpeningRequests = await _customerService.GetAccountOpeningRequests();
+        [HttpPatch("api/employees/accountOpeningRequests")]
+        public async Task<IActionResult> AccountOpeningRequests()
+        {
+            var accountOpeningRequests = _mediator.Send(new AccountOpeningRequestsQuery(), CancellationToken.None);
 
-        //    return Ok(accountOpeningRequests);
-        //}
+            return Ok(accountOpeningRequests);
+        }
 
         //[HttpPatch("api/employees/approveAccountOpening")]
         //public async Task<IActionResult> ApproveAccountOpening([FromBody] ApproveAccountOpeningDTO approveAccountOpeningDTO)

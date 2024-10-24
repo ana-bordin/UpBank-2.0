@@ -1,21 +1,21 @@
 ﻿using AutoMapper;
 using MediatR;
 using UPBank.Person.Domain.Commands.CreatePerson;
-using UPBank.Person.Domain.Contracts;
-using UPBank.Utils.Integration.Address.Contracts;
+using UPBank.Person.Domain.Contracts.Repositories;
+using UPBank.Person.Domain.Contracts.Services;
 
 namespace UPBank.Person.Domain.Commands.UpdatePerson
 {
     public class UpdatePersonCommandHandler : IRequestHandler<UpdatePersonCommand, CreatePersonCommandResponse>
     {
         private readonly IPersonRepository _personRepository;
-        private readonly IAddressService _addressService;
+        private readonly IAddressServiceClient _addressServiceClient;
         private IMapper _mapper;
 
-        public UpdatePersonCommandHandler(IPersonRepository personRepository, IAddressService addressService, IMapper mapper)
+        public UpdatePersonCommandHandler(IPersonRepository personRepository, IAddressServiceClient addressServiceClient, IMapper mapper)
         {
             _personRepository = personRepository;
-            _addressService = addressService;
+            _addressServiceClient = addressServiceClient;
             _mapper = mapper;
         }
         public async Task<CreatePersonCommandResponse> Handle(UpdatePersonCommand request, CancellationToken cancellationToken)
@@ -28,9 +28,9 @@ namespace UPBank.Person.Domain.Commands.UpdatePerson
 
             else
             {
-                var addressResponse = await _addressService.UpdateAddress(person.AddressId.ToString(), request.Address);
+                var addressResponse = await _addressServiceClient.UpdateAddress(person.AddressId.ToString(), request.Address);
 
-                person = _mapper.Map<Entities.Person>(request);
+                person = _mapper.Map<Entities.Person.Person>(request);
 
 
                 person = await _personRepository.PatchPerson(person.CPF, person);
